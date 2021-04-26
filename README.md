@@ -6,6 +6,12 @@
 - Links are between containers, and must be a part of a Content object.
 - All objects have unique IDs within the file. The same Content object can be used in the same Container object.
 
+### Header
+- `Magic Number`: `73 61 74 62`, used to identify IC files.
+- `File version`: 16 bits to identify what file version the rest of the file follows.
+- `Start Container ID`: 16 bits to identify the first Container to show.
+- `Author`: Maxiumum of 256 bytes, encoded in UTF-8.
+
 ## Components
 - A Element is referred to as either a Container or Content.
 
