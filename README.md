@@ -25,7 +25,10 @@
   - `xY`: Same as above, but for the Y position.
   - `widthN`: The width of the element, also between 0 and 1.
   - `heightN`: The height of the element, between 0 and 1.
-  - `Infinite`: 8 bits used to define if this element is an Infinite element (meaning it can contain as many elements as wanted. Last bit (Infinite bit) defines if the element is infinite (1 = infinite). The second to last bit (Direction bit) defines if the element is vertical and horizontal (1 = vertical).
+  - `Infinite`: An Infinite element supports any number of elements. Breaking down the byte like so: `ZYXW0000`
+    - `Z bit` (Infinite bit): Decides if this element is an infinite element. If it is 0, the rest of the byte is ignored.
+    - `Y bit`: Decides the direction of the content. 1 for vertical content (a list), 0 for horizontal content (slideshow).
+    - `X bit`: Decides if paging is enabled. 1 for enabled. Paging means content should be shown in multiples of `widthN` or `heightN` (based on `Y bit`)
   - The following only applies if the Infinite bit is 1
     - `startXN`: This will become a float between 0 and 1. This defines the X position of the element.
     - `startYN`: Same as above, but for the Y position.
@@ -37,7 +40,7 @@
 - A Container is a simple box that does not display anything itself. It only contains other Containers or Content.
 
 | Component Type | Container ID | Layout Code | Layout ID | ID_N | End Container Code N | ID_K  | End Container Code K | End Chunk Code |
-|----------------|-----------|--------------------|---------|---------|---------|---------|-----|
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | 3 Bits         | 13 Bits   | 3 Bits             | 13 Bits | 16 Bits | 8 Bits | 16 Bits | 8 Bits |8 Bits|
 
 #### Explanation
@@ -69,7 +72,7 @@
 - Links allow for redirection and alternative display modes of other containers.
 
 | Component Type | LInk ID | Link To ID | Display Mode |
-|----------------|-----------|--------------------|
+|-----|-----|-----|-----|
 | 3 Bits         | 13 Bits   | 16 Bits | 8 bits|
 
 #### Explanation
@@ -82,8 +85,8 @@
   - `W bit`: Allow showing a back button to return to the container before the Link was pressed.
   - `XYZ bits`: Defines how many sublevels of Containers that should be shown from the linked Container. The highest level Container that is chosen is what is displayed (since it will always contain the linked Container)
     - `000`: Show only the linked Container, even if the Container is inside a subcontainer
-	- `001`: Show the linked Container and the parent Container.
-	- `010`: The linked Container, with its parent and grandparent Container.
-	- `...`
-	- `110`: Show the 6th parent Container from the linked Container.
-	- `111`: Show the highest Container ancestor possible.
+	  - `001`: Show the linked Container and the parent Container.
+	  - `010`: The linked Container, with its parent and grandparent Container.
+	  - `...`
+	  - `110`: Show the 6th parent Container from the linked Container.
+	  - `111`: Show the highest Container ancestor possible.
