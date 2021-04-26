@@ -1,0 +1,25 @@
+interactive content
+link based system between containers
+
+content:
+never standalone, must always be in a container to be displayed
+
+container IDs must be unique, and used only once
+content IDs must be unique, can be used multiple times
+links can only link to containers, never content
+
+position
+x,y,width,height - each 2 bytes, multiple of 0.0025
+x,y is top left of element
+
+
+viewer:
+window that shows one container at a time
+viewers job to have efficient viewing of complex containers, and rapid switching between them
+
+  links:
+  links to a container replace the current container shown
+  viewers job to know where the back button for a link goes (which container the link was from)
+
+  content:
+  viewers job to do the GET request for web content

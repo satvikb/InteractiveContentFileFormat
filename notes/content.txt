@@ -1,0 +1,10 @@
+type - 3 bits
+[content] id - 13 bits
+content type - 1 byte
+content length - 4 bytes
+content data - [length] bytes
+
+content type:
+RTF like (fancy text)
+PNG like (images)
+web viewer / links

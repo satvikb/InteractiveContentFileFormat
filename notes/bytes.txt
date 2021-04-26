@@ -1,0 +1,37 @@
+2 Bytes of type/ID:
+1st 3 bits of 1st byte:
+000 - special to end content list
+001 - container
+010 - content
+011 - layout
+100 - link
+101 - ?
+110 - ?
+111 - end container
+
+position
+each property is 2 bytes - between 0 and 40,000
+final number is 0.0025 * [number]
+x - 2 bytes
+y - 2 bytes
+width - 2 bytes
+height - 2 bytes
+
+layout element infinite bit:
+infinite means it can contain any number of containers
+0000WXYZ
+W: show page numbers, only applies if 1 is true
+X: 0 if no paging, 1 if paging
+Y: 0 if horizontal, 1 if vertical. only applies if Z is 1.
+Z: 1 if element is infinite, 0 if not infinite
+
+link
+subcontainer display byte
+0000WXYZ
+W - show back button?
+XYZ - how many sublevels of containers should be shown
+  000 - only the container that was linked is shown, even if the container is shown in another container
+  001 - only the linked container and the container that shows it
+  010 - linked, one above, and the one above that
+  ...
+  111 - show all containers to the highest level (does not necessarily mean root/starting container)

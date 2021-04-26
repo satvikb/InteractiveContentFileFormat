@@ -1,0 +1,55 @@
+File Order:
+Header
+Layouts
+Containers
+Links
+Contents
+
+
+Header
+  magic num (73 61 74 76)
+  file format version - 2 bytes
+  start container id - 2 bytes
+  author - UTF-8, max 256 bytes (theoretical max of 64 characters)
+
+// chunk n, start - 4 bytes?
+chunk type - 3 bits of 1st byte
+[container] id - last 5 bits of 1 byte and 2nd byte
+layout id - 2 bytes
+001 0000010101000
+010 0000010101001 <- this means this container is infinite
+11111111 <- end container
+001 0000010101010
+11111111 <- end container
+001 0000010101011
+11111111
+000 00000 <- end chunk
+// chunk n, end - 4 bytes?
+
+type - 3 bits
+[content] id - 13 bits
+content type - 1 byte
+content length - 4 bytes
+content data - [length] bytes
+
+type - 3 bits
+[layout] id - 13 bits
+number of elements - 1 byte
+[begin loop for [num elements] times]
+  x - 2 bytes
+  y - 2 bytes
+  width - 2 bytes
+  height - 2 bytes
+  infinite - 1 byte. last bit is if its infinite, second to last bit is if its 1 = vertical, 0 = horizontal. (000000XY)
+  [if infinite:]
+      startX - 2 bytes (relative to element)
+      startY - 2 bytes
+      width - 2 bytes
+      height - 2 bytes
+      padding - 2 bytes (uses Y bit)
+[end loop]
+
+type - 3 bits
+[link] id - 13 bits
+link to id - 2 bytes, the first 3 bits are always 001 (container), last 13 bits is container id
+subcontainer display - 1 byte, last 3 bits define how many levels of the containers should be shows (if containers embed containers, etc.)
