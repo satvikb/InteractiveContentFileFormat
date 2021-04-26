@@ -23,9 +23,14 @@ struct Header {
     char author[256];
 };
 
+struct Chunk {
+    uint16_t ID;
+
+};
+
 struct Layout {
     // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
-    uint16_t ID;
+    struct Chunk chunk;
     // the number of elements in this layout
     uint16_t elementCount;
     // store the positions of each of the elements
@@ -34,7 +39,7 @@ struct Layout {
 
 struct Container {
     // the first 3 bits are 001 for container, the last 13 bits is the actual id
-    uint16_t ID;
+    struct Chunk chunk;
     // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
     uint16_t layoutID;
     // storage of actual IDs for elements
@@ -50,7 +55,7 @@ struct Container {
 };
 
 struct Content {
-    uint16_t ID;
+    struct Chunk chunk;
     // type of content (text, img, etc)
     uint8_t type;
     uint32_t length;
@@ -58,7 +63,7 @@ struct Content {
 };
 
 struct Link {
-    uint16_t ID;
+    struct Chunk chunk;
     uint16_t containerID;
     // last 3 bits define how many levels of the containers should be shows (if containers embed containers, etc.)
     uint8_t display;
