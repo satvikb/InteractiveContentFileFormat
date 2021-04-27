@@ -20,7 +20,7 @@ layout id - 2 bytes
 010 0000010101001 <- this means this container is infinite
 11111111 <- end container
 001 0000010101010
-11111111 <- end container
+11111111 <- end container/content
 001 0000010101011
 11111111
 000 00000 <- end chunk

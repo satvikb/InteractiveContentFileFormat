@@ -3,4 +3,5 @@
 #include <stdlib.h>
 
 struct InteractiveContent readFile(char* filename);
-struct Layout* readLayout(char* buffer, int *i);
+struct Layout* readLayout(char* buffer, int *index);
+struct Container* readContainer(char* buffer, int *index);

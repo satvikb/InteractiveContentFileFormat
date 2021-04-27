@@ -24,8 +24,8 @@ struct Header {
 };
 
 struct Chunk {
+    uint8_t type;
     uint16_t ID;
-
 };
 
 struct Layout {
@@ -51,6 +51,7 @@ struct Container {
             1 element: the ID array has 2 elements, first is the actual container/content, second is 11111111
             n > 1 elements: the ID array has n+1 elements, the first n is list of container/contnts, n+1 is 1111111. ERROR if layout.positions[i].inf == false
     */
+   // a pointer to an array of pointers
     struct elementID* elementIDs[];
 };
 
@@ -71,9 +72,9 @@ struct Link {
 
 // TODO, do we even need this struct?
 struct elementID {
-    uint8_t info; // UNUSED
+    uint16_t numberElements;
     // each elementID has at least 1 value here: 111 11111 signifying end of array
-    uint16_t* ID[];
+    uint16_t IDs[];
 };
 
 struct elementPosition {
