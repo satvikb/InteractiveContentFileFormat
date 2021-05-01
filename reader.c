@@ -4,17 +4,20 @@
 // https://stackoverflow.com/questions/21737906/how-to-read-write-utf8-text-files-in-c/21745211
 
 // class to read file format
-struct InteractiveContent readFile(char* filename){
+struct InteractiveContent readFile(const char* filename){
     printf("reading %s ", filename);
 
     FILE * pFile;
-    long lSize;
+    size_t lSize = 0;
     char * buffer;
     size_t result;
     int i;
     
-    pFile = fopen ( filename , "rb" );
-    if (pFile==NULL) {fputs ("File error",stderr); exit (1);}
+    fopen_s(&pFile, filename , "rb" );
+    if (pFile==NULL) {
+        fputs ("File error",stderr); 
+        return;
+    }
 
     fseek (pFile , 0 , SEEK_END);
     lSize = ftell (pFile);
@@ -25,18 +28,10 @@ struct InteractiveContent readFile(char* filename){
     fclose(pFile); // Close the file
 
     printf("Size: %ld BYTES\n", lSize);
-    // for(i = 0; i < lSize; i++) {
-    //    fread(buffer+i, 1, 1, pFile);
-    //    printf("%c\n", buffer);
-    // }
-
-    // for(i = 0; i < lSize; i++){
-    //    printf("%d\n", buffer[i]);
-    // }
 
     i = 0;
 
-    struct Header *header = malloc (sizeof (struct Header));
+    struct Header *header = (struct Header *)malloc (sizeof (struct Header));
     // read magic num
     i += 4;
     // read file version
@@ -96,7 +91,7 @@ struct Layout* readLayout(char* buffer, int *index){
     uint8_t numberElements = buffer[i];
     i += 1;
 
-    struct Layout *layout = malloc (sizeof (struct Layout)+numberElements*sizeof(struct elementPosition*));
+    struct Layout *layout = (struct Layout *)malloc (sizeof (struct Layout)+numberElements*sizeof(struct elementPosition*));
     layout->chunk.type = chunkType;
     layout->chunk.ID = ID;
 
@@ -105,7 +100,7 @@ struct Layout* readLayout(char* buffer, int *index){
 
     int eleI;
     for(eleI = 0; eleI < numberElements; eleI++){
-        struct elementPosition *pos = malloc (sizeof (struct elementPosition));
+        struct elementPosition *pos = (struct elementPosition *)malloc (sizeof (struct elementPosition));
         pos->x = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
         pos->y = (buffer[i+2] << 8) | (unsigned char)buffer[(i)+3];
         pos->w = (buffer[i+4] << 8) | (unsigned char)buffer[(i)+5];
@@ -124,7 +119,7 @@ struct Layout* readLayout(char* buffer, int *index){
             i += 1;
 
             // handle infinite element position
-            struct infiniteElementPosition *infPos = malloc (sizeof (struct infiniteElementPosition));
+            struct infiniteElementPosition *infPos = (struct infiniteElementPosition *)malloc (sizeof (struct infiniteElementPosition));
 
             infPos->startx      = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
             infPos->starty      = (buffer[i+2] << 8) | (unsigned char)buffer[(i)+3];
@@ -155,27 +150,27 @@ struct Container* readContainer(char* buffer, int *index){
     uint16_t layoutID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
     i += 2; // now i is at the first byte of the ID or end code
     int numElementsInChunk = 0;
-    struct elementID** elementIDs = calloc(0, sizeof(struct elementID*));
+    struct elementID** elementIDs = (struct elementID**)calloc(0, sizeof(struct elementID*));
 
     printf("Reading container. Byte: %d. Container ID: %d. Layout ID: %d.\n", i, ID, layoutID);
     // i must always point to a byte that is either the start of an ID, or a End code
     while(buffer[i] != 0){
         // init array to hold one
-        uint16_t* containerElementIDs = calloc(0, sizeof(uint16_t));
+        uint16_t* containerElementIDs = (uint16_t*)calloc(0, sizeof(uint16_t));
         uint16_t numberElements = 0;
         while((unsigned char)buffer[i] != 0xFF){
             uint16_t eleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
 
             numberElements += 1;
 
-            containerElementIDs = realloc(containerElementIDs, numberElements*sizeof(uint16_t));
+            containerElementIDs = (uint16_t*)realloc(containerElementIDs, numberElements*sizeof(uint16_t));
             containerElementIDs[numberElements-1] = eleID;
             i += 2;
         }
         // end container hit, skip that byte
         i += 1;
 
-        struct elementID *currentElementIDs = malloc (sizeof (struct elementID)+numberElements*sizeof(uint16_t));
+        struct elementID *currentElementIDs = (struct elementID *)malloc (sizeof (struct elementID)+numberElements*sizeof(uint16_t));
         currentElementIDs->numberElements = numberElements;
         // copy the IDs over?
         for(int j = 0; j < numberElements; j++){
@@ -184,12 +179,12 @@ struct Container* readContainer(char* buffer, int *index){
         }
 
         numElementsInChunk += 1;
-        elementIDs = realloc(elementIDs, numElementsInChunk*sizeof(struct elementID*));
+        elementIDs = (struct elementID**)realloc(elementIDs, numElementsInChunk*sizeof(struct elementID*));
         elementIDs[numElementsInChunk-1] = currentElementIDs;
     }
     // end chunk hit, skip that byte
     i += 1;
-    struct Container *container = malloc (sizeof (struct Container)+numElementsInChunk*sizeof(struct elementID*));
+    struct Container *container = (struct Container *)malloc (sizeof (struct Container)+numElementsInChunk*sizeof(struct elementID*));
     container->chunk.type = chunkType;
     container->chunk.ID = ID;
     for(int j = 0; j < numElementsInChunk; j++){
