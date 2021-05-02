@@ -2,6 +2,13 @@
 
 #include <wx/wx.h>
 
+extern "C" {
+#include "reader.h"
+}
+
+#include "format.h"
+#include "cContainer.h"
+
 class cMain : public wxFrame
 {
 
@@ -14,6 +21,6 @@ private:
 	wxMenu* m_pFileMenu;
 	wxMenu* m_pHelpMenu;
 
-	wxPanel* m_panel;
+	cContainer* mainContainer;
 };
 

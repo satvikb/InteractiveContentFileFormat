@@ -4,7 +4,7 @@
 // https://stackoverflow.com/questions/21737906/how-to-read-write-utf8-text-files-in-c/21745211
 
 // class to read file format
-struct InteractiveContent readFile(const char* filename){
+struct InteractiveContent* readFile(const char* filename){
     printf("reading %s ", filename);
 
     FILE * pFile;
@@ -79,6 +79,12 @@ struct InteractiveContent readFile(const char* filename){
         }
         printf("Finished reading chunk. Now at byte: %d/%ld\n", i, lSize);
     }
+
+    struct InteractiveContent* content = (struct InteractiveContent*)malloc(sizeof(struct Header));
+    content->header = header;
+    //content->layouts = 
+
+    return content;
 }
 
 // attempts to read the layout from the given starting position
@@ -185,6 +191,7 @@ struct Container* readContainer(char* buffer, int *index){
     // end chunk hit, skip that byte
     i += 1;
     struct Container *container = (struct Container *)malloc (sizeof (struct Container)+numElementsInChunk*sizeof(struct elementID*));
+    container->elementCount = numElementsInChunk;
     container->chunk.type = chunkType;
     container->chunk.ID = ID;
     for(int j = 0; j < numElementsInChunk; j++){

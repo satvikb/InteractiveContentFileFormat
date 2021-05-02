@@ -8,6 +8,8 @@ struct Container;
 struct Link;
 struct Content;
 
+
+// TODO make substructs to hold array of each of these
 struct InteractiveContent {
     struct Header* header;
     // each of these array pointers should be ended with null byte?
@@ -42,6 +44,8 @@ struct Container {
     struct Chunk chunk;
     // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
     uint16_t layoutID;
+
+    uint16_t elementCount;
     // storage of actual IDs for elements
     /*
         This is a 2D array.
