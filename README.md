@@ -77,7 +77,7 @@
 ### Links
 - Links allow for redirection and alternative display modes of other containers.
 
-| Component Type | LInk ID | Link To ID | Display Mode |
+| Component Type | Link ID | Link To ID | Display Mode |
 |-----|-----|-----|-----|
 | 3 Bits         | 13 Bits   | 16 Bits | 8 bits|
 
