@@ -7,10 +7,22 @@ This file explains the example.ic file.
 41 75 74 68 6f 72 20 4e 61 6d 65 00 - "Author Name" w/ null
 
 ------------- END HEADER -------------
-Total bytes: 20
+Total header bytes: 20
+
 ------------- BEGIN LAYOUT 1 -------------
 
 60 01 - Layout ID (011 00000 0000 0001)
+01 - Number of elements (1)
+00 00 - X
+00 00 - Y
+9C 40 - Width
+9C 40 - Height
+
+00 - Infinite byte (00000000)
+------------- END LAYOUT 1 -------------
+------------- BEGIN LAYOUT 2 -------------
+
+60 02 - Layout ID (011 00000 0000 0002)
 01 - Number of elements (1)
 00 00 - X
 00 00 - Y
@@ -23,13 +35,30 @@ C0 - Infinite byte (11000000)
 4E 20 - Width (20,000)
 94 70 - Height (30,000)
 03 E8 - Padding (1,000)
-------------- END LAYOUT 1 -------------
+------------- END LAYOUT 2 -------------
+
 
 ------------- BEGIN CONTAINER 1 -------------
 20 01 - Container ID (001 00000 0000 0001)
+60 01 - Layout ID (011 00000 0000 0001)
+40 01 - Content ID (010 00000 0000 0001)
+FF - End current container (of layout)
+00 - End container
+------------- END CONTAINER 1 -------------
+
+------------- BEGIN CONTAINER 2 -------------
+20 02 - Container ID (001 00000 0000 0002)
 60 01 - Layout ID (011 00000 0000 0001)
 20 02 - Container ID (001 00000 0000 0002)
 20 03 - Container ID (001 00000 0000 0003)
 FF - End current container (of layout)
 00 - End container
-------------- END CONTAINER 1 -------------
+------------- END CONTAINER 2 -------------
+
+------------- BEGIN CONTENT 1 -------------
+40 01 - Content ID (010 00000 0000 0001)
+01 - Content Type (00000001) (1 for plain text ASCII)
+20 02 - Content Length (00000000 00000000 00000000 00001010) (length of 10 bytes)
+Content Data BEGIN
+74 65 73 74 20 74 65 78 74 21 (test text!)
+------------- END CONTENT 1 -------------

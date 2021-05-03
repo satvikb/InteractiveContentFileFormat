@@ -1,6 +1,5 @@
-#include "format.h"
 #include "reader.h"
-
+#include <iostream> 
 // https://stackoverflow.com/questions/21737906/how-to-read-write-utf8-text-files-in-c/21745211
 
 // class to read file format
@@ -16,7 +15,7 @@ struct InteractiveContent* readFile(const char* filename){
     fopen_s(&pFile, filename , "rb" );
     if (pFile==NULL) {
         fputs ("File error",stderr); 
-        return;
+        return nullptr;
     }
 
     fseek (pFile , 0 , SEEK_END);
@@ -28,6 +27,8 @@ struct InteractiveContent* readFile(const char* filename){
     fclose(pFile); // Close the file
 
     printf("Size: %ld BYTES\n", lSize);
+
+    struct InteractiveContent* ic = new InteractiveContent;
 
     i = 0;
 
@@ -42,15 +43,21 @@ struct InteractiveContent* readFile(const char* filename){
     short startContainerId = buffer[i] << 8 | (buffer[i+1]);
     header->startContainer = startContainerId;
     i += 2;
-
+    std::cout << "READING AUTHOR" << std::endl;
     printf("Author: ");
-    int authorI = 0;
-    for(; buffer[i] != '\0' && authorI < 255; i++,authorI++){
-        header->author[authorI] = buffer[i];
-        printf("%c", buffer[i]);
+    //int authorI = 0;
+    std::string author;
+    for(; buffer[i] != '\0'; i++){
+        //header->author[authorI] = buffer[i];
+        //author += (buffer[i]);
+        printf("%c\n", buffer[i]);
     }
-    header->author[authorI+1] = '\0';
-    printf("\n");
+    //header->author[authorI+1] = '\0';
+    //header->author = author;
+    //std::string author;
+    //const char* authorStart = &buffer[i];
+    //strcpy(author, authorStart);
+    //printf("\n");
     // i = the byte number of the null of the author
     // from here on out, its all just chunks
     i += 1;
@@ -63,16 +70,24 @@ struct InteractiveContent* readFile(const char* filename){
         // struct Header *header = malloc (sizeof (struct Header));
         switch (chunkType)
         {
-        case 1:
+        case 0x1:
+        {
             // container
-            readContainer(buffer, &i);
+            std::pair<int, struct Container*> newContainer = readContainer(buffer, &i);
+            ic->containers.insert(newContainer);
+        }
             break;
-        case 2:
+        case 0x2: {
             // content
+            std::pair<int, struct Content*> newContent = readContent(buffer, &i);
+            ic->content.insert(newContent);
+        }
             break;
-        case 3:
+        case 0x3: {
             // layout
-            readLayout(buffer, &i);
+            std::pair<int, struct Layout*> newLayout = readLayout(buffer, &i);
+            ic->layouts.insert(newLayout);
+        }
             break;
         default:
             break;
@@ -80,15 +95,11 @@ struct InteractiveContent* readFile(const char* filename){
         printf("Finished reading chunk. Now at byte: %d/%ld\n", i, lSize);
     }
 
-    struct InteractiveContent* content = (struct InteractiveContent*)malloc(sizeof(struct Header));
-    content->header = header;
-    //content->layouts = 
-
-    return content;
+    return ic;
 }
 
 // attempts to read the layout from the given starting position
-struct Layout* readLayout(char* buffer, int *index){
+std::pair<int, struct Layout*> readLayout(char* buffer, int *index){
     int i = *index;
     
     uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
@@ -97,7 +108,7 @@ struct Layout* readLayout(char* buffer, int *index){
     uint8_t numberElements = buffer[i];
     i += 1;
 
-    struct Layout *layout = (struct Layout *)malloc (sizeof (struct Layout)+numberElements*sizeof(struct elementPosition*));
+    struct Layout* layout = new Layout;
     layout->chunk.type = chunkType;
     layout->chunk.ID = ID;
 
@@ -106,7 +117,7 @@ struct Layout* readLayout(char* buffer, int *index){
 
     int eleI;
     for(eleI = 0; eleI < numberElements; eleI++){
-        struct elementPosition *pos = (struct elementPosition *)malloc (sizeof (struct elementPosition));
+        struct elementPosition* pos = new elementPosition;
         pos->x = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
         pos->y = (buffer[i+2] << 8) | (unsigned char)buffer[(i)+3];
         pos->w = (buffer[i+4] << 8) | (unsigned char)buffer[(i)+5];
@@ -138,67 +149,81 @@ struct Layout* readLayout(char* buffer, int *index){
             pos->infPos = infPos;
         }else{
             i += 1;
+            pos->infPos = nullptr; // TODO needed?
         }
-        layout->positions[eleI] = pos;
+        layout->positions.push_back(pos);
     }
 
 
     *index = i;
-    return layout;
+    return std::make_pair(ID, layout);
 }
 
-struct Container* readContainer(char* buffer, int *index){
+std::pair<int, struct Container*> readContainer(char* buffer, int *index){
     int i = *index;
     
+    struct Container* container = new Container;
+
     uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
     uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
     i += 2; // now i is at layout ID
     uint16_t layoutID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+
+    container->chunk.type = chunkType;
+    container->chunk.ID = ID;
+
     i += 2; // now i is at the first byte of the ID or end code
-    int numElementsInChunk = 0;
-    struct elementID** elementIDs = (struct elementID**)calloc(0, sizeof(struct elementID*));
 
     printf("Reading container. Byte: %d. Container ID: %d. Layout ID: %d.\n", i, ID, layoutID);
     // i must always point to a byte that is either the start of an ID, or a End code
-    while(buffer[i] != 0){
+    while(buffer[i] != 0x0){ // 0x0 is byte code for end of container chunk
         // init array to hold one
-        uint16_t* containerElementIDs = (uint16_t*)calloc(0, sizeof(uint16_t));
-        uint16_t numberElements = 0;
+        std::vector<uint16_t> subelements; // length of this is 1, unless its in an infinite container
         while((unsigned char)buffer[i] != 0xFF){
             uint16_t eleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-
-            numberElements += 1;
-
-            containerElementIDs = (uint16_t*)realloc(containerElementIDs, numberElements*sizeof(uint16_t));
-            containerElementIDs[numberElements-1] = eleID;
+            subelements.push_back(eleID);
             i += 2;
         }
         // end container hit, skip that byte
         i += 1;
 
-        struct elementID *currentElementIDs = (struct elementID *)malloc (sizeof (struct elementID)+numberElements*sizeof(uint16_t));
-        currentElementIDs->numberElements = numberElements;
-        // copy the IDs over?
-        for(int j = 0; j < numberElements; j++){
-            currentElementIDs->IDs[j] = containerElementIDs[j];
-            printf("ID: %d\n", containerElementIDs[j]);
-        }
-
-        numElementsInChunk += 1;
-        elementIDs = (struct elementID**)realloc(elementIDs, numElementsInChunk*sizeof(struct elementID*));
-        elementIDs[numElementsInChunk-1] = currentElementIDs;
+        container->elementIDs.push_back(subelements);
     }
     // end chunk hit, skip that byte
     i += 1;
-    struct Container *container = (struct Container *)malloc (sizeof (struct Container)+numElementsInChunk*sizeof(struct elementID*));
-    container->elementCount = numElementsInChunk;
-    container->chunk.type = chunkType;
-    container->chunk.ID = ID;
-    for(int j = 0; j < numElementsInChunk; j++){
-        container->elementIDs[j] = elementIDs[j];
-        printf("Layout container done. %d\n", j);
+
+    *index = i;
+    return std::make_pair(ID, container);
+}
+
+std::pair<int, struct Content*> readContent(char* buffer, int* index) {
+    int i = *index;
+
+    struct Content* content = new Content;
+
+    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
+    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+    i += 2; // now i is at content type
+
+    uint8_t contentType = (unsigned char)buffer[i];
+    i += 1; // now i is at content length
+
+    uint32_t contentLength = uint32_t  ((unsigned char)(buffer[i]) << 24 |
+                            (unsigned char)(buffer[i+1]) << 16 |
+                            (unsigned char)(buffer[i+2]) << 8 |
+                            (unsigned char)(buffer[i+3]));
+    i += 4;
+
+    content->data = std::vector<uint8_t>(contentLength, 0x0);
+    // i is now at the first byte of the content
+    int byteI = 0;
+    int byteContentEnd = i + contentLength;
+    while (byteI < contentLength) {
+        content->data[byteI] = buffer[i];
+        i += 1;
+        byteI += 1;
     }
 
     *index = i;
-    return container;
+    return std::make_pair(ID, content);
 }

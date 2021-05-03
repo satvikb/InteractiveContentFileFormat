@@ -2,11 +2,7 @@
 
 #include <wx/wx.h>
 
-extern "C" {
-#include "reader.h"
-}
-
-#include "format.h"
+#include "FileManager.h"
 #include "cContainer.h"
 
 class cMain : public wxFrame

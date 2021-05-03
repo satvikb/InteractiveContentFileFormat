@@ -21,10 +21,10 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 
     SetMenuBar(m_pMenuBar);
 
+    FileManager::loadFile("example.ic");
+    
     mainContainer = new cContainer(true, this);
-
-    struct InteractiveContent* ic = readFile("example.ic");
-    mainContainer->SetContainerData(ic->containers, ic->layouts);
+    mainContainer->CreateContainerUI(FileManager::getContainerAndLayoutByID(FileManager::getStartContainerID()));
 
     
 }

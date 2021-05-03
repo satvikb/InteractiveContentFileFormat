@@ -2,8 +2,6 @@
 
 #include <wx/wx.h>
 #include "cMain.h"
-//#include "format.h"
-//#include "reader.h"
 
 class cApp : public wxApp
 {

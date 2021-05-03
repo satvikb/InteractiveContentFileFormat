@@ -12,29 +12,44 @@ cContainer::cContainer(cContainer *parent) {
 	// create subelements according to layout
 }
 
-void cContainer::SetContainerData(struct Container* data, struct Layout* layout) {
+void cContainer::CreateContainerUI(std::pair<struct Container*, struct Layout*> dataPair) {
+    CreateContainerUI(dataPair.first, dataPair.second);
+}
 
-    if (numberElements > 0) {
+void cContainer::CreateContainerUI(struct Container* container, struct Layout* layout) {
+
+    if (children.size() > 0) {
         // TODO: loop through existing windows and delete (memory)
-        for (int i = 0; i < numberElements; i++) {
+        for (int i = 0; i < children.size(); i++) {
             children[i]->Show(false);
             children[i]->Destroy();
+            delete children[i];
         }
-
-        delete[] children;
     }
 
-    numberElements = data->elementCount;
-
-    for (int i = 0; i < numberElements; i++) {
+    for (int i = 0; i < container->elementIDs.size(); i++) {
         elementPosition* pos = layout->positions[i];
 
-        elementID* element = data->elementIDs[i];
+        std::vector<uint16_t> subelements = container->elementIDs[i];
 
-        for (int j = 0; j < element->numberElements; j++) {
+        for (int j = 0; j < subelements.size(); j++) {
             // and do what with this id...? maybe have to pass in the actual file? maybe have a static FileReader class?
-            uint16_t ID = element->IDs[j];
+            uint16_t ID = subelements[j];
 
+            struct Container* container = FileManager::getContainerByID(ID);
+            if (container != nullptr) {
+                // create another cContainer
+            }
+            else {
+                // try content
+                struct Content* content = FileManager::getContentByID(ID);
+                if (content != nullptr) {
+
+                }
+                else {
+                    // ?
+                }
+            }
         }
     }
 

@@ -69,7 +69,7 @@
 
 #### Explanation
 - `Component Type`: `010` is for Content
-- `Container ID`: Used to uniquely identify the Content in the file. 
+- `Content ID`: Used to uniquely identify the Content in the file. 
 - `Content Type`: Used to identify the type of data the Content is. Content types 0 - 31 is reserved for the Interactive Content content types. Content types 32 - 255 are reserved for external file types (TBD).
 - `Content Length`: Used to know how many bytes of data to read before the content ends.
 - `Content Data`: Raw bytes of the Content, with [Length] number of bytes
