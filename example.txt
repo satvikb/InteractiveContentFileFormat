@@ -58,7 +58,7 @@ FF - End current container (of layout)
 ------------- BEGIN CONTENT 1 -------------
 40 01 - Content ID (010 00000 0000 0001)
 01 - Content Type (00000001) (1 for plain text ASCII)
-20 02 - Content Length (00000000 00000000 00000000 00001010) (length of 10 bytes)
+00 00 00 0A - Content Length (00000000 00000000 00000000 00001010) (length of 10 bytes)
 Content Data BEGIN
 74 65 73 74 20 74 65 78 74 21 (test text!)
 ------------- END CONTENT 1 -------------

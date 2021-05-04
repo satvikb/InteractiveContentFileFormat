@@ -5,13 +5,6 @@ cContainer::cContainer(bool mainContainer, wxWindow* parent) {
 	isMainContainer = mainContainer;
 }
 
-cContainer::cContainer(cContainer *parent) {
-	// create this container itself
-	Create(parent, wxID_ANY);
-
-	// create subelements according to layout
-}
-
 void cContainer::CreateContainerUI(std::pair<struct Container*, struct Layout*> dataPair) {
     CreateContainerUI(dataPair.first, dataPair.second);
 }
@@ -32,8 +25,8 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
 
         std::vector<uint16_t> subelements = container->elementIDs[i];
 
+        // should be one, unless infinite
         for (int j = 0; j < subelements.size(); j++) {
-            // and do what with this id...? maybe have to pass in the actual file? maybe have a static FileReader class?
             uint16_t ID = subelements[j];
 
             struct Container* container = FileManager::getContainerByID(ID);
@@ -44,7 +37,18 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
                 // try content
                 struct Content* content = FileManager::getContentByID(ID);
                 if (content != nullptr) {
+                    // TODO decide how to handle inviidual content types
+                    // testing for positioning
 
+                    wxConstraintPosition wxPos = FileManager::convertLayoutPositionToConstraint(pos);
+                    cRichTextView* richTextCtrl = new cRichTextView((cContainer*)this);
+
+                    wxLayoutConstraints* posCons = new wxLayoutConstraints();
+                    posCons->left.PercentOf(this, wxWidth, wxPos.x);
+                    posCons->top.PercentOf(this, wxHeight, wxPos.y);
+                    posCons->width.PercentOf(this, wxWidth, wxPos.width);
+                    posCons->height.PercentOf(this, wxHeight, wxPos.height);
+                    richTextCtrl->SetConstraints(posCons);
                 }
                 else {
                     // ?
@@ -54,7 +58,6 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
     }
 
     ////m_panel = new wxPanel(this, wxID_ANY);
-    cRichTextView *richTextCtrl = new cRichTextView((cContainer *)this);
 
     //wxPanel* m_panel2 = new wxPanel(this, wxID_ANY);
 
@@ -71,13 +74,7 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
     //cons->height.PercentOf(this, wxHeight, 20);
     //text->SetConstraints(cons);
 
-    //// (0.1, 0.3, 0.8, 0.6)
-    wxLayoutConstraints* cons2 = new wxLayoutConstraints();
-    cons2->left.PercentOf(this, wxWidth, 10);
-    cons2->top.PercentOf(this, wxHeight, 30);
-    cons2->width.PercentOf(this, wxWidth, 80);
-    cons2->height.PercentOf(this, wxHeight, 60);
-    richTextCtrl->SetConstraints(cons2);
+
 
     //// (0.92, 0.1, 0.06, 0.9)
     //wxLayoutConstraints* cons3 = new wxLayoutConstraints();

@@ -32,7 +32,7 @@ struct InteractiveContent* readFile(const char* filename){
 
     i = 0;
 
-    struct Header *header = (struct Header *)malloc (sizeof (struct Header));
+    struct Header *header = new Header;
     // read magic num
     i += 4;
     // read file version
@@ -49,11 +49,11 @@ struct InteractiveContent* readFile(const char* filename){
     std::string author;
     for(; buffer[i] != '\0'; i++){
         //header->author[authorI] = buffer[i];
-        //author += (buffer[i]);
+        author += (buffer[i]);
         printf("%c\n", buffer[i]);
     }
     //header->author[authorI+1] = '\0';
-    //header->author = author;
+    header->author = author;
     //std::string author;
     //const char* authorStart = &buffer[i];
     //strcpy(author, authorStart);
@@ -62,10 +62,12 @@ struct InteractiveContent* readFile(const char* filename){
     // from here on out, its all just chunks
     i += 1;
 
+    ic->header = header;
+
     while(i < lSize){
         unsigned char chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
         unsigned short id = (((buffer[i]) & 0x1F) << 8) | (unsigned char)buffer[i+1]; // get 5 rightmost from first byte and add to second byte
-
+        char d = buffer[i];
         printf("\nAt byte %d. Reading chunk of type: %d. ID: %d\n", i, chunkType, id);
         // struct Header *header = malloc (sizeof (struct Header));
         switch (chunkType)
@@ -148,7 +150,6 @@ std::pair<int, struct Layout*> readLayout(char* buffer, int *index){
             printf("Read infinite position %d %d %d %d %d\n", i, infPos->startx, infPos->starty, infPos->w, infPos->h);
             pos->infPos = infPos;
         }else{
-            i += 1;
             pos->infPos = nullptr; // TODO needed?
         }
         layout->positions.push_back(pos);
@@ -171,6 +172,7 @@ std::pair<int, struct Container*> readContainer(char* buffer, int *index){
 
     container->chunk.type = chunkType;
     container->chunk.ID = ID;
+    container->layoutID = layoutID;
 
     i += 2; // now i is at the first byte of the ID or end code
 
@@ -216,13 +218,18 @@ std::pair<int, struct Content*> readContent(char* buffer, int* index) {
 
     content->data = std::vector<uint8_t>(contentLength, 0x0);
     // i is now at the first byte of the content
-    int byteI = 0;
-    int byteContentEnd = i + contentLength;
+    uint32_t byteI = 0;
+    uint32_t byteContentEnd = i + contentLength;
     while (byteI < contentLength) {
         content->data[byteI] = buffer[i];
         i += 1;
         byteI += 1;
     }
+
+    content->chunk.type = chunkType;
+    content->chunk.ID = ID;
+    content->length = contentLength;
+    content->type = contentType;
 
     *index = i;
     return std::make_pair(ID, content);

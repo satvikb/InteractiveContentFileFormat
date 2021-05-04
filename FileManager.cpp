@@ -12,7 +12,8 @@ bool FileManager::loadFile(const char* filename) {
 }
 
 uint16_t FileManager::getStartContainerID() {
-	return ic->header->startContainer;
+	uint16_t startID = ic->header->startContainer;
+	return startID;
 }
 
 std::pair<struct Container*, struct Layout*> FileManager::getContainerAndLayoutByID(uint16_t containerID) {
@@ -47,4 +48,18 @@ struct Content* FileManager::getContentByID(uint16_t contentID) {
 	else {
 		return nullptr;
 	}
+}
+
+struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struct elementPosition* pos) {
+	int x = (int)((pos->x / 40000.0)*100.0);
+	int y = (int)((pos->y / 40000.0) * 100.0);
+	int w = (int)((pos->w / 40000.0) * 100.0);
+	int h = (int)((pos->h / 40000.0) * 100.0);
+	struct wxConstraintPosition retPos = {
+		x,
+		y,
+		w,
+		h
+	};
+	return retPos;
 }

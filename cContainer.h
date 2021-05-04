@@ -8,7 +8,7 @@ class cContainer : public wxPanel
 {
 public:
 	cContainer(bool mainContainer, wxWindow* parent);
-	cContainer(cContainer* parent);
+	cContainer(cContainer* parent) : cContainer(false, parent) {}
 
 	void CreateContainerUI(std::pair<struct Container*, struct Layout*> dataPair);
 	void CreateContainerUI(struct Container* container, struct Layout* layout);
