@@ -13,45 +13,69 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{67d6cdf6-3021-4e3a-bf44-41f3c1c60bc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Content">
+      <UniqueIdentifier>{62347187-826e-4532-9e7a-f7aad606e1c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Components">
+      <UniqueIdentifier>{b0a561d5-3ac1-45bf-9e77-8494906a6055}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{e8d9916c-9544-4c88-b2b2-94d6e825399f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Content">
+      <UniqueIdentifier>{b2650c49-0ed9-44b3-853a-3f56a469a796}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Components">
+      <UniqueIdentifier>{184ad7bb-2072-4916-ba6a-1a4e9465b4c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{bfbadba3-b8ba-42b3-b1ad-2087b3b7630e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{bb3f1e1d-0335-4e47-a713-18b38d2e37c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cApp.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="UI\Content\cRichTextView.h">
+      <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
-    <ClInclude Include="cMain.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="UI\Components\cContainer.h">
+      <Filter>Header Files\UI\Components</Filter>
     </ClInclude>
-    <ClInclude Include="reader.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="UI\cApp.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="cContainer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="UI\cMain.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="cRichTextView.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Core\FileManager.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Core\reader.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cApp.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UI\cApp.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="cMain.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UI\cMain.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="reader.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UI\Components\cContainer.cpp">
+      <Filter>Source Files\UI\Components</Filter>
     </ClCompile>
-    <ClCompile Include="cContainer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UI\Content\cRichTextView.cpp">
+      <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
-    <ClCompile Include="cRichTextView.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Core\FileManager.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Core\reader.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

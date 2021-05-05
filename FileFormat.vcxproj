@@ -19,20 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cApp.h" />
-    <ClInclude Include="cContainer.h" />
-    <ClInclude Include="cMain.h" />
-    <ClInclude Include="cRichTextView.h" />
-    <ClInclude Include="FileManager.h" />
-    <ClInclude Include="reader.h" />
+    <ClInclude Include="Core\FileManager.h" />
+    <ClInclude Include="Core\reader.h" />
+    <ClInclude Include="UI\cApp.h" />
+    <ClInclude Include="UI\cMain.h" />
+    <ClInclude Include="UI\Components\cContainer.h" />
+    <ClInclude Include="UI\Content\cRichTextView.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cApp.cpp" />
-    <ClCompile Include="cContainer.cpp" />
-    <ClCompile Include="cMain.cpp" />
-    <ClCompile Include="cRichTextView.cpp" />
-    <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="reader.cpp" />
+    <ClCompile Include="Core\FileManager.cpp" />
+    <ClCompile Include="Core\reader.cpp" />
+    <ClCompile Include="UI\cApp.cpp" />
+    <ClCompile Include="UI\cMain.cpp" />
+    <ClCompile Include="UI\Components\cContainer.cpp" />
+    <ClCompile Include="UI\Content\cRichTextView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
@@ -113,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,7 +129,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,7 +161,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
