@@ -38,23 +38,20 @@ struct Header {
     std::string author;
 };
 
+// the first 3 bits are 011 for layout, the last 13 bits is the actual id
 struct Chunk {
-    uint8_t type;
-    uint16_t ID;
+    uint8_t chunkType;
+    uint16_t chunkID;
 };
 
-struct Layout {
-    // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
-    struct Chunk chunk;
+struct Layout : Chunk {
     // the number of elements in this layout
     uint16_t elementCount;
     // store the positions of each of the elements
     std::vector<struct elementPosition*> positions;
 };
 
-struct Container {
-    // the first 3 bits are 001 for container, the last 13 bits is the actual id
-    struct Chunk chunk;
+struct Container : Chunk {
     // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
     uint16_t layoutID;
     // storage of actual IDs for elements
@@ -70,28 +67,32 @@ struct Container {
     std::vector<std::vector<uint16_t>> elementIDs;
 };
 
-struct Content {
-    struct Chunk chunk;
+struct Content : Chunk{
     // type of content (text, img, etc)
     uint8_t type;
     uint32_t length;
     std::vector<uint8_t> data; // of size = length
 };
 
-struct Link {
-    struct Chunk chunk;
+struct Action : Chunk {
+    uint8_t actionType;
+};
+
+struct Link : Action {
+    // links can only link to containers
     uint16_t containerID;
     // last 3 bits define how many levels of the containers should be shows (if containers embed containers, etc.)
     uint8_t display;
 };
 
-// TODO, do we even need this struct?
-//struct elementID {
-//    uint16_t numberElements;
-//    // each elementID has at least 1 value here: 111 11111 signifying end of array
-//    uint16_t IDs[];
-//};
+struct Replacement : Action {
+    // The element to replace. Must currently be visible.
+    uint16_t replaceID;
+    // This element will replace the above ID
+    uint16_t replaceWithID;
+};
 
+// TODO: pos struct and inherit from it?
 struct elementPosition {
     uint16_t x;
     uint16_t y;

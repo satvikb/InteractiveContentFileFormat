@@ -16,6 +16,29 @@ void cRichTextView::clickHandler(wxRichTextEvent& event) {
 	EndURL();
 }
 
+void cRichTextView::interpretContent() {
+	if (content->data.size() > 0) {
+		// strStart = 0;
+		// i = 0
+		// loop byte by byte
+			// test if byte is control point start(? maybe have to test all 3 bytes at once?)
+				// insertString(data[strStart] -> data[i])
+				// interpretControlCharacters()
+				// strStart = i
+			// else
+				// i += 1
+	}
+}
+
+// interpretControlCharacters(&i)
+/*
+	handle font table start/end
+	font start/end
+	paragraph start/end (?)
+	paragraph styles
+	text styles (multiple)
+*/
+
 cRichTextView::~cRichTextView() {
 
 }

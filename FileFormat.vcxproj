@@ -24,6 +24,7 @@
     <ClInclude Include="UI\cApp.h" />
     <ClInclude Include="UI\cMain.h" />
     <ClInclude Include="UI\Components\cContainer.h" />
+    <ClInclude Include="UI\Content\cNativeContent.h" />
     <ClInclude Include="UI\Content\cRichTextView.h" />
   </ItemGroup>
   <ItemGroup>
@@ -32,6 +33,7 @@
     <ClCompile Include="UI\cApp.cpp" />
     <ClCompile Include="UI\cMain.cpp" />
     <ClCompile Include="UI\Components\cContainer.cpp" />
+    <ClCompile Include="UI\Content\cNativeContent.cpp" />
     <ClCompile Include="UI\Content\cRichTextView.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -111,10 +111,10 @@ std::pair<int, struct Layout*> readLayout(char* buffer, int *index){
     i += 1;
 
     struct Layout* layout = new Layout;
-    layout->chunk.type = chunkType;
-    layout->chunk.ID = ID;
+    layout->chunkType = chunkType;
+    layout->chunkID = ID;
 
-    printf("Reading layout. Total ID: %d Elements: %d\n", layout->chunk.ID, numberElements);
+    printf("Reading layout. Total ID: %d Elements: %d\n", layout->chunkID, numberElements);
     // layout->positions = (struct elementPosition*) malloc(sizeof(struct elementPosition)*numberElements);
 
     int eleI;
@@ -170,8 +170,8 @@ std::pair<int, struct Container*> readContainer(char* buffer, int *index){
     i += 2; // now i is at layout ID
     uint16_t layoutID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
 
-    container->chunk.type = chunkType;
-    container->chunk.ID = ID;
+    container->chunkType = chunkType;
+    container->chunkID = ID;
     container->layoutID = layoutID;
 
     i += 2; // now i is at the first byte of the ID or end code
@@ -226,8 +226,8 @@ std::pair<int, struct Content*> readContent(char* buffer, int* index) {
         byteI += 1;
     }
 
-    content->chunk.type = chunkType;
-    content->chunk.ID = ID;
+    content->chunkType = chunkType;
+    content->chunkID = ID;
     content->length = contentLength;
     content->type = contentType;
 

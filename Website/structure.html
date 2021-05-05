@@ -22,7 +22,30 @@
     <h4>2.2.3 Actions</h4>
     <p>Actions are the core of Interactive Content and is what enables content to
     be interactive. There are three types of Actions: Links, Replacement, and Appending (?)</p>
+    <p>Link Actions replace the highest level container with the container specified if not a tooltip. Links can only link to Containers</p>
+    <p>Replacement Actions replace the specified Element with another Element. An Element refers to either a Container or Content</p>
+    <pre>
+  (Action ID - 16 Bits)     100 xxxxx xxxxxxxx [x bits are the Action ID]
+  (Action Type - 4 bits)    xxxx
+    (Type: Link)            0001
+    (Type: Replacement)     0010
+  {Type: Link}
+    (Link To Container ID)  001 xxxxx xxxxxxxx [x bits are Container ID]
+    (Display Mode Byte)     000VWXYZ
+      V bit: Show this container as a tooltip. The display of the tooltip is left to the reader.
+      W bit: Allow showing a back button to return to the container before the Link was pressed.
+      XYZ bits: Defines how many sublevels of Containers that should be shown from the linked Container. The highest level Container that is chosen is what is displayed (since it will always contain the linked Container)
+        000: Show only the linked Container, even if the Container is inside a subcontainer
+        001: Show the linked Container and the parent Container.
+        010: The linked Container, with its parent and grandparent Container.
+        ...
+        110: Show the 6th parent Container from the linked Container.
+        111: Show the highest Container ancestor possible.
+  {Type: Replacement}
+    (Replace Element ID)    (001/010) xxxxx xxxxxxxx [ID of either a Container or Content to replace. Must be currently visable]
+    (Replace with ID)       (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]
 
+    </pre>
     <hr>
     <a href="introduction.html">Previous page</a>
     <br>
