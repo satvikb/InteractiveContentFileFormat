@@ -21,12 +21,13 @@ void cRichTextView::interpretContent() {
 		// strStart = 0;
 		// i = 0
 		// loop byte by byte
-			// test if byte is control point start(? maybe have to test all 3 bytes at once?)
+			// test if byte is control point start(? maybe have to test all 3 bytes at once?) - 11101110 10000000 10000000 is code point U+E000. First byte 11101110 is EE in hex. 
 				// insertString(data[strStart] -> data[i])
 				// interpretControlCharacters()
 				// strStart = i
 			// else
 				// i += 1
+
 	}
 }
 
