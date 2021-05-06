@@ -35,11 +35,6 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 }
 
 
-
-void clickHandler(wxRichTextEvent& event) {
-
-}
-
 cMain::~cMain(){
 
 }

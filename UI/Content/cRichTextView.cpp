@@ -4,16 +4,15 @@ cRichTextView::cRichTextView(cContainer* parent) {
 	Create((wxWindow *)parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
 		wxSize(200, 200), wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
 
-	//BeginURL(wxT("testURL"));
-	//WriteText(wxT("Welcome to wxRichTextCtrl, a wxWidgets control for editing and presenting styled text and images"));
-	//EndURL();
-
+	Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
 }
 
-void cRichTextView::clickHandler(wxRichTextEvent& event) {
-	////BeginURL(wxT("ss"));
-	//WriteText(wxT("clic"));
-	////EndURL();
+void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
+	wxTextPos startPos = event.GetURLStart();
+	uint16_t actionID = actions[startPos];
+	wxTextPos endPos = event.GetURLEnd();
+
+	// execute action
 }
 
 void cRichTextView::interpretContent() {
@@ -59,9 +58,35 @@ void cRichTextView::insertStringFromIndexes(int start, int end) {
 void cRichTextView::interpretControlBytes(int* index) {
 	int i = *index;
 
+	// i is at EE byte
+	i += 1;
 	// next byte MUST be BC by definition. Sanity check:
-	if (content->data[i + 1] == 0xBC) {
+	if (content->data[i] == 0xBC) {
+		i += 1;
+		uint8_t val = content->data[i];
 
+		// now move i into the data bytes for this control byte
+		i += 1;
+
+		switch (val) {
+		case 0x82: {
+			uint8_t left = content->data[i];
+			uint8_t right = content->data[i+1];
+			uint16_t actionID = getActionIDFromBytes(left, right);
+			wxTextPos pos = GetLastPosition();
+
+			actions[pos] = actionID;
+			BeginURL(wxT("d"));
+		}
+		break;
+		case 0x83: {
+			EndURL();
+		}
+		break;
+		default:
+			// custom control point not used/doesnt mean anything
+			break;
+		}
 	}
 	else {
 		// ERROR, not in right place
@@ -81,10 +106,10 @@ void cRichTextView::interpretControlBytes(int* index) {
 	text styles (multiple)
 */
 
+//cRichTextView::addAction() {
+//
+//}
+
 cRichTextView::~cRichTextView() {
 
 }
-
-wxBEGIN_EVENT_TABLE(cRichTextView, wxRichTextCtrl)
-EVT_RICHTEXT_LEFT_CLICK(wxID_ANY, cRichTextView::clickHandler)
-wxEND_EVENT_TABLE()

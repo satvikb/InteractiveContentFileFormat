@@ -4,6 +4,7 @@
 // error handling, check for null ic
 // check if IDs exist
 
+// maybe have a pointer here to cMain in order to have a ExecuteAction(id) function? or maybe a completely different ActionHandler class?
 InteractiveContent* FileManager::ic;
 
 bool FileManager::loadFile(const char* filename) {

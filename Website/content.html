@@ -91,7 +91,14 @@
         (Text Effect Superscript)       1
         (Text Effect Subscript)         2
     </pre>
-    <p>Text is encoded using UTF-8<p>
+    <p>Actions in Fancy Text are displayed as a typical Hyperlink in the text. Use the following to define a Action within text:</p>
+    <pre>
+      (Start Action)                    EE BC 82 (U+EF02)
+        (Action ID)                     XX XX    [Action ID: 100 xxxxx xxxxxxxx]
+      (End Action)                      EE BC 83 (U+EF03)
+
+    </pre>
+    <p>Text is encoded using UTF-8.<p>
 
     <hr>
     <a href="structure.html">Previous page</a>

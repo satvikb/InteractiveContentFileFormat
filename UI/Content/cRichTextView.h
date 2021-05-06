@@ -20,14 +20,13 @@ public:
 
 private:
 	// map to convert start position of URLs in text to a Action ID
-	std::map<uint16_t, uint16_t> actions;
-	void clickHandler(wxRichTextEvent& event);
+	std::map<wxTextPos, uint16_t> actions;
+	void URLclickHandler(wxTextUrlEvent& event);
 	//void clickHandler(wxTextUrlEvent& event);
 
 	void interpretContent() override;
 	void interpretControlBytes(int* index);
 	void insertStringFromIndexes(int start, int end);
-
-	wxDECLARE_EVENT_TABLE();
+	//void addAction() override;
 };
 
