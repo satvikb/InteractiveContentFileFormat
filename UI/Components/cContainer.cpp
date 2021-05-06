@@ -49,6 +49,9 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
                     posCons->width.PercentOf(this, wxWidth, wxPos.width);
                     posCons->height.PercentOf(this, wxHeight, wxPos.height);
                     richTextCtrl->SetConstraints(posCons);
+
+                    richTextCtrl->SetContent(content);
+                    
                 }
                 else {
                     // ?

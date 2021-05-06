@@ -16,7 +16,6 @@ class cRichTextView : public cNativeContent, public wxRichTextCtrl
 {
 public:
 	cRichTextView(cContainer* parent);
-
 	~cRichTextView();
 
 private:
@@ -26,6 +25,8 @@ private:
 	//void clickHandler(wxTextUrlEvent& event);
 
 	void interpretContent() override;
+	void interpretControlBytes(int* index);
+	void insertStringFromIndexes(int start, int end);
 
 	wxDECLARE_EVENT_TABLE();
 };
