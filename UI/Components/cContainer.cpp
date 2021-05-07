@@ -17,8 +17,9 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
         for (int i = 0; i < children.size(); i++) {
             children[i]->Show(false);
             children[i]->Destroy();
-            delete children[i];
+            
         }
+        children.clear();
     }
 
     for (int i = 0; i < container->elementIDs.size(); i++) {
@@ -52,7 +53,8 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
                     richTextCtrl->SetConstraints(posCons);
 
                     richTextCtrl->SetContent(content);
-                    
+
+                    children.push_back(richTextCtrl);
                 }
                 else {
                     // ?

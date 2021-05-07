@@ -8,6 +8,18 @@
 #include <map>
 #include <vector>
 
+// Define constants
+#define CHUNK_CONTAINER 0x1
+#define CHUNK_CONTENT 0x2
+#define CHUNK_LAYOUT 0x3
+#define CHUNK_ACTION 0x4
+#define CHUNK_STYLING 0x5
+#define CHUNK_EXTENDED 0x6
+
+#define ACTION_LINK 0x1
+#define ACTION_REPLACEMENT 0x2
+
+
 struct Header;
 struct Layout;
 struct Container;
@@ -116,3 +128,4 @@ struct InteractiveContent* readFile(const char* filename);
 std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index);
 std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index);
 std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index);
+std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index);

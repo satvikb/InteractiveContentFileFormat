@@ -73,11 +73,12 @@ void cRichTextView::interpretControlBytes(int* index) {
 		case 0x82: {
 			uint8_t left = content->data[i];
 			uint8_t right = content->data[i+1];
+			i += 2; // skip the action ID bytes
 			uint16_t actionID = getActionIDFromBytes(left, right);
 			wxTextPos pos = GetLastPosition();
 
 			actions[pos] = actionID;
-			BeginURL(wxT("d"));
+			BeginURL(wxT("d")); // TODO what to put here? cant be empty
 		}
 		break;
 		case 0x83: {

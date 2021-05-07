@@ -54,6 +54,7 @@ void WindowManager::executeAction(struct Action* action) {
 	break;
 	case 0x2: {
 		// replacement
+		// TODO handle replacing Content
 		Replacement* replacement = dynamic_cast<Replacement*>(action);
 
 		replaceContainers(GetWindowByContainerID(replacement->replaceID), FileManager::getContainerByID(replacement->replaceWithID));
@@ -74,4 +75,5 @@ void WindowManager::UnlinkContainerID(uint16_t containerID) {
 void WindowManager::replaceContainers(cContainer* target, struct Container* replaceWith) {
 	Layout* layout = FileManager::getLayoutByID(replaceWith->layoutID);
 	target->CreateContainerUI(replaceWith, layout);
+	target->Layout();
 }

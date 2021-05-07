@@ -4,9 +4,9 @@
 001 - container
 010 - content
 011 - layout
-100 - link
-101 - ?
-110 - ?
+100 - action
+101 - styling
+110 - extended range
 111 - end container
 
 position

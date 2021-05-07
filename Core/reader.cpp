@@ -72,25 +72,30 @@ struct InteractiveContent* readFile(const char* filename){
         // struct Header *header = malloc (sizeof (struct Header));
         switch (chunkType)
         {
-        case 0x1:
+        case CHUNK_CONTAINER:
         {
             // container
             std::pair<uint16_t, struct Container*> newContainer = readContainer(buffer, &i);
             ic->containers.insert(newContainer);
         }
             break;
-        case 0x2: {
-            // content
+        case CHUNK_CONTENT: {
+            // content (2)
             std::pair<uint16_t, struct Content*> newContent = readContent(buffer, &i);
             ic->content.insert(newContent);
         }
             break;
-        case 0x3: {
+        case CHUNK_LAYOUT: {
             // layout
             std::pair<uint16_t, struct Layout*> newLayout = readLayout(buffer, &i);
             ic->layouts.insert(newLayout);
         }
             break;
+        case CHUNK_ACTION: {
+            // action
+            std::pair<uint16_t, struct Action*> newAction = readAction(buffer, &i);
+            ic->actions.insert(newAction);
+        }
         default:
             break;
         }
@@ -150,6 +155,7 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
             printf("Read infinite position %d %d %d %d %d\n", i, infPos->startx, infPos->starty, infPos->w, infPos->h);
             pos->infPos = infPos;
         }else{
+            i += 1; // skip infinite byte
             pos->infPos = nullptr; // TODO needed?
         }
         layout->positions.push_back(pos);
@@ -233,4 +239,63 @@ std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index) {
 
     *index = i;
     return std::make_pair(ID, content);
+}
+
+std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
+    int i = *index;
+
+    
+    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
+    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+    i += 2;
+
+    uint8_t actionType = (unsigned char)buffer[i];
+    i += 1;
+
+    struct Action* action;
+
+    switch (actionType) {
+    case ACTION_LINK: {
+        // 3 more bytes
+        // 2 bytes - container ID
+        // 1 byte - display byte
+        uint16_t containerID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
+        uint8_t displayByte = (unsigned char)buffer[i];
+        i += 1;
+        struct Link* newLink = new Link;
+        newLink->chunkID = ID;
+        newLink->chunkType = chunkType;
+        newLink->actionType = actionType;
+        newLink->containerID = containerID;
+        newLink->display = displayByte;
+        action = newLink;
+    }
+    break;
+    case ACTION_REPLACEMENT: {
+        // 4 bytes
+        // 2 bytes - replace this container/content ID (must already be visible)
+        // 2 bytes - new container/content ID bytes
+
+        uint16_t oldID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
+        uint16_t newID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
+        struct Replacement* newReplacement = new Replacement;
+        newReplacement->chunkID = ID;
+        newReplacement->chunkType = chunkType;
+        newReplacement->replaceID = oldID;
+        newReplacement->replaceWithID = newID;
+        action = newReplacement;
+    }
+    break;
+    default: {
+
+    }
+    break;
+    }
+
+
+    *index = i;
+    return std::make_pair(ID, action);
 }
