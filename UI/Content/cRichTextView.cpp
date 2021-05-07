@@ -1,10 +1,10 @@
 #include "cRichTextView.h"
 
 cRichTextView::cRichTextView(cContainer* parent) {
-	Create((wxWindow *)parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
+	wxRichTextCtrl::Create((wxWindow *)parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
 		wxSize(200, 200), wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
 
-	Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
+	wxRichTextCtrl::Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
 }
 
 void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
@@ -13,13 +13,14 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 	wxTextPos endPos = event.GetURLEnd();
 
 	// execute action
+	WindowManager::ExecuteActionID(actionID);
 }
 
 void cRichTextView::interpretContent() {
 	if (content->data.size() > 0) {
 		int strStart = 0;
 		int i = 0;
-		for (; i < content->data.size(); i++) {
+		for (; (unsigned int)i < content->data.size(); i++) {
 			if (content->data[i] == 0xEE) {
 				// control byte start
 				insertStringFromIndexes(strStart, i);

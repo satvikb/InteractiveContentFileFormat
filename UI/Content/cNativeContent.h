@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "reader.h"
+#include "FileManager.h"
 
 // content is async, this entire class can exist without loading in content data
 class cNativeContent

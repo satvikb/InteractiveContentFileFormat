@@ -23,8 +23,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 
     FileManager::loadFile("example.ic");
     
+    uint16_t startContainerID = FileManager::getStartContainerID();
     mainContainer = new cContainer(true, this);
-    mainContainer->CreateContainerUI(FileManager::getContainerAndLayoutByID(FileManager::getStartContainerID()));
+    mainContainer->CreateContainerUI(FileManager::getContainerAndLayoutByID(startContainerID));
 
     wxLayoutConstraints* fullScreenCons = new wxLayoutConstraints();
     fullScreenCons->left.PercentOf(this, wxWidth, 0);
@@ -32,8 +33,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
     fullScreenCons->width.PercentOf(this, wxWidth, 100);
     fullScreenCons->height.PercentOf(this, wxHeight, 100);
     mainContainer->SetConstraints(fullScreenCons);
-}
 
+    WindowManager::SetTopContainer(mainContainer);
+}
 
 cMain::~cMain(){
 

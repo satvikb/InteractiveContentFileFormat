@@ -75,19 +75,19 @@ struct InteractiveContent* readFile(const char* filename){
         case 0x1:
         {
             // container
-            std::pair<int, struct Container*> newContainer = readContainer(buffer, &i);
+            std::pair<uint16_t, struct Container*> newContainer = readContainer(buffer, &i);
             ic->containers.insert(newContainer);
         }
             break;
         case 0x2: {
             // content
-            std::pair<int, struct Content*> newContent = readContent(buffer, &i);
+            std::pair<uint16_t, struct Content*> newContent = readContent(buffer, &i);
             ic->content.insert(newContent);
         }
             break;
         case 0x3: {
             // layout
-            std::pair<int, struct Layout*> newLayout = readLayout(buffer, &i);
+            std::pair<uint16_t, struct Layout*> newLayout = readLayout(buffer, &i);
             ic->layouts.insert(newLayout);
         }
             break;
@@ -101,7 +101,7 @@ struct InteractiveContent* readFile(const char* filename){
 }
 
 // attempts to read the layout from the given starting position
-std::pair<int, struct Layout*> readLayout(char* buffer, int *index){
+std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
     int i = *index;
     
     uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
@@ -160,7 +160,7 @@ std::pair<int, struct Layout*> readLayout(char* buffer, int *index){
     return std::make_pair(ID, layout);
 }
 
-std::pair<int, struct Container*> readContainer(char* buffer, int *index){
+std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index){
     int i = *index;
     
     struct Container* container = new Container;
@@ -198,7 +198,7 @@ std::pair<int, struct Container*> readContainer(char* buffer, int *index){
     return std::make_pair(ID, container);
 }
 
-std::pair<int, struct Content*> readContent(char* buffer, int* index) {
+std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index) {
     int i = *index;
 
     struct Content* content = new Content;

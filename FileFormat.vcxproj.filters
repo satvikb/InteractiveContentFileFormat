@@ -60,6 +60,9 @@
     <ClInclude Include="UI\Content\cNativeContent.h">
       <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Core\WindowManager.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -82,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="UI\Content\cNativeContent.cpp">
       <Filter>Source Files\UI\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\WindowManager.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

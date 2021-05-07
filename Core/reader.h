@@ -1,5 +1,6 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS // supress the string warnings that started coming up?
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +11,7 @@
 struct Header;
 struct Layout;
 struct Container;
-struct Link;
+struct Action;
 struct Content;
 
 struct InteractiveContent {
@@ -18,7 +19,7 @@ struct InteractiveContent {
     // Maps ID (with both Chunk Type and the actual ID to the respective pointer type
     std::map<uint16_t, struct Layout*> layouts;
     std::map<uint16_t, struct Container*> containers;
-    std::map<uint16_t, struct Link*> links;
+    std::map<uint16_t, struct Action*> actions;
     std::map<uint16_t, struct Content*> content;
 };
 
@@ -75,6 +76,7 @@ struct Content : Chunk{
 };
 
 struct Action : Chunk {
+    virtual ~Action() = default; // required for downcasting?
     uint8_t actionType;
 };
 
@@ -111,6 +113,6 @@ struct infiniteElementPosition {
 };
 
 struct InteractiveContent* readFile(const char* filename);
-std::pair<int, struct Layout*> readLayout(char* buffer, int *index);
-std::pair<int, struct Container*> readContainer(char* buffer, int *index);
-std::pair<int, struct Content*> readContent(char* buffer, int* index);
+std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index);
+std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index);
+std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index);

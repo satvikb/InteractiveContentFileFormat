@@ -1,9 +1,10 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/richtext/richtextctrl.h>
+#include "WindowManager.h"
+#include "cNativeContent.h"
 #include <map>
 #include <string>
-#include "cNativeContent.h"
 
 class cContainer;
 

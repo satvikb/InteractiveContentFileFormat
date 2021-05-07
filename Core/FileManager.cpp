@@ -51,6 +51,15 @@ struct Content* FileManager::getContentByID(uint16_t contentID) {
 	}
 }
 
+struct Action* FileManager::getActionByID(uint16_t actionID) {
+	if (ic->actions.count(actionID) > 0) {
+		return ic->actions[actionID];
+	}
+	else {
+		return nullptr;
+	}
+}
+
 struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struct elementPosition* pos) {
 	int x = (int)((pos->x / 40000.0)*100.0);
 	int y = (int)((pos->y / 40000.0) * 100.0);

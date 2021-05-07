@@ -10,7 +10,8 @@ void cContainer::CreateContainerUI(std::pair<struct Container*, struct Layout*> 
 }
 
 void cContainer::CreateContainerUI(struct Container* container, struct Layout* layout) {
-
+    this->container = container;
+    this->layout = layout;
     if (children.size() > 0) {
         // TODO: loop through existing windows and delete (memory)
         for (int i = 0; i < children.size(); i++) {
@@ -98,6 +99,29 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
     //text2->SetConstraints(cons4);
 }
 
-cContainer::~cContainer() {
+bool cContainer::getIsMainContainer() {
+    return isMainContainer;
+}
 
+wxWindow* cContainer::getParentWindow() {
+    return parentWindow;
+}
+
+Container* cContainer::getContainer() {
+    return container;
+}
+
+cContainer::~cContainer() {
+    // TODO
+}
+
+
+
+void cContainer::applyParentContraints(wxWindow* applyTo, wxWindow* parent, struct wxConstraintPosition constraints) {
+    wxLayoutConstraints* posCons = new wxLayoutConstraints();
+    posCons->left.PercentOf(parent, wxWidth, constraints.x);
+    posCons->top.PercentOf(parent, wxHeight, constraints.y);
+    posCons->width.PercentOf(parent, wxWidth, constraints.width);
+    posCons->height.PercentOf(parent, wxHeight, constraints.height);
+    applyTo->SetConstraints(posCons);
 }

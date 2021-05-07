@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\WindowManager.h" />
     <ClInclude Include="Core\FileManager.h" />
     <ClInclude Include="Core\reader.h" />
     <ClInclude Include="UI\cApp.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="UI\Content\cRichTextView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\WindowManager.cpp" />
     <ClCompile Include="Core\FileManager.cpp" />
     <ClCompile Include="Core\reader.cpp" />
     <ClCompile Include="UI\cApp.cpp" />
