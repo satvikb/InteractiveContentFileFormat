@@ -19,7 +19,7 @@
     <h4>2.2.1. Layouts</h4>
     <p>Layouts define the positions of elements</p>
     <pre>
-  (Layout ID - 16 bits)     111 xxxxx xxxxxxxx [x bits are the Layout ID]
+  (Layout ID - 16 bits)     011 xxxxx xxxxxxxx [x bits are the Layout ID]
   (Number of elements)      xxxxxxxx
   {Element N}
     (Position X)            XX XX [2 bytes, int from 0-40,000]
@@ -55,7 +55,9 @@
     (Display Mode Byte)     000VWXYZ
       V bit: Show this container as a tooltip. The display of the tooltip is left to the reader.
       W bit: Allow showing a back button to return to the container before the Link was pressed.
-      XYZ bits: Defines how many sublevels of Containers that should be shown from the linked Container. The highest level Container that is chosen is what is displayed (since it will always contain the linked Container)
+      XYZ bits: Defines how many sublevels of Containers that should be shown from the linked Container.
+      The highest level Container that is chosen is what is displayed (since it will always
+      contain the linked Container)
         000: Show only the linked Container, even if the Container is inside a subcontainer
         001: Show the linked Container and the parent Container.
         010: The linked Container, with its parent and grandparent Container.
@@ -79,36 +81,52 @@
     to Style the text (font, color, size, etc.)</p>
     <pre>
 (Style ID - 16 bits)        101 xxxxx xxxxxxxx [x bits are Style ID]
-(Style type - 8 bits)       xxxxxxxx
-  (Type: Component)         00000001
-  (Type: Text)              00000010
 
-** From here on, everything is an Key Value pair **
-** Each key is one byte, and each Value length   **
-** depends on the key. The format of below is:   **
-** (Key Type)               (XX) - xxxxxxxx      **
-**  (Key Value)             [variable bytes, hex]**
-** Not all keys have values (such as text styles)**
-** Key value of 0 ends the style                 **
-{Type: Component}
-  (Border Width)            01 - 00000001
-    (Border Width Value)    03 E8 - (Value) / 40,000, as a percent of the width of Window
-  (Border Color)            02 - 00000002
-    (Border Color Value)    00 00 00 - Color in hex
-{Type: Text}
-  (Font Name)               01
-    (Font name value)       Null terminated string
-  (Font Family)             02
-    (Font family value)     Null terminated string
-  (Set Bold)                03
-  (Set Italics)             04
-  (Set Underline)           05
-  (Set Strikethrough)       06
-  (Set Superscript)         07
-  (Set Subscript)           08
-  (TODO: Paragraph styles)
+** From here on, everything is an Key Value pair.     **
+** Each key is one byte, and each Value length        **
+** depends on the key. The format of below is:        **
+** (Key Type)               (XX) - xxxxxxxx           **
+**  (Key Value)             [variable bytes,in hex]   **
+** Not all keys have values (such as text styles)     **
+** Key value of 00 ends the style                     **
+** If the first bit in a style key is 1, then the key **
+** is two bytes in length instead of one (to allow    **
+** for more styles in the future)                     **
+** The following are categorized only visually        **
+** but style keys are still unique between categories **
+
+Styles that apply to the component as a whole
+(Border Width)            01 - 00000001
+  (Border Width Value)    03 E8 - (Value) / 40,000, as a percent of the width of Window
+(Border Color)            02 - 00000002
+  (Border Color Value)    00 00 00 - Color in hex
+
+Text styles:
+(Font Name)               10
+  (Font name value)       Null terminated string
+(Font Family)             11
+  (Font family value)     Null terminated string
+(Text Color)              12
+  (Text Color Value)    00 00 00 - Color in hex
+(Set Bold)                13
+(Set Italics)             14
+(Set Underline)           15
+(Set Strikethrough)       16
+(Set Superscript)         17
+(Set Subscript)           18
+(TODO: Paragraph styles)
 
 (End Style - 8 bits)        00000000
+
+    </pre>
+    <h3>2.3. Limits</h3>
+    <p>The limits of most properties used throughout the other Components are defined below:</p>
+    <pre>
+ID Limits:
+  There can be a max of 2^13 = 8,192 unique IDs for each component type.
+  If the extended bit range is used (prefix 110), there is a max of 2^24 = 16,777,216 unique IDs for each Component type
+
+
 
     </pre>
     <hr>

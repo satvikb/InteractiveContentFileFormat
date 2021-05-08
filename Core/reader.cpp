@@ -314,71 +314,49 @@ std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index) {
     uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
     i += 2;
 
-    uint8_t styleType = (unsigned char)buffer[i];
-    i += 1;
+    //uint8_t styleType = (unsigned char)buffer[i];
+    //i += 1;
 
     std::map<uint8_t, std::any> styles;
 
-    switch (styleType) {
-    case STYLE_COMPONENT: {
-        uint8_t key = (unsigned char)buffer[i];
-        i += 1;
-        while (key != 0xFF) {
-            switch (key) {
-            case STYLE_COMPONENT_BORDER_WIDTH: {
-                uint16_t width = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-                styles[key] = width;
-                i += 2;
-            }
-            break;
-            case STYLE_COMPONENT_BORDER_COLOR: {
-                unsigned char r = (unsigned char)buffer[i];
-                unsigned char g = (unsigned char)buffer[i+1];
-                unsigned char b = (unsigned char)buffer[i+2];
-                styles[key] = wxColour(r, g, b);
-                i += 3;
-            }
-            break;
-            }
-            key = (unsigned char)buffer[i];
-            i += 1;
+    uint8_t key = (unsigned char)buffer[i];
+    i += 1;
+    while (key != 0xFF) {
+        switch (key) {
+        case STYLE_COMPONENT_BORDER_WIDTH: {
+            uint16_t width = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+            styles[key] = width;
+            i += 2;
         }
-        i += 1;
-    }
-    break;
-    case STYLE_TEXT: {
-        uint8_t key = (unsigned char)buffer[i];
-        i += 1;
-        while (key != 0xFF) {
-            switch (key) {
-            case STYLE_TEXT_FONT_NAME: {
-                //TODO read string, possibly without another while loop?
-            }
-            break;
-            case STYLE_TEXT_FONT_FAMILY: {
-                //TODO read string, possibly without another while loop?
-            }
-            break;
-            case STYLE_TEXT_BOLD: case STYLE_TEXT_ITALICS: case STYLE_TEXT_UNDERLINE: case STYLE_TEXT_STRIKETHROUGH: case STYLE_TEXT_SUPERSCRIPT: case STYLE_TEXT_SUBSCRIPT: {
-                styles[key] = true;
-            }
-            break;
-            }
-            key = (unsigned char)buffer[i];
-            i += 1;
+        break;
+        case STYLE_COMPONENT_BORDER_COLOR: {
+            unsigned char r = (unsigned char)buffer[i];
+            unsigned char g = (unsigned char)buffer[i+1];
+            unsigned char b = (unsigned char)buffer[i+2];
+            styles[key] = wxColour(r, g, b);
+            i += 3;
         }
+        break;
+        case STYLE_TEXT_FONT_NAME: {
+            //TODO read string, possibly without another while loop?
+        }
+        break;
+        case STYLE_TEXT_FONT_FAMILY: {
+            //TODO read string, possibly without another while loop?
+        }
+        break;
+        case STYLE_TEXT_BOLD: case STYLE_TEXT_ITALICS: case STYLE_TEXT_UNDERLINE: case STYLE_TEXT_STRIKETHROUGH: case STYLE_TEXT_SUPERSCRIPT: case STYLE_TEXT_SUBSCRIPT: {
+            styles[key] = true;
+        }
+        break;
+        }
+        key = (unsigned char)buffer[i];
         i += 1;
-    }
-    break;
-    default:
-
-    break;
     }
 
     struct Style* style = new Style;
     style->chunkID = ID;
     style->chunkType = chunkType;
-    style->styleType = styleType;
     style->styles = styles;
     
     *index = i;

@@ -21,18 +21,17 @@
 #define ACTION_LINK 0x1
 #define ACTION_REPLACEMENT 0x2
 
-#define STYLE_COMPONENT 0x1
-#define STYLE_COMPONENT_BORDER_WIDTH 0x1
-#define STYLE_COMPONENT_BORDER_COLOR 0x2
-#define STYLE_TEXT 0x2
-#define STYLE_TEXT_FONT_NAME 0x1
-#define STYLE_TEXT_FONT_FAMILY 0x2
-#define STYLE_TEXT_BOLD 0x3
-#define STYLE_TEXT_ITALICS 0x4
-#define STYLE_TEXT_UNDERLINE 0x5
-#define STYLE_TEXT_STRIKETHROUGH 0x6
-#define STYLE_TEXT_SUPERSCRIPT 0x7
-#define STYLE_TEXT_SUBSCRIPT 0x8
+#define STYLE_COMPONENT_BORDER_WIDTH 0x01
+#define STYLE_COMPONENT_BORDER_COLOR 0x02
+#define STYLE_TEXT_FONT_NAME 0x10
+#define STYLE_TEXT_FONT_FAMILY 0x11
+#define STYLE_TEXT_COLOR 0x12
+#define STYLE_TEXT_BOLD 0x13
+#define STYLE_TEXT_ITALICS 0x14
+#define STYLE_TEXT_UNDERLINE 0x15
+#define STYLE_TEXT_STRIKETHROUGH 0x16
+#define STYLE_TEXT_SUPERSCRIPT 0x17
+#define STYLE_TEXT_SUBSCRIPT 0x18
 
 struct Header;
 struct Layout;
@@ -122,7 +121,7 @@ struct Replacement : Action {
 };
 
 struct Style : Chunk {
-    uint8_t styleType;
+    // TODO uint16 for extended key range
     std::map<uint8_t, std::any> styles;
 };
 
