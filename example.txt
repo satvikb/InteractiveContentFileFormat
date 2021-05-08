@@ -17,6 +17,7 @@ Total header bytes: 20
 00 00 - Y
 9C 40 - Width
 9C 40 - Height
+00 00 - Style ID
 00 - Infinite byte (00000000)
 
 4E 20 - X
@@ -35,6 +36,7 @@ Total header bytes: 20
 00 00 - Y
 9C 40 - Width
 9C 40 - Height
+00 00 - Style ID
 
 C0 - Infinite byte (11000000)
 03 E8 - Start X (1,000)
@@ -51,6 +53,7 @@ C0 - Infinite byte (11000000)
 03 E8 - Y (1,000)
 4E 20 - Width (20,000)
 94 70 - Height (30,000)
+A0 01 - Style ID
 
 00 - infinite byte
 ------------- END LAYOUT 3 -------------
@@ -105,3 +108,14 @@ Content Data BEGIN
 20 02 - Link to this container (ID 2)
 0F - link display byte (000VWXYZ) = (00001111)
 ------------- END ACTION 1 -------------
+
+------------- BEGIN STYLE 1 -------------
+A0 01 - Style ID (101 00000 0000 0001)
+01 - border thickness key
+03 E8 (1000)
+
+02 - border color key
+00 FF 00 - green
+
+00 - end style
+------------- END STYLE 1 -------------

@@ -89,6 +89,21 @@ void cRichTextView::interpretControlBytes(int* index) {
 	*index = i;
 }
 
+void cRichTextView::applyComponentStyle(struct Style* style) {
+	if (style != nullptr) {
+		// c++17 style loop
+		for (auto [key, val] : style->styles) {
+			switch (key) {
+			case STYLE_COMPONENT_BACKGROUND_COLOR: {
+				SetBackgroundStyle(wxBG_STYLE_COLOUR);
+				SetBackgroundColour(std::any_cast<wxColour>(val));
+			}
+			break;
+			}
+		}
+	}
+}
+
 // interpretControlCharacters(&i)
 /*
 	handle font table start/end

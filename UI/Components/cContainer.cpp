@@ -53,6 +53,7 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
                     richTextCtrl->SetConstraints(posCons);
 
                     richTextCtrl->SetContent(content);
+                    richTextCtrl->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
 
                     children.push_back(richTextCtrl);
                 }
@@ -65,7 +66,15 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
 }
 
 void cContainer::SetContainerStyle(struct Style* style) {
-
+    // c++17 style loop
+    for (auto const& [key, val] : style->styles) {
+        switch (key) {
+        case STYLE_COMPONENT_BACKGROUND_COLOR: {
+            SetBackgroundColour(std::any_cast<wxColour>(val));
+        }
+        break;
+        }
+    }
 }
 
 

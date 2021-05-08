@@ -60,6 +60,16 @@ struct Action* FileManager::getActionByID(uint16_t actionID) {
 	}
 }
 
+struct Style* FileManager::getStyleByID(uint16_t styleID) {
+	if (ic->styles.count(styleID) > 0) {
+		return ic->styles[styleID];
+	}
+	else {
+		return nullptr;
+	}
+}
+
+
 struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struct elementPosition* pos) {
 	int x = (int)((pos->x / 40000.0)*100.0);
 	int y = (int)((pos->y / 40000.0) * 100.0);

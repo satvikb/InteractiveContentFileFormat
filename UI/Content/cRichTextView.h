@@ -17,6 +17,7 @@ class cRichTextView : public cNativeContent, public wxRichTextCtrl
 {
 public:
 	cRichTextView(cContainer* parent);
+	void applyComponentStyle(struct Style* style);
 	~cRichTextView();
 
 private:
@@ -28,6 +29,8 @@ private:
 	void interpretContent() override;
 	void interpretControlBytes(int* index);
 	void insertStringFromIndexes(int start, int end);
+
+	void interpretTextStyle(struct Style* style, bool removeStyle);
 	//void addAction() override;
 };
 

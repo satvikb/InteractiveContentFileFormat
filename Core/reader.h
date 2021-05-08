@@ -23,6 +23,7 @@
 
 #define STYLE_COMPONENT_BORDER_WIDTH 0x01
 #define STYLE_COMPONENT_BORDER_COLOR 0x02
+#define STYLE_COMPONENT_BACKGROUND_COLOR 0x03
 #define STYLE_TEXT_FONT_NAME 0x10
 #define STYLE_TEXT_FONT_FAMILY 0x11
 #define STYLE_TEXT_COLOR 0x12
@@ -131,6 +132,7 @@ struct elementPosition {
     uint16_t y;
     uint16_t w;
     uint16_t h;
+    uint16_t styleID;
     uint8_t inf;
     struct infiniteElementPosition* infPos;
 };

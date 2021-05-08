@@ -9,5 +9,4 @@ uint16_t cNativeContent::getActionIDFromBytes(uint8_t left, uint8_t right) {
 }
 
 void cNativeContent::interpretContent() {}
-
 //void cNativeContent::addAction() {}

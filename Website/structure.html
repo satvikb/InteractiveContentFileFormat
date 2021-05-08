@@ -80,44 +80,45 @@
     Content. The way Content uses Styles depends on the type of Content. For example, a Fancy Text content can use Styles
     to Style the text (font, color, size, etc.)</p>
     <pre>
-(Style ID - 16 bits)        101 xxxxx xxxxxxxx [x bits are Style ID]
+  (Style ID - 16 bits)        101 xxxxx xxxxxxxx [x bits are Style ID]
 
-** From here on, everything is an Key Value pair.     **
-** Each key is one byte, and each Value length        **
-** depends on the key. The format of below is:        **
-** (Key Type)               (XX) - xxxxxxxx           **
-**  (Key Value)             [variable bytes,in hex]   **
-** Not all keys have values (such as text styles)     **
-** Key value of 00 ends the style                     **
-** If the first bit in a style key is 1, then the key **
-** is two bytes in length instead of one (to allow    **
-** for more styles in the future)                     **
-** The following are categorized only visually        **
-** but style keys are still unique between categories **
+  ** From here on, everything is an Key Value pair.     **
+  ** Each key is one byte, and each Value length        **
+  ** depends on the key. The format of below is:        **
+  ** (Key Type)               (XX) - xxxxxxxx           **
+  **  (Key Value)             [variable bytes,in hex]   **
+  ** Not all keys have values (such as text styles)     **
+  ** Key value of 00 ends the style                     **
+  ** If the first bit in a style key is 1, then the key **
+  ** is two bytes in length instead of one (to allow    **
+  ** for more styles in the future)                     **
+  ** The following are categorized only visually        **
+  ** but style keys are still unique between categories **
 
-Styles that apply to the component as a whole
-(Border Width)            01 - 00000001
-  (Border Width Value)    03 E8 - (Value) / 40,000, as a percent of the width of Window
-(Border Color)            02 - 00000002
-  (Border Color Value)    00 00 00 - Color in hex
+  Styles that apply to the component as a whole:
+  (Border Width)            01 - 00000001
+    (Border Width Value)    03 E8 - (Value) / 40,000, as a percent of the width of Window
+  (Border Color)            02 - 00000002
+    (Border Color Value)    00 00 00 - Color in hex
+  (Window Background Color) 03 - 00000003
+    (Background Color Value)00 00 00 - color in hex
 
-Text styles:
-(Font Name)               10
-  (Font name value)       Null terminated string
-(Font Family)             11
-  (Font family value)     Null terminated string
-(Text Color)              12
-  (Text Color Value)    00 00 00 - Color in hex
-(Set Bold)                13
-(Set Italics)             14
-(Set Underline)           15
-(Set Strikethrough)       16
-(Set Superscript)         17
-(Set Subscript)           18
-(TODO: Paragraph styles)
+  Text styles:
+  (Font Name)               10
+    (Font name value)       Null terminated string
+  (Font Family)             11
+    (Font family value)     Null terminated string
+  (Text Color)              12
+    (Text Color Value)    00 00 00 - Color in hex
+  (Set Bold)                13
+  (Set Italics)             14
+  (Set Underline)           15
+  (Set Strikethrough)       16
+  (Set Superscript)         17
+  (Set Subscript)           18
+  (TODO: Paragraph styles)
 
-(End Style - 8 bits)        00000000
-
+  (End Style - 8 bits)        00000000
     </pre>
     <h3>2.3. Limits</h3>
     <p>The limits of most properties used throughout the other Components are defined below:</p>

@@ -24,6 +24,7 @@ public:
 	static struct Container* getContainerByID(uint16_t containerID);
 	static struct Content* getContentByID(uint16_t contentID);
 	static struct Action* getActionByID(uint16_t actionID);
+	static struct Style* getStyleByID(uint16_t styleID);
 	static std::pair<struct Container*, struct Layout*> getContainerAndLayoutByID(uint16_t containerID);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(struct elementPosition* pos);
 };

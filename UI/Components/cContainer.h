@@ -1,6 +1,7 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <any>
 #include "FileManager.h"
 #include "WindowManager.h"
 #include "cRichTextView.h"

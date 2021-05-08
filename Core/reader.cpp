@@ -136,6 +136,9 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
         pos->h = (buffer[i+6] << 8) | (unsigned char)buffer[(i)+7];
         printf("Read position %d %d %d %d %d\n", i, pos->x, pos->y, pos->w, pos->h);
         i += 8;
+        // now handle style ID
+        pos->styleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
         // now handle Infinite byte
         pos->inf = (unsigned char)buffer[i];
         unsigned char infinite = (buffer[i] >> 7) & 1;
@@ -321,7 +324,7 @@ std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index) {
 
     uint8_t key = (unsigned char)buffer[i];
     i += 1;
-    while (key != 0xFF) {
+    while (key != 0x00) {
         switch (key) {
         case STYLE_COMPONENT_BORDER_WIDTH: {
             uint16_t width = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
@@ -329,7 +332,7 @@ std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index) {
             i += 2;
         }
         break;
-        case STYLE_COMPONENT_BORDER_COLOR: {
+        case STYLE_COMPONENT_BORDER_COLOR: case STYLE_COMPONENT_BACKGROUND_COLOR: {
             unsigned char r = (unsigned char)buffer[i];
             unsigned char g = (unsigned char)buffer[i+1];
             unsigned char b = (unsigned char)buffer[i+2];
