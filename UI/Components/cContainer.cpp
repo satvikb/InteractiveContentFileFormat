@@ -62,44 +62,12 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
             }
         }
     }
-
-    ////m_panel = new wxPanel(this, wxID_ANY);
-
-    //wxPanel* m_panel2 = new wxPanel(this, wxID_ANY);
-
-    ////m_panel->SetAutoLayout(true);
-
-    //wxStaticText* text = new wxStaticText(this, wxID_ANY, "Resizable");
-    //wxStaticText* text2 = new wxStaticText(m_panel2, wxID_ANY, "Child");
-
-    //// (0.1, 0.1, 0.8, 0.2)
-    //wxLayoutConstraints* cons = new wxLayoutConstraints();
-    //cons->left.PercentOf(this, wxWidth, 10);
-    //cons->top.PercentOf(this, wxHeight, 10);
-    //cons->width.PercentOf(this, wxWidth, 80);
-    //cons->height.PercentOf(this, wxHeight, 20);
-    //text->SetConstraints(cons);
-
-
-
-    //// (0.92, 0.1, 0.06, 0.9)
-    //wxLayoutConstraints* cons3 = new wxLayoutConstraints();
-    //cons3->left.PercentOf(this, wxWidth, 92);
-    //cons3->top.PercentOf(this, wxHeight, 10);
-    //cons3->width.PercentOf(this, wxWidth, 6);
-    //cons3->height.PercentOf(this, wxHeight, 90);
-
-    //m_panel2->SetConstraints(cons3);
-
-    //// child text (0, 0.4, 1, 0.6)
-    //wxLayoutConstraints* cons4 = new wxLayoutConstraints();
-    //cons4->left.PercentOf(m_panel2, wxWidth, 0);
-    //cons4->top.PercentOf(m_panel2, wxHeight, 40);
-    //cons4->width.PercentOf(m_panel2, wxWidth, 100);
-    //cons4->height.PercentOf(m_panel2, wxHeight, 60);
-
-    //text2->SetConstraints(cons4);
 }
+
+void cContainer::SetContainerStyle(struct Style* style) {
+
+}
+
 
 bool cContainer::getIsMainContainer() {
     return isMainContainer;

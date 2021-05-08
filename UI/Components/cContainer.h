@@ -14,6 +14,7 @@ public:
 	void CreateContainerUI(std::pair<struct Container*, struct Layout*> dataPair);
 	void CreateContainerUI(struct Container* container, struct Layout* layout);
 	void ReplaceContainerData(bool mainContainer, struct Container* container, struct Layout* layout);
+	void SetContainerStyle(struct Style* style);
 	bool getIsMainContainer();
 	wxWindow* getParentWindow();
 	Container* getContainer();

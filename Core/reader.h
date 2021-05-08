@@ -1,11 +1,13 @@
 #pragma once
 
 #define _CRT_SECURE_NO_WARNINGS // supress the string warnings that started coming up?
+#include <wx/colour.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <map>
+#include <any>
 #include <vector>
 
 // Define constants
@@ -19,6 +21,18 @@
 #define ACTION_LINK 0x1
 #define ACTION_REPLACEMENT 0x2
 
+#define STYLE_COMPONENT 0x1
+#define STYLE_COMPONENT_BORDER_WIDTH 0x1
+#define STYLE_COMPONENT_BORDER_COLOR 0x2
+#define STYLE_TEXT 0x2
+#define STYLE_TEXT_FONT_NAME 0x1
+#define STYLE_TEXT_FONT_FAMILY 0x2
+#define STYLE_TEXT_BOLD 0x3
+#define STYLE_TEXT_ITALICS 0x4
+#define STYLE_TEXT_UNDERLINE 0x5
+#define STYLE_TEXT_STRIKETHROUGH 0x6
+#define STYLE_TEXT_SUPERSCRIPT 0x7
+#define STYLE_TEXT_SUBSCRIPT 0x8
 
 struct Header;
 struct Layout;
@@ -33,6 +47,7 @@ struct InteractiveContent {
     std::map<uint16_t, struct Container*> containers;
     std::map<uint16_t, struct Action*> actions;
     std::map<uint16_t, struct Content*> content;
+    std::map<uint16_t, struct Style*> styles;
 };
 
 //// TODO make substructs to hold array of each of these
@@ -106,6 +121,11 @@ struct Replacement : Action {
     uint16_t replaceWithID;
 };
 
+struct Style : Chunk {
+    uint8_t styleType;
+    std::map<uint8_t, std::any> styles;
+};
+
 // TODO: pos struct and inherit from it?
 struct elementPosition {
     uint16_t x;
@@ -129,3 +149,4 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index);
 std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index);
 std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index);
 std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index);
+std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index);

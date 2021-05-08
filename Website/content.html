@@ -46,13 +46,6 @@
     </ul>
     <p>The following is the byte values corresponding to each control type available, using Unicode Private Use Area starting from U+EF00, corresponding to a 3 byte Hex Encoding with prefix of EEBC**. These control points start from EEBC80 and end at a possible max os EEBCFF (to ensure the prefix stays the same):<p>
     <pre>
-      (Begin Font Table)                EE BC 84 (U+EF04)
-      (End Font Table)                  EE BC 85 (U+EF05)
-      (Begin Font)                      EE BC 86 (U+EF06)
-      (End Font)                        EE BC 87 (U+EF07)
-      (Font Attribute Key: Name)        EE BC 88 (U+EF08)
-      (Font Attribute Key: Family)      EE BC 89 (U+EF09)
-
       (Begin Paragraph)                 EE BC 8A (U+EF0A)
       (End Paragraph)                   EE BC 8B (U+EF0B)
       (Begin Paragraph Text)            EE BC 8C (U+EF0C)
@@ -64,32 +57,6 @@
 
       (Paragraph Style Type: ?)         EE BC 9? (U+EF1?)
       (? value)                         X
-    </pre>
-    <p>The following correspond to the attribute types available and the bytes relating to their values:</p>
-    <pre>
-      (Begin attribute)                 EE BC A0 (U+EF20)
-      (End attribute)                   EE BC A1 (U+EF21)
-
-      (Attribute type: set font)        EE BC A2 (U+EF22)
-      (Set font value)                  X         (1 byte corresponding to the font defined in the font table, in order with 0 being the first font)
-
-      (Attribute type: set font size)   EE BC A3 (U+EF23)
-      (Set font size value)             XX        (2 bytes corresponding to the percent height of the Content height the font size should be, 0-40,000)
-
-      (Attribute type: set text color)  EE BC A4 (U+EF24)
-      (Set text color value)            RR GG BB  (6 bytes corresponding to the new text color, using standard hex representation of color)
-
-      (Attribute type: set text style)  EE BC A5 (U+EF25)
-      (Set text style value)            X         (1 byte corresponding to the text style)
-        (Text Style Bold)               0
-        (Text Style Italics)            1
-        (Text Style Underline)          2
-
-      (Attribute type: set text effect) EE BC A6 (U+EF26)
-      (Set text effect value)           X        (1 byte corresponding to the text effect)
-        (Text Effect Strikethrough)     0
-        (Text Effect Superscript)       1
-        (Text Effect Subscript)         2
     </pre>
     <p>Actions in Fancy Text are displayed as a typical Hyperlink in the text. Use the following to define a Action within text:</p>
     <pre>

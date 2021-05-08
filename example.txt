@@ -24,6 +24,7 @@ Total header bytes: 20
 4E 20 - Width
 9C 40 - Height
 
+00 00 - Style ID
 00 - Infinite byte (00000000)
 ------------- END LAYOUT 1 -------------
 ------------- BEGIN LAYOUT 2 -------------
