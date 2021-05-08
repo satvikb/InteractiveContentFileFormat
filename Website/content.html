@@ -44,6 +44,12 @@
         <span>Fonts (up to 16)</span>
       </li>
     </ul>
+    <p>Text styles can be applied by referencing a Style ID and marking the starting and ending points:</p>
+    <pre>
+      (Start Style)                    EE BC 80 (U+EF00)
+        (Style ID)                     XX XX    [Style ID: 101 xxxxx xxxxxxxx]
+      (End Style)                      EE BC 81 (U+EF01)
+    </pre>
     <p>The following is the byte values corresponding to each control type available, using Unicode Private Use Area starting from U+EF00, corresponding to a 3 byte Hex Encoding with prefix of EEBC**. These control points start from EEBC80 and end at a possible max os EEBCFF (to ensure the prefix stays the same):<p>
     <pre>
       (Begin Paragraph)                 EE BC 8A (U+EF0A)
@@ -63,7 +69,6 @@
       (Start Action)                    EE BC 82 (U+EF02)
         (Action ID)                     XX XX    [Action ID: 100 xxxxx xxxxxxxx]
       (End Action)                      EE BC 83 (U+EF03)
-
     </pre>
     <p>Text is encoded using UTF-8.<p>
 

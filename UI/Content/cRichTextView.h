@@ -5,6 +5,7 @@
 #include "cNativeContent.h"
 #include <map>
 #include <string>
+#include <stack>
 
 class cContainer;
 
@@ -23,6 +24,7 @@ public:
 private:
 	// map to convert start position of URLs in text to a Action ID
 	std::map<wxTextPos, uint16_t> actions;
+	std::stack<uint16_t> styleIDs;
 	void URLclickHandler(wxTextUrlEvent& event);
 	//void clickHandler(wxTextUrlEvent& event);
 

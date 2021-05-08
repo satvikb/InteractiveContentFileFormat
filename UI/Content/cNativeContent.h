@@ -13,7 +13,7 @@ protected:
 	bool didReadContent; // if content is ready to display
 	Content* content;
 	virtual void interpretContent();
-	uint16_t getActionIDFromBytes(uint8_t left, uint8_t right);
+	uint16_t getIDFromBytes(uint8_t left, uint8_t right);
 	//virtual void addAction();
 };
 

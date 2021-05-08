@@ -60,11 +60,25 @@ void cRichTextView::interpretControlBytes(int* index) {
 		i += 1;
 
 		switch (val) {
+		case 0x80: {
+			uint8_t left = content->data[i];
+			uint8_t right = content->data[i + 1];
+			i += 2; // skip the style ID bytes
+			uint16_t styleID = getIDFromBytes(left, right);
+			styleIDs.push(styleID);
+			interpretTextStyle(FileManager::getStyleByID(styleID), false);
+		}
+		break;
+		case 0x81: {
+			interpretTextStyle(FileManager::getStyleByID(styleIDs.top()), true);
+			styleIDs.pop();
+		}
+		break;
 		case 0x82: {
 			uint8_t left = content->data[i];
 			uint8_t right = content->data[i+1];
 			i += 2; // skip the action ID bytes
-			uint16_t actionID = getActionIDFromBytes(left, right);
+			uint16_t actionID = getIDFromBytes(left, right);
 			wxTextPos pos = GetLastPosition();
 
 			actions[pos] = actionID;
@@ -103,6 +117,29 @@ void cRichTextView::applyComponentStyle(struct Style* style) {
 		}
 	}
 }
+
+void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
+	// loop through styles
+	// removeStyle == true ? EndApplyStyle() : ApplyStyle()
+	if (style != nullptr) {
+		for (auto [key, val] : style->styles) {
+			switch (key) {
+			case STYLE_TEXT_BOLD:
+				if (removeStyle) { EndBold(); }
+				else { BeginBold(); }
+			break;
+			case STYLE_TEXT_ITALICS:
+				if (removeStyle) { EndItalic(); }
+				else { BeginItalic(); }
+			break;
+			default:
+			break;
+			}
+
+		}
+	}
+}
+
 
 // interpretControlCharacters(&i)
 /*
