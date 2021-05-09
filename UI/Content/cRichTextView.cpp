@@ -132,10 +132,13 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 				if (removeStyle) { EndItalic(); }
 				else { BeginItalic(); }
 			break;
+			case STYLE_TEXT_UNDERLINE:
+				if (removeStyle) { EndUnderline(); }
+				else { BeginUnderline(); }
+				break;
 			default:
 			break;
 			}
-
 		}
 	}
 }

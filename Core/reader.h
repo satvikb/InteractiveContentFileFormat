@@ -18,8 +18,11 @@
 #define CHUNK_STYLING 0x5
 #define CHUNK_EXTENDED 0x6
 
+#define CONTENT_TEXT 0x1
+
 #define ACTION_LINK 0x1
-#define ACTION_REPLACEMENT 0x2
+#define ACTION_SWAP 0x2
+#define ACTION_REPLACE_WITH_CONTENT 0x3
 
 #define STYLE_COMPONENT_BORDER_WIDTH 0x01
 #define STYLE_COMPONENT_BORDER_COLOR 0x02
@@ -92,7 +95,7 @@ struct Container : Chunk {
             n > 1 elements: the ID array has n+1 elements, the first n is list of container/contnts, n+1 is 1111111. ERROR if layout.positions[i].inf == false
     */
     // a vector of pointers to elementIDs
-    std::vector<std::vector<uint16_t>> elementIDs;
+    std::vector<std::vector<Chunk>> elementIDs;
 };
 
 struct Content : Chunk{
@@ -114,11 +117,20 @@ struct Link : Action {
     uint8_t display;
 };
 
-struct Replacement : Action {
+struct Swap : Action {
     // The element to replace. Must currently be visible.
     uint16_t replaceID;
     // This element will replace the above ID
     uint16_t replaceWithID;
+};
+
+struct ReplaceWithContent : Action {
+    // The container to target. Must currently be visible.
+    uint16_t containerID;
+    // The index of the element inside this container to replace
+    uint8_t index;
+    // This content will replace the above element at the index
+    uint16_t replaceWithContentID;
 };
 
 struct Style : Chunk {

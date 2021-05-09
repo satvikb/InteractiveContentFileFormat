@@ -104,10 +104,18 @@ Content Data BEGIN
 
 ------------- BEGIN ACTION 1 -------------
 80 01 - Action ID (100 00000 0000 0001)
-01 - Action Type (0001 for Link)
+01 - Action Type (00000001 for Link)
 20 02 - Link to this container (ID 2)
 0F - link display byte (000VWXYZ) = (00001111)
 ------------- END ACTION 1 -------------
+-- Action 2 is same as Action 1 but linking to 1st container --
+------------- BEGIN ACTION 3 -------------
+80 03 - Action ID (100 00000 0000 0002)
+03 - Action Type (00000011 for Replace With Content)
+20 01 - Find this container ID
+01 - Index of element (Index 1 = 2nd element, the right text box)
+40 03 - Replace with this content ID (3)
+------------- END ACTION 3 -------------
 
 ------------- BEGIN STYLE 1 -------------
 A0 01 - Style ID (101 00000 0000 0001)

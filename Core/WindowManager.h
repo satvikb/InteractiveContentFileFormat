@@ -1,5 +1,7 @@
 #pragma once
 #include "reader.h"
+#include <vector>
+
 struct wxConstraintPosition;
 class cContainer;
 // Keeps a reference to the top container.
@@ -21,5 +23,6 @@ private:
 	static void UnlinkContainerID(uint16_t containerID);
 	static void executeAction(struct Action* action);
 	static void replaceContainers(cContainer* target, struct Container* replaceWith);
+	static void replaceContainerElementIndexWithContent(uint16_t containerID, uint8_t index, uint16_t contentID);
 };
 

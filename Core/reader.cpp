@@ -194,10 +194,11 @@ std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index){
     // i must always point to a byte that is either the start of an ID, or a End code
     while(buffer[i] != 0x0){ // 0x0 is byte code for end of container chunk
         // init array to hold one
-        std::vector<uint16_t> subelements; // length of this is 1, unless its in an infinite container
+        std::vector<Chunk> subelements; // length of this is 1, unless its in an infinite container
         while((unsigned char)buffer[i] != 0xFF){
+            uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
             uint16_t eleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-            subelements.push_back(eleID);
+            subelements.push_back({chunkType, eleID});
             i += 2;
         }
         // end container hit, skip that byte
@@ -280,21 +281,46 @@ std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
         action = newLink;
     }
     break;
-    case ACTION_REPLACEMENT: {
+    case ACTION_SWAP: {
         // 4 bytes
         // 2 bytes - replace this container/content ID (must already be visible)
         // 2 bytes - new container/content ID bytes
 
+        //uint8_t oldChunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
         uint16_t oldID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
         i += 2;
+        //uint8_t newChunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
         uint16_t newID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
         i += 2;
-        struct Replacement* newReplacement = new Replacement;
-        newReplacement->chunkID = ID;
-        newReplacement->chunkType = chunkType;
-        newReplacement->replaceID = oldID;
-        newReplacement->replaceWithID = newID;
-        action = newReplacement;
+        struct Swap* newSwap = new Swap;
+        newSwap->chunkID = ID;
+        newSwap->chunkType = chunkType;
+        newSwap->actionType = actionType;
+        newSwap->replaceID = oldID;
+        newSwap->replaceWithID = newID;
+        action = newSwap;
+    }
+    break;
+    case ACTION_REPLACE_WITH_CONTENT: {
+        // 5 bytes total
+        // 2 bytes - container id
+        // 1 byte - index
+        // 2 bytes - content id
+        uint16_t containerID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
+        uint8_t index = (unsigned char)buffer[i];
+        i += 1;
+        uint16_t contentID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2;
+
+        struct ReplaceWithContent* replace = new ReplaceWithContent;
+        replace->chunkID = ID;
+        replace->chunkType = chunkType;
+        replace->actionType = actionType;
+        replace->containerID = containerID;
+        replace->index = index;
+        replace->replaceWithContentID = contentID;
+        action = replace;
     }
     break;
     default: {

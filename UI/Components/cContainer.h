@@ -2,6 +2,7 @@
 
 #include <wx/wx.h>
 #include <any>
+#include <memory>
 #include "FileManager.h"
 #include "WindowManager.h"
 #include "cRichTextView.h"
@@ -15,6 +16,7 @@ public:
 	void CreateContainerUI(std::pair<struct Container*, struct Layout*> dataPair);
 	void CreateContainerUI(struct Container* container, struct Layout* layout);
 	void ReplaceContainerData(bool mainContainer, struct Container* container, struct Layout* layout);
+	void ReplaceElementAtIndexWithContent(uint8_t index, uint16_t contentID);
 	void SetContainerStyle(struct Style* style);
 	bool getIsMainContainer();
 	wxWindow* getParentWindow();
@@ -33,5 +35,8 @@ private:
 	struct Layout* layout;
 
 	wxWindow* parentWindow;
-	std::vector<wxWindow*> children;
+	// imagine vector for now
+	std::vector<std::shared_ptr<wxWindow>> children;
+
+	void CreateContent(struct Content* content, struct elementPosition* pos, uint8_t index = -1);
 };

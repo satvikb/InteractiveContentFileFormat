@@ -39,7 +39,7 @@ void WindowManager::executeAction(struct Action* action) {
 	// TODO test nullptr
 	uint8_t actionType = action->actionType;
 	switch (actionType) {
-	case 0x1: {
+	case ACTION_LINK: {
 		// link -- replace top container with what is linked
 		//Link& link = static_cast<Link&>(action); // downcast
 		Link* link = dynamic_cast<Link*>(action);
@@ -52,12 +52,18 @@ void WindowManager::executeAction(struct Action* action) {
 		}
 	}
 	break;
-	case 0x2: {
+	case ACTION_SWAP: {
 		// replacement
 		// TODO handle replacing Content
-		Replacement* replacement = dynamic_cast<Replacement*>(action);
+		Swap* swap = dynamic_cast<Swap*>(action);
 
-		replaceContainers(GetWindowByContainerID(replacement->replaceID), FileManager::getContainerByID(replacement->replaceWithID));
+		// replace container with container
+		replaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
+	}
+	break;
+	case ACTION_REPLACE_WITH_CONTENT: {
+		ReplaceWithContent* replace = dynamic_cast<ReplaceWithContent*>(action);
+		replaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
 	}
 	break;
 	}
@@ -76,4 +82,15 @@ void WindowManager::replaceContainers(cContainer* target, struct Container* repl
 	Layout* layout = FileManager::getLayoutByID(replaceWith->layoutID);
 	target->CreateContainerUI(replaceWith, layout);
 	target->Layout();
+}
+
+void WindowManager::replaceContainerElementIndexWithContent(uint16_t containerID, uint8_t index, uint16_t contentID) {
+	if (containerWindows.count(containerID) == 1) {
+		cContainer* window = containerWindows[containerID];
+		// TODO support infinite containers
+		window->ReplaceElementAtIndexWithContent(index, contentID);
+	}
+	else {
+		// not found
+	}
 }
