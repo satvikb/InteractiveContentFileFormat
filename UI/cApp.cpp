@@ -12,6 +12,7 @@ cApp::~cApp() {
 }
 
 bool cApp::OnInit() {
+	wxImage::AddHandler(new CustomImageReader);
 	m_frame1 = new cMain();
 	m_frame1->Show();
 

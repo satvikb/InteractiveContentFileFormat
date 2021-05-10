@@ -20,7 +20,6 @@ public:
 	cRichTextView(cContainer* parent);
 	void applyComponentStyle(struct Style* style);
 	~cRichTextView();
-
 private:
 	// map to convert start position of URLs in text to a Action ID
 	std::map<wxTextPos, uint16_t> actions;

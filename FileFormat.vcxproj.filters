@@ -63,6 +63,12 @@
     <ClInclude Include="Core\WindowManager.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Core\CustomImageReader.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Content\cImageView.h">
+      <Filter>Header Files\UI\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -88,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="Core\WindowManager.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CustomImageReader.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Content\cImageView.cpp">
+      <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

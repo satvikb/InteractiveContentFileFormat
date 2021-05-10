@@ -35,14 +35,6 @@ void cRichTextView::interpretContent() {
 
 void cRichTextView::insertStringFromIndexes(int start, int end) {
 	std::string stringToIns(content->data.begin() + start, content->data.begin() + end);
-	//wxString wxStr((u8"\xF0\x9D\x8C\x86"));
-	//wxString wxStr2(("\xF0\x9D\x8C\x86"));
-
-	//wxString wxStrUTF = wxStr.ToUTF8();
-	//WriteText(wxStrUTF);
-	//WriteText(wxStr);
-	//WriteText(wxStr2);
-	//WriteText(wxStr2.ToUTF8());
 	WriteText(wxString::FromUTF8(stringToIns));
 }
 

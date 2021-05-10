@@ -19,22 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\CustomImageReader.h" />
     <ClInclude Include="Core\WindowManager.h" />
     <ClInclude Include="Core\FileManager.h" />
     <ClInclude Include="Core\reader.h" />
     <ClInclude Include="UI\cApp.h" />
     <ClInclude Include="UI\cMain.h" />
     <ClInclude Include="UI\Components\cContainer.h" />
+    <ClInclude Include="UI\Content\cImageView.h" />
     <ClInclude Include="UI\Content\cNativeContent.h" />
     <ClInclude Include="UI\Content\cRichTextView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\CustomImageReader.cpp" />
     <ClCompile Include="Core\WindowManager.cpp" />
     <ClCompile Include="Core\FileManager.cpp" />
     <ClCompile Include="Core\reader.cpp" />
     <ClCompile Include="UI\cApp.cpp" />
     <ClCompile Include="UI\cMain.cpp" />
     <ClCompile Include="UI\Components\cContainer.cpp" />
+    <ClCompile Include="UI\Content\cImageView.cpp" />
     <ClCompile Include="UI\Content\cNativeContent.cpp" />
     <ClCompile Include="UI\Content\cRichTextView.cpp" />
   </ItemGroup>
