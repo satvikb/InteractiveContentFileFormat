@@ -36,7 +36,7 @@ private:
 
 	wxWindow* parentWindow;
 	// imagine vector for now
-	std::vector<std::shared_ptr<wxWindow>> children;
+	std::vector<wxWindow*> children;
 
 	void CreateContent(struct Content* content, struct elementPosition* pos, uint8_t index = -1);
 };

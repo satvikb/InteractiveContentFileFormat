@@ -15,10 +15,10 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
     if (children.size() > 0) {
         // TODO: loop through existing windows and delete (memory)
         for (int i = 0; i < children.size(); i++) {
-            std::shared_ptr<wxWindow> win = children[i];
+            wxWindow* win = children[i];
             children[i]->Show(false);
             // TODO crashes because of using smart pointers, maybe try wxWindowPtr?
-            //children[i]->Destroy();
+            children[i]->Destroy();
         }
 
         // TODO MEMORY MANAGEMENT, DELETE THE WINDOWS
@@ -57,54 +57,53 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
 void cContainer::CreateContent(struct Content* content, struct elementPosition* pos, uint8_t index) {
     uint8_t contentType = content->type;
 
-    std::shared_ptr<wxWindow> newContent(nullptr);
+    wxWindow* newContent = nullptr;
 
     switch (contentType) {
     case CONTENT_TEXT: {
         //std::shared_ptr<cRichTextView> richTextCtrl = std::make_shared<cRichTextView>((cContainer*)this);
-        newContent = std::make_shared<cRichTextView>((cContainer*)this);
-
-
-        std::static_pointer_cast<cRichTextView>(newContent)->SetContent(content);
-        std::static_pointer_cast<cRichTextView>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
+        newContent = new cRichTextView((cContainer*)this);
+        static_cast<cRichTextView*>(newContent)->SetContent(content);
+        static_cast<cRichTextView*>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
     }
     break;
     }
 
-    if (index >= 0 && index < children.size()) {
-        children[index] = newContent;
-    }
-    else {
-        children.push_back(newContent);
-    }
+    if (newContent != nullptr) {
+        // content was actually created (valid content type)
 
-    wxConstraintPosition wxPos = FileManager::convertLayoutPositionToConstraint(pos);
-    wxLayoutConstraints* posCons = new wxLayoutConstraints();
-    posCons->left.PercentOf(this, wxWidth, wxPos.x);
-    posCons->top.PercentOf(this, wxHeight, wxPos.y);
-    posCons->width.PercentOf(this, wxWidth, wxPos.width);
-    posCons->height.PercentOf(this, wxHeight, wxPos.height);
-    newContent->SetConstraints(posCons);
+        if (index >= 0 && index < children.size()) {
+            //delete children[index];
+            children[index] = newContent;
+        }
+        else {
+            children.push_back(newContent);
+        }
+
+        wxConstraintPosition wxPos = FileManager::convertLayoutPositionToConstraint(pos);
+        cContainer::applyParentContraints(newContent, this, wxPos);
+        Layout();
+    }
 }
 
 // replaces existing element (either a container or content) at index with the given content ID.
 // For now only replacing with a single content ID is supported (not with infinite containers)
 void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t contentID) {
     if (index < children.size()) {
-        std::shared_ptr<wxWindow> windowObj = children[index];
+        wxWindow* windowObj = children[index];
         elementPosition* pos = layout->positions[index];
 
         std::vector<Chunk> subelements = container->elementIDs[index];
         bool isContainer = subelements.size() > 1 || (subelements.size() > 0 && subelements[0].chunkID == CHUNK_CONTAINER);
         if (isContainer) {
             // destroy container
-            cContainer* c = dynamic_cast<cContainer*>(windowObj.get());
+            cContainer* c = dynamic_cast<cContainer*>(windowObj);
             WindowManager::DestroyContainer(c);
         }
         else {
             // destroy content
             windowObj->Show(false);
-            //windowObj->Destroy(); // TODO
+            windowObj->Destroy(); // TODO
             // shared_ptr doesnt need delete
         }
 
