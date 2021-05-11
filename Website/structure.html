@@ -6,7 +6,12 @@
     <h1>IC (Interactive Content) Specification</h1>
     <h2>Version 1</h2>
     <hr>
-
+    <a href="introduction.html">Previous page</a>
+    <br>
+    <a href="content.html">Next page</a>
+    <br>
+    <a href="index.html">Table of contents</a>
+    <hr>
     <h2>2. File Structure</h2>
 
     <p>This chapter discusses the how IC files are structured and the different
@@ -14,42 +19,58 @@
       Containers, Actions, and Content. Specific Content types are covered in the next chapter.
     </p>
     <h3>2.1. File Header</h3>
-    <p>Layouts define the positions of elements</p>
-    <h3>2.2. Components</h3>
-    <h4>2.2.1. Layouts</h4>
-    <p>Layouts define the positions of elements</p>
+    <p>The file header of every Interactive Content file follows the same format:</p>
     <pre>
-  (Layout ID - 16 bits)     011 xxxxx xxxxxxxx [x bits are the Layout ID]
-  (Number of elements)      xxxxxxxx
+  (Magic Number)              73 61 6d 61 6c 69 74 6c 6e 76 75 61
+  (File version)              XX XX (Version 1 of the file is 00 01)
+  (Start Container ID)        XX XX (001 xxxxx xxxxxxxx for the first container to show when opening the file, the entry point)
+  (Author Name)               Null terminated string</pre>
+    <h3>2.2. Components</h3>
+    <p>All components start with its ID data: 3 bits for the Type and the rest for its ID.</p>
+    <h4>2.2.1. Layouts</h4>
+    <p>Layouts define the positions of elements. Layouts alone do nothing. Layouts are referenced by Containers to determine how the elements in the Container are positioned.</p>
+    <p>Positions of elements are given as a rectangle (X, Y, Width, Height), where each value is a percent from 0 and 100. This percent is relative to the parent element.</p>
+    <pre>
+  (Layout ID - 16 bits)       011 xxxxx xxxxxxxx [x bits are the Layout ID]
+  (Number of elements)        xxxxxxxx
   {Element N}
-    (Position X)            XX XX [2 bytes, int from 0-40,000]
-    (Position Y)            XX XX [2 bytes, int from 0-40,000]
-    (Position Width)        XX XX [2 bytes, int from 0-40,000]
-    (Position Height)       XX XX [2 bytes, int from 0-40,000]
-    (Style ID)              XX XX [2 bytes, Style to apply to this element]
-    (Infinite Byte)         0000wxyz
+    (Position X)              XX XX [2 bytes, int from 0%-100%]
+    (Position Y)              XX XX [2 bytes, int from 0%-100%]
+    (Position Width)          XX XX [2 bytes, int from 0%-100%]
+    (Position Height)         XX XX [2 bytes, int from 0%-100%]
+    (Style ID)                XX XX [2 bytes, Style to apply to this element]
+    (Infinite Byte)           0000wxyz
       w bit - show page numbers (?)
       x bit - enable paging (1 for paging), paging means only multiples of the width/height of the element are shown at a time
       y bit - direction of infinite expansion. 0 for horizontal, 1 for vertical.
       z bit - set this bit to 1 to support infinite sub elements
         if z bit = 1, the positioning bytes below must be defined
     {if z = 1}
-      (Start X)             XX XX [2 bytes, int from 0-40,000]
-      (Start Y)             XX XX [2 bytes, int from 0-40,000]
-      (Width of each ele)   XX XX [2 bytes, int from 0-40,000]
-      (Height of each ele)  XX XX [2 bytes, int from 0-40,000]
-      (Padding btwn ele)    XX XX [2 bytes, int from 0-40,000, uses y bit direction to decide to multiply by width or height]
-    </pre>
+      (Start X)               XX XX [2 bytes, int from 0%-100%]
+      (Start Y)               XX XX [2 bytes, int from 0%-100%]
+      (Width of each ele)     XX XX [2 bytes, int from 0%-100%]
+      (Height of each ele)    XX XX [2 bytes, int from 0%-100%]
+      (Padding btwn ele)      XX XX [2 bytes, int from 0%-100%, uses y bit direction to decide to multiply by width or height]</pre>
+    <h4>2.2.2. Containers</h4>
+    <p>Containers each have a defined Layout to display elements. Containers then define the Elements they contain, which can either be other Containers or Content.</p>
+    <p>The position in the Layout that corresponds to each Element is index based in ascending order, with the first element defined in the Layout having index 0. This index is the same index used in Actions.</p>
+    <pre>
+  (Container ID - 16 Bits)    001 xxxxx xxxxxxxx [x bits are the Container ID]
+  (Layout ID - 16 bits)       011 xxxxx xxxxxxxx [x bits are the Layout ID]
+  {For each Element N in the Layout}
+    (Element ID - 16 Bits)    (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]
+    (Delimeter btwn Elements) FF (Used especially when Containers are infinite to know when to move onto the next Layout element.)
+  (Byte to end Container)     00</pre>
     <h4>2.2.3. Actions</h4>
     <p>Actions are the core of Interactive Content and is what enables content to
-    be interactive. There are three types of Actions: Links, Replacement, and Appending (?)</p>
-    <p>Link Actions replace the highest level container with the container specified if not a tooltip. Links can only link to Containers</p>
-    <p>Replacement Actions replace the specified Element with another Element. An Element refers to either a Container or Content</p>
+    be interactive. There are three types of Actions: Links, Replacement, and Appending (?).</p>
+    <p>Link Actions replace the highest level container with the container specified if not a tooltip. Links can only link to Containers.</p>
+    <p>Replacement Actions replace the specified Element with another Element. An Element refers to either a Container or Content.</p>
     <pre>
-  (Action ID - 16 Bits)     100 xxxxx xxxxxxxx [x bits are the Action ID]
-  (Action Type - 4 bits)    xxxx
-    (Type: Link)            0001
-    (Type: Replacement)     0010
+  (Action ID - 16 Bits)       100 xxxxx xxxxxxxx [x bits are the Action ID]
+  (Action Type - 4 bits)      xxxx
+    (Type: Link)              0001
+    (Type: Replacement)       0010
   {Type: Link}
     (Link To Container ID)  001 xxxxx xxxxxxxx [x bits are Container ID]
     (Display Mode Byte)     000VWXYZ
@@ -65,13 +86,20 @@
         110: Show the 6th parent Container from the linked Container.
         111: Show the highest Container ancestor possible.
   {Type: Replacement}
-    (Replace Element ID)    (001/010) xxxxx xxxxxxxx [ID of either a Container or Content to replace. Must be currently visable]
-    (Replace with ID)       (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]
-
-    </pre>
+    (Replace Element ID)      (001/010) xxxxx xxxxxxxx [ID of either a Container or Content to replace. Must be currently visable]
+    (Replace with ID)         (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]</pre>
 
     <h4>2.2.4. Content</h4>
-    <p>Content is the foundation of what is displyed to the user. All Content belongs to a Container</p>
+    <p>Content is the foundation of what is displyed to the user. Content simply defines the data to be displayed. In order to be displayed, Content must be part of a container for it to be displayed. Not all Content must be part of a Container.</p>
+    <p>Content components simply store data in raw binary form. It is up to the viewer to use the Content Type, Length, and the Content itself to display the Content properly.</p>
+    <p>The format of a Content chunk is defined as:</p>
+    <pre>
+  (Content ID - 2 bytes)          010 xxxxx xxxxxxxx [x bits are Content ID]
+  (Content Type - 1 byte)         XX
+  (Content length - 4 bytes)      XX XX XX XX
+  (Content data - [length] bytes)</pre>
+    <p>Detailed explanations of the Content Type and Data format is on the <a href="content.html">3. Content Types</a> page</p>
+
     <h4>2.2.5. Style</h4>
     <p>Style contorls how a certain component looks. Styles themselves are generic and do nothing themselves. They must
     be part of other components in order to be applied. Styles can only apply to Layout and Content. <br>When applying a
@@ -82,6 +110,7 @@
     <pre>
   (Style ID - 16 bits)        101 xxxxx xxxxxxxx [x bits are Style ID]
 
+  ********************************************************
   ** From here on, everything is an Key Value pair.     **
   ** Each key is one byte, and each Value length        **
   ** depends on the key. The format of below is:        **
@@ -94,41 +123,39 @@
   ** for more styles in the future)                     **
   ** The following are categorized only visually        **
   ** but style keys are still unique between categories **
+  ********************************************************
 
   Styles that apply to the component as a whole:
-  (Border Width)            01 - 00000001
-    (Border Width Value)    03 E8 - (Value) / 40,000, as a percent of the width of Window
-  (Border Color)            02 - 00000002
-    (Border Color Value)    00 00 00 - Color in hex
-  (Window Background Color) 03 - 00000003
-    (Background Color Value)00 00 00 - color in hex
+  (Border Width)              01 - 00000001
+    (Border Width Value)      03 E8 - (Value) / 40,000, as a percent of the width of Window
+  (Border Color)              02 - 00000002
+    (Border Color Value)      00 00 00 - Color in hex
+  (Window Background Color)   03 - 00000003
+    (Background Color Value)  00 00 00 - color in hex
 
   Text styles:
-  (Font Name)               10
-    (Font name value)       Null terminated string
-  (Font Family)             11
-    (Font family value)     Null terminated string
-  (Text Color)              12
-    (Text Color Value)    00 00 00 - Color in hex
-  (Set Bold)                13
-  (Set Italics)             14
-  (Set Underline)           15
-  (Set Strikethrough)       16
-  (Set Superscript)         17
-  (Set Subscript)           18
+  (Font Name)                 10
+    (Font name value)         Null terminated string
+  (Font Family)               11
+    (Font family value)       Null terminated string
+  (Text Color)                12
+    (Text Color Value)        00 00 00 - Color in hex
+  (Set Bold)                  13
+  (Set Italics)               14
+  (Set Underline)             15
+  (Set Strikethrough)         16
+  (Set Superscript)           17
+  (Set Subscript)             18
   (TODO: Paragraph styles)
 
-  (End Style - 8 bits)        00000000
-    </pre>
+  (End Style - 8 bits)        00000000</pre>
     <h3>2.3. Limits</h3>
     <p>The limits of most properties used throughout the other Components are defined below:</p>
     <pre>
+Recursion/circular references for container IDs are not allowed.
 ID Limits:
   There can be a max of 2^13 = 8,192 unique IDs for each component type.
-  If the extended bit range is used (prefix 110), there is a max of 2^24 = 16,777,216 unique IDs for each Component type
-
-
-
+  If the extended bit range is used (chunk type 110), there is a max of 2^24 = 16,777,216 unique IDs for each Component type.
     </pre>
     <hr>
     <a href="introduction.html">Previous page</a>

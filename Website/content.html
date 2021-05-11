@@ -6,7 +6,12 @@
     <h1>IC (Interactive Content) Specification</h1>
     <h2>Version 1</h2>
     <hr>
-
+    <a href="structure.html">Previous page</a>
+    <br>
+    <a href=".html">Next page</a>
+    <br>
+    <a href="index.html">Table of contents</a>
+    <hr>
     <h2>3. Content Types</h2>
 
     <p>This chapter focusses on the different type of content available. Content is
@@ -41,15 +46,14 @@
         <span>Text size</span>
       </li>
       <li>
-        <span>Fonts (up to 16)</span>
+        <span>Fonts</span>
       </li>
     </ul>
-    <p>Text styles can be applied by referencing a Style ID and marking the starting and ending points:</p>
+    <p>Text styles can be applied by referencing a Style ID and marking the starting and ending points, thus using a stack system to apply styles:</p>
     <pre>
-      (Start Style)                    EE BC 80 (U+EF00)
-        (Style ID)                     XX XX    [Style ID: 101 xxxxx xxxxxxxx]
-      (End Style)                      EE BC 81 (U+EF01)
-    </pre>
+      (Start Style)                     EE BC 80 (U+EF00)
+        (Style ID)                      XX XX    [Style ID: 101 xxxxx xxxxxxxx]
+      (End Style)                       EE BC 81 (U+EF01)</pre>
     <p>The following is the byte values corresponding to each control type available, using Unicode Private Use Area starting from U+EF00, corresponding to a 3 byte Hex Encoding with prefix of EEBC**. These control points start from EEBC80 and end at a possible max os EEBCFF (to ensure the prefix stays the same):<p>
     <pre>
       (Begin Paragraph)                 EE BC 8A (U+EF0A)
@@ -62,8 +66,7 @@
       (Intent value)                    X
 
       (Paragraph Style Type: ?)         EE BC 9? (U+EF1?)
-      (? value)                         X
-    </pre>
+      (? value)                         X</pre>
     <p>Actions in Fancy Text are displayed as a typical Hyperlink in the text. Use the following to define a Action within text:</p>
     <pre>
       (Start Action)                    EE BC 82 (U+EF02)
@@ -80,27 +83,31 @@
     <p>The content data of an IC image is defined in this format:</p>
     <pre>
       (Start image metadata)            01 (00000001)
-      (Image width)                     00 80 (128px in hex)
-      (Image height)                    00 80 (128px in hex)
+      (Image width)                     XX XX (00 80 for 128px in hex)
+      (Image height)                    XX XX (00 80 for 128px in hex)
       (Alpha channel)                   01 (00000001 for including an alpha channel)
       (End image metadata)              02 (00000002)
       (Start Action Table)              03 (00000003)
         {Action rectangle}              A rectangle defined in percents relative to the image.
-          (X)                           00
-          (Y)                           00
-          (Width)                       64 (100% in hex)
-          (Height)                      64 (100% in hex)
-          (Action ID)                   80 01
+          (X)                           XX (00 - 64, for 0%-100%)
+          (Y)                           XX (00 - 64, for 0%-100%)
+          (Width)                       XX (00 - 64, for 0%-100%)
+          (Height)                      XX (00 - 64, for 0%-100%)
+          (Action ID)                   100 xxxxx xxxxxxxx
       (End Action Table)                04 (00000004)
-      [image data here, list of pixels]
-    </pre>
+      [image data here, list of pixels]</pre>
     <p>Each pixel is defined as so:</p>
     <pre>
-      Alpha (1 byte - if enabled)      00
+      Alpha (1 byte - if enabled)       XX
         (If alpha is 0, the rest of the pixel is skipped)
-      Red (1 bytes)                     00
-      Green (1 bytes)                   00
-      Blue (1 bytes)                    00
+      Red (1 bytes)                     XX
+      Green (1 bytes)                   XX
+      Blue (1 bytes)                    XX</pre>
+    <h4>3.1.5. Reference</h4>
+    <p>Reference Content loads native Interactive Content content components from an API endpoint using a GET request.</p>
+    <p>Reference Content is meant to be a drop in replacement. Containers that load reference Content complete the GET request and replace the Reference content data with the retreived data</p>
+    <pre>
+
     </pre>
     <hr>
     <a href="structure.html">Previous page</a>
