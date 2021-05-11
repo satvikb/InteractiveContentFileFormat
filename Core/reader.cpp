@@ -130,12 +130,12 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
     int eleI;
     for(eleI = 0; eleI < numberElements; eleI++){
         struct elementPosition* pos = new elementPosition;
-        pos->x = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        pos->y = (buffer[i+2] << 8) | (unsigned char)buffer[(i)+3];
-        pos->w = (buffer[i+4] << 8) | (unsigned char)buffer[(i)+5];
-        pos->h = (buffer[i+6] << 8) | (unsigned char)buffer[(i)+7];
+        pos->x = (unsigned char)buffer[(i)];
+        pos->y = (unsigned char)buffer[(i)+1];
+        pos->w = (unsigned char)buffer[(i)+2];
+        pos->h = (unsigned char)buffer[(i)+3];
         printf("Read position %d %d %d %d %d\n", i, pos->x, pos->y, pos->w, pos->h);
-        i += 8;
+        i += 4;
         // now handle style ID
         pos->styleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
         i += 2;
@@ -153,13 +153,13 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
             // handle infinite element position
             struct infiniteElementPosition *infPos = (struct infiniteElementPosition *)malloc (sizeof (struct infiniteElementPosition));
 
-            infPos->startx      = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-            infPos->starty      = (buffer[i+2] << 8) | (unsigned char)buffer[(i)+3];
-            infPos->w           = (buffer[i+4] << 8) | (unsigned char)buffer[(i)+5];
-            infPos->h           = (buffer[i+6] << 8) | (unsigned char)buffer[(i)+7];
-            infPos->padding     = (buffer[i+8] << 8) | (unsigned char)buffer[(i)+9];
+            infPos->startx      = (unsigned char)buffer[(i)];
+            infPos->starty      = (unsigned char)buffer[(i)+1];
+            infPos->w           = (unsigned char)buffer[(i)+2];
+            infPos->h           = (unsigned char)buffer[(i)+3];
+            infPos->padding     = (unsigned char)buffer[(i)+4];
 
-            i += 10;
+            i += 5;
             printf("Read infinite position %d %d %d %d %d\n", i, infPos->startx, infPos->starty, infPos->w, infPos->h);
             pos->infPos = infPos;
         }else{

@@ -71,15 +71,15 @@ struct Style* FileManager::getStyleByID(uint16_t styleID) {
 
 
 struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struct elementPosition* pos) {
-	int x = (int)((pos->x / 40000.0)*100.0);
+	/*int x = (int)((pos->x / 40000.0)*100.0);
 	int y = (int)((pos->y / 40000.0) * 100.0);
 	int w = (int)((pos->w / 40000.0) * 100.0);
-	int h = (int)((pos->h / 40000.0) * 100.0);
+	int h = (int)((pos->h / 40000.0) * 100.0);*/
 	struct wxConstraintPosition retPos = {
-		x,
-		y,
-		w,
-		h
+		pos->x,
+		pos->y,
+		pos->w,
+		pos->h
 	};
 	return retPos;
 }

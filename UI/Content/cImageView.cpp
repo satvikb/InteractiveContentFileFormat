@@ -4,13 +4,13 @@ cImageView::cImageView(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_AN
 	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
 
     // load the file... ideally add a check to see if loading was successful
-    //image.LoadFile(file, format);
     w = -1;
     h = -1;
 }
 
 void cImageView::interpretContent() {
 	if (content->data.size() > 0) {
+        //image.LoadFile(file, format);
 
 	}
 }

@@ -5,10 +5,10 @@
 
 // used for constraints, int is a integer percent from 0-100
 struct wxConstraintPosition {
-	int x;
-	int y;
-	int width;
-	int height;
+	uint8_t x;
+	uint8_t y;
+	uint8_t width;
+	uint8_t height;
 };
 // Static class to handle the current file that is read in
 class FileManager

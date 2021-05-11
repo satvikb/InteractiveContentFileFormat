@@ -26,7 +26,7 @@
 - `Component Type`: `011` is for Layouts
 - `Layout ID`: Used to uniquely identify the Layout in the file. 
 - `Number of Elements (N)`: Determines the number of Positions to expect for the rest of the Layout object.
-- Position Object (there are N of the following). Each component of a position can be a number between 0 and 40,000. This number is multiplied with 0.0025 to get the final position float.
+- Position Object (there are N of the following). Each component of a position can be a number between 0 and 100. This number is the percent position of the element relative to its parent.
   - `xN`: This will become a float between 0 and 1, and a multiple of 0.0025. This defines the X position of the element.
   - `xY`: Same as above, but for the Y position.
   - `widthN`: The width of the element, also between 0 and 1.
