@@ -18,6 +18,8 @@ def decToHex(val, dig = 2):
     v = v[2:]
     return v.zfill(dig)
 
+def stringToHexStr(s):
+     return "".join("{:02x}".format(ord(c)) for c in s)
 byLetter = {}
 for i in js:
     val=js[i]
@@ -42,20 +44,50 @@ tocTextContent = ""
 i = 1
 lets = list(byLetter.keys())
 lets.sort()
+
+replacementActions = []
+
+# content ID 40 02 - (h4002 + d26) is for the list of words for each letter
 for k in lets:
     tocTextContent += "EEBC82"
-    tocTextContent += "80"+decToHex(i)
+    repID = "80"+decToHex(i)
+    tocTextContent += repID
     tocTextContent += format(ord(k), "x")
     tocTextContent += "EEBC83"
     tocTextContent += format(ord(" "), "x") # test
+
+    repAct = repID+"03 2001 01 40"+decToHex(i+1)
+    replacementActions.append(repAct)
+
     i += 1
 
-tocContent += decToHex(len(tocTextContent), 8)+""
+print("FIVEOFOUR "+str(len(tocTextContent))+"_"+tocTextContent)
+tocContent += decToHex(int(len(tocTextContent)/2), 8)+""
 tocContent += tocTextContent
 
-print(tocContent)
+# create the list of words for each letter (content id 4002 - 4002+26)
+letterWordLists = []
+i = 1
+totByte = 0
+for k in lets:
+    contentID = "40"+decToHex(i+1)
+    type = "01"
 
-final = header + topLayout + topContainer + tocContent
+    wordListContent = ""
+    for word in byLetter[k]:
+        wordListContent += stringToHexStr(word+"\n")
+        #print(word+" "+stringToHexStr(word))
+    conLenNum = int(len(wordListContent)/2)
+    contentLen = decToHex(conLenNum, 8)+""
+    print(k+": "+contentLen+" "+str(conLenNum)+" bytes "+contentID)
+    totByte += conLenNum
+    letterWordLists.append(contentID + type + contentLen + wordListContent)
+    i += 1
+
+print(totByte);
+finalActions = "".join(replacementActions)
+finalWordLists = "".join(letterWordLists)
+final = header + topLayout + topContainer + tocContent + finalActions + finalWordLists
 
 data = bytearray.fromhex(final)
 f = open('example_dictionary.ic', 'wb')
