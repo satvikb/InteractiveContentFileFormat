@@ -2,6 +2,7 @@
 #include <wx/wx.h>
 #include "cContainer.h"
 #include "cNativeContent.h"
+#include <wx/mstream.h>
 // content is async, this entire class can exist without loading in content data
 class cImageView : public cNativeContent, public wxPanel
 {

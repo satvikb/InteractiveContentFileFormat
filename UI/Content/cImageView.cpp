@@ -11,7 +11,9 @@ cImageView::cImageView(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_AN
 void cImageView::interpretContent() {
 	if (content->data.size() > 0) {
         //image.LoadFile(file, format);
-
+        wxMemoryInputStream stream(content->data.data(), content->length);
+        if (!image.LoadFile(stream, "application/icimage"))
+            return;
 	}
 }
 //void cNativeContent::addAction() {}
@@ -83,18 +85,20 @@ void cImageView::paintNow()
  */
 void cImageView::render(wxDC& dc)
 {
-    int neww, newh;
-    dc.GetSize(&neww, &newh);
+    if (image.IsOk()) {
+        int neww, newh;
+        dc.GetSize(&neww, &newh);
 
-    if (neww != w || newh != h)
-    {
-        resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
-        w = neww;
-        h = newh;
-        dc.DrawBitmap(resized, 0, 0, false);
-    }
-    else {
-        dc.DrawBitmap(resized, 0, 0, false);
+        if (neww != w || newh != h)
+        {
+            resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
+            w = neww;
+            h = newh;
+            dc.DrawBitmap(resized, 0, 0, false);
+        }
+        else {
+            dc.DrawBitmap(resized, 0, 0, false);
+        }
     }
 }
 

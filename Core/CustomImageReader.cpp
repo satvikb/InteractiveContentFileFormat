@@ -4,6 +4,10 @@ bool CustomImageReader::DoCanRead(wxInputStream& stream) {
 	return true; // TODO
 }
 
+//const wxString& CustomImageReader::GetMimeType() const {
+//
+//}
+
 // the input steam buffer should start from the first byte in content
 bool CustomImageReader::LoadFile(wxImage* image, wxInputStream& stream, bool verbose, int index) {
 	if (stream.GetC() != IMAGE_METADATA_START) {
