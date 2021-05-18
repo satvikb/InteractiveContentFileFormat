@@ -17,6 +17,7 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 }
 
 void cRichTextView::interpretContent() {
+	Freeze();
 	if (content->data.size() > 0) {
 		int strStart = 0;
 		int i = 0;
@@ -31,6 +32,7 @@ void cRichTextView::interpretContent() {
 
 		insertStringFromIndexes(strStart, i);
 	}
+	Thaw();
 }
 
 void cRichTextView::insertStringFromIndexes(int start, int end) {
