@@ -6,6 +6,7 @@
 #include "FileManager.h"
 #include "WindowManager.h"
 #include "cRichTextView.h"
+#include "cImageView.h"
 
 class cContainer : public wxPanel
 {

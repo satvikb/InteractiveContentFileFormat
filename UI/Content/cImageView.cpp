@@ -10,7 +10,40 @@ cImageView::cImageView(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_AN
 
 void cImageView::interpretContent() {
 	if (content->data.size() > 0) {
+        // read in the header
+        //int i = 0;
+        //// check start metadata byte
+        //if (content->data[i] == 0x1) {
+        //    i += 1;
+        //    uint16_t width = (content->data[i] << 8) | content->data[i+1];
+        //    i += 2;
+        //    uint16_t height = (content->data[i] << 8) | content->data[i + 1];
+        //    i += 2;
+        //    uint8_t alphaFlag = content->data[i];
+        //    i += 1;
+        //    // should be at end metadata byte
+        //    if (content->data[i] == 0x2) {
+        //        i += 1;
+        //        // start action table byte
+        //        if (content->data[i] == 0x3) {
+        //            // TODO loop through all actions
+        //            i += 1; // todo remove this
+
+        //            // end action table
+        //            if (content->data[i] == 0x4) {
+        //                i += 1;
+        //                // now at the start of pixel data
+        //                std::vector<uint8_t> pixelData(content->data.begin() + i, content->data.end());
+        //                int numPixelBytes = content->length - i;//width * height * (alphaFlag == 0x1 ? 4 : 3); // simply would be wrong with alphas
+
+        //                std::cout << "Read file" << std::endl;
+        //            }
+        //        }
+        //    }
+
+        //}
         //image.LoadFile(file, format);
+
         wxMemoryInputStream stream(content->data.data(), content->length);
         if (!image.LoadFile(stream, "application/icimage"))
             return;

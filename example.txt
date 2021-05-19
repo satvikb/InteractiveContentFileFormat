@@ -127,3 +127,22 @@ A0 01 - Style ID (101 00000 0000 0001)
 
 00 - end style
 ------------- END STYLE 1 -------------
+
+------------- BEGIN CONTENT 4 -------------
+40 04 - Content ID (010 00000 0000 0004)
+02 - Content Type (00000002) (2 for image)
+00 00 00 0A - Content Length (00000000 00000000 00000000 00001010) (length of 10 bytes)
+Content Data BEGIN
+01 - start metadata
+00 80 (128px width)
+00 80 (128px height)
+01 - flag to enable alpha channel
+02 - end metadata
+03 - start action table
+32 - x = 50%
+00 - y = 0%
+32 - width = 50%
+64 - height = 100%
+04 - end action table
+[begin pixels]
+------------- END CONTENT 4 -------------

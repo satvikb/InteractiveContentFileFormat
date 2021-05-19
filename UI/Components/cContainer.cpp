@@ -67,6 +67,11 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
         static_cast<cRichTextView*>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
     }
     break;
+    case CONTENT_IMAGE:
+        newContent = new cImageView((cContainer*)this);
+        static_cast<cImageView*>(newContent)->SetContent(content);
+        //static_cast<cImageView*>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
+    break;
     }
 
     if (newContent != nullptr) {

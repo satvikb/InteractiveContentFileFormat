@@ -4,8 +4,12 @@ bool CustomImageReader::DoCanRead(wxInputStream& stream) {
 	return true; // TODO
 }
 
-//const wxString& CustomImageReader::GetMimeType() const {
-//
+const wxString& CustomImageReader::GetMimeType() const {
+	return "application/icimage";
+}
+
+//bool 	CanRead(wxInputStream& stream) {
+//	return true;
 //}
 
 // the input steam buffer should start from the first byte in content
@@ -34,19 +38,28 @@ bool CustomImageReader::LoadFile(wxImage* image, wxInputStream& stream, bool ver
 	int pixel = 0;
 	while (stream.CanRead()) {
 		// read each pixel
-		uint8_t alpha = stream.GetC();
-		if (alpha == 0x0) {
-			// skip color bytes
-			pixelColors[(pixel * 3)] = 0;
-			pixelColors[(pixel * 3) + 1] = 0;
-			pixelColors[(pixel * 3) + 2] = 0;
-			pixelAlphas[pixel] = alpha;
+		if (alphaFlag == 0x1) {
+			uint8_t alpha = stream.GetC();
+			if (alpha == 0x0) {
+				// skip color bytes
+				pixelColors[(pixel * 3)] = 0;
+				pixelColors[(pixel * 3) + 1] = 0;
+				pixelColors[(pixel * 3) + 2] = 0;
+				pixelAlphas[pixel] = alpha;
+			}
+			else {
+				pixelColors[(pixel * 3)] = stream.GetC();
+				pixelColors[(pixel * 3) + 1] = stream.GetC();
+				pixelColors[(pixel * 3) + 2] = stream.GetC();
+				pixelAlphas[pixel] = alpha;
+			}
 		}
 		else {
+			// read normal pixel colors
 			pixelColors[(pixel * 3)] = stream.GetC();
 			pixelColors[(pixel * 3) + 1] = stream.GetC();
 			pixelColors[(pixel * 3) + 2] = stream.GetC();
-			pixelAlphas[pixel] = alpha;
+			pixelAlphas[pixel] = 255;
 		}
 		pixel += 1;
 	}

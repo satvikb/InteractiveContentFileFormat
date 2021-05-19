@@ -36,7 +36,7 @@ header = "7361746200012001417574686F72204E616D6500"
 # @@2@@**3**
 # @@@@@*****
 topLayout = "6001 03 0000640A 0000 00   000A325A 0000 00   320A325A 0000 00"
-topContainer = "2001 6001 4001 FF 4001 FF 4001  FF 00"
+topContainer = "2001 6001 4001 FF 4001 FF 4A00  FF 00"
 
 # define the content for the 26 letters w/ links at the top
 tocContent = "4001 01"
@@ -87,7 +87,32 @@ for k in lets:
 print(totByte);
 finalActions = "".join(replacementActions)
 finalWordLists = "".join(letterWordLists)
-final = header + topLayout + topContainer + tocContent + finalActions + finalWordLists
+
+imageContent = "4A00 02"
+imageMetadata = "01 012C 00E0 00 02 03 32003264 04"
+#imageMetadata = "01 012C 00E0 00 02 03 04"
+from PIL import Image
+im = Image.open('example.jpg') # Can be many different formats.
+pix = im.load()
+width, height = im.size
+imagePixelData = ""
+for y in range(height):
+    for x in range(width):
+        r,g,b = im.getpixel((x,y))
+        r = decToHex(r)
+        g = decToHex(g)
+        b = decToHex(b)
+        imagePixelData += r
+        imagePixelData += g
+        imagePixelData += b
+
+finalImageContentData = imageMetadata + imagePixelData
+imageContentLengthRaw = int(len(finalImageContentData)/2)
+imageContentLength = decToHex(imageContentLengthRaw, 8)+""
+imageContent += imageContentLength
+finalImage = imageContent + finalImageContentData
+#print("FIN "+finalImage)
+final = header + topLayout + topContainer + tocContent + finalActions + finalWordLists + finalImage
 
 data = bytearray.fromhex(final)
 f = open('example_dictionary.ic', 'wb')
