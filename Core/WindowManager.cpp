@@ -15,7 +15,7 @@ void WindowManager::CreateContainer(uint16_t containerID, cContainer* parent, wx
 
 	std::pair<struct Container*, struct Layout*> data = FileManager::getContainerAndLayoutByID(containerID);
 	newContainer->CreateContainerUI(data.first, data.second);
-	cContainer::applyParentContraints(newContainer, parent, constraints);
+	cContainer::applyParentConstraints(newContainer, parent, constraints);
 
 	LinkContainerIDWithWindow(containerID, newContainer);
 }

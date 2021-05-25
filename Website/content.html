@@ -105,10 +105,19 @@
       Blue (1 bytes)                    XX</pre>
     <h4>3.1.5. Reference</h4>
     <p>Reference Content loads native Interactive Content content components from an API endpoint using a GET request.</p>
-    <p>Reference Content is meant to be a drop in replacement. Containers that load reference Content complete the GET request and replace the Reference content data with the retreived data</p>
+    <p>Reference Content is meant to be a drop in replacement. Containers that load reference Content complete the GET request and replace the Reference content data with the retreived data.</p>
     <pre>
 
     </pre>
+    <h3>3.2 External Content</h3>
+    <h4>3.2.1. Webpage</h4>
+    <p>Webpage content simply creates a webview to display the given URL.</p>
+    <pre>
+      (Start URL byte)                   01
+        (URL Bytes)                      URL as a null terminated UTF-8 string
+    </pre>
+    <h4>3.2.2. PNG</h4>
+
     <hr>
     <a href="structure.html">Previous page</a>
     <br>

@@ -7,6 +7,7 @@
 #include "WindowManager.h"
 #include "cRichTextView.h"
 #include "cImageView.h"
+#include "cWebView.h"
 
 class cContainer : public wxPanel
 {
@@ -26,7 +27,7 @@ public:
 
 	~cContainer();
 
-	static void applyParentContraints(wxWindow* applyTo, wxWindow* parent, struct wxConstraintPosition constraints);
+	static void applyParentConstraints(wxWindow* applyTo, wxWindow* parent, struct wxConstraintPosition constraints);
 
 private:
 	bool isMainContainer = false;

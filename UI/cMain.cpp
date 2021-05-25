@@ -21,8 +21,9 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 
     SetMenuBar(m_pMenuBar);
 
-    FileManager::loadFile("example_dictionary.ic");
-    
+    //FileManager::loadFile("example_dictionary.ic");
+    FileManager::loadFile("example.ic");
+
     uint16_t startContainerID = FileManager::getStartContainerID();
     mainContainer = new cContainer(true, this);
     mainContainer->CreateContainerUI(FileManager::getContainerAndLayoutByID(startContainerID));

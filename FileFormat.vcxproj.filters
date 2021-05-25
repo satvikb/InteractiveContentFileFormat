@@ -69,6 +69,9 @@
     <ClInclude Include="UI\Content\cImageView.h">
       <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Content\cWebView.h">
+      <Filter>Header Files\UI\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -99,6 +102,9 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="UI\Content\cImageView.cpp">
+      <Filter>Source Files\UI\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Content\cWebView.cpp">
       <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
   </ItemGroup>

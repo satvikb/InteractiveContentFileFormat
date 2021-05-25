@@ -83,3 +83,10 @@ struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struc
 	};
 	return retPos;
 }
+
+struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+	struct wxConstraintPosition retPos = {
+		x, y, w, h
+	};
+	return retPos;
+}

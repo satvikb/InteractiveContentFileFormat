@@ -29,6 +29,7 @@
     <ClInclude Include="UI\Content\cImageView.h" />
     <ClInclude Include="UI\Content\cNativeContent.h" />
     <ClInclude Include="UI\Content\cRichTextView.h" />
+    <ClInclude Include="UI\Content\cWebView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CustomImageReader.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="UI\Content\cImageView.cpp" />
     <ClCompile Include="UI\Content\cNativeContent.cpp" />
     <ClCompile Include="UI\Content\cRichTextView.cpp" />
+    <ClCompile Include="UI\Content\cWebView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />

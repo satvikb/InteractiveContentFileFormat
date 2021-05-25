@@ -27,4 +27,5 @@ public:
 	static struct Style* getStyleByID(uint16_t styleID);
 	static std::pair<struct Container*, struct Layout*> getContainerAndLayoutByID(uint16_t containerID);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(struct elementPosition* pos);
+	static struct wxConstraintPosition convertLayoutPositionToConstraint(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 };

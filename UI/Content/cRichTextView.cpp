@@ -18,7 +18,7 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 
 void cRichTextView::interpretContent() {
 	Freeze();
-	SetFontScale(0.5f);
+	//SetFontScale(5.5f);
 	if (content->data.size() > 0) {
 		int strStart = 0;
 		int i = 0;

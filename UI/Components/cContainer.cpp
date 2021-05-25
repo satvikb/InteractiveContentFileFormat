@@ -72,6 +72,9 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
         static_cast<cImageView*>(newContent)->SetContent(content);
         //static_cast<cImageView*>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
     break;
+    case CONTENT_WEB:
+        newContent = new cWebView((cContainer*)this);
+        static_cast<cWebView*>(newContent)->SetContent(content);
     }
 
     if (newContent != nullptr) {
@@ -86,7 +89,7 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
         }
 
         wxConstraintPosition wxPos = FileManager::convertLayoutPositionToConstraint(pos);
-        cContainer::applyParentContraints(newContent, this, wxPos);
+        cContainer::applyParentConstraints(newContent, this, wxPos);
         Layout();
     }
 }
@@ -146,7 +149,7 @@ cContainer::~cContainer() {
     // TODO
 }
 
-void cContainer::applyParentContraints(wxWindow* applyTo, wxWindow* parent, struct wxConstraintPosition constraints) {
+void cContainer::applyParentConstraints(wxWindow* applyTo, wxWindow* parent, struct wxConstraintPosition constraints) {
     wxLayoutConstraints* posCons = new wxLayoutConstraints();
     posCons->left.PercentOf(parent, wxWidth, constraints.x);
     posCons->top.PercentOf(parent, wxHeight, constraints.y);
