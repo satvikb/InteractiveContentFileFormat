@@ -96,6 +96,7 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
 
 // replaces existing element (either a container or content) at index with the given content ID.
 // For now only replacing with a single content ID is supported (not with infinite containers)
+// The 0 is because infinite containers are not supported when replacing, so only first is selected.
 void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t contentID) {
     if (index < children.size()) {
         wxWindow* windowObj = children[index];
@@ -117,6 +118,16 @@ void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t conten
 
         Content* newContentData = FileManager::getContentByID(contentID);
         container->elementIDs[index] = std::vector<Chunk>{ { CHUNK_CONTENT, contentID } };
+
+        //if (container->elementIDs[index].size() > 0) {
+        //    container->elementIDs[index][0]->chunkType = CHUNK_CONTENT;
+        //    container->elementIDs[index][0]->chunkID = contentID;
+        //}
+        //else {
+        //    // TODO is this ever reached?
+        //    // if it is reached set to a new vector with 1 element, the new chunk (pointer)
+        //    //container->elementIDs[index] = std::vector<Chunk*>{ { CHUNK_CONTENT, contentID } };
+        //}
         CreateContent(newContentData, pos, index);
     }
 }

@@ -64,10 +64,12 @@ struct InteractiveContent* readFile(const char* filename){
     ic->header = header;
 
     while(i < lSize){
-        unsigned char chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-        unsigned short id = (((buffer[i]) & 0x1F) << 8) | (unsigned char)buffer[i+1]; // get 5 rightmost from first byte and add to second byte
+        std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
+        i -= 2;
+        unsigned char chunkType = chunkData.first;
+        //unsigned uint32_t id = (((buffer[i]) & 0x1F) << 8) | (unsigned char)buffer[i+1]; // get 5 rightmost from first byte and add to second byte
         char d = buffer[i];
-        printf("\nAt byte %d. Reading chunk of type: %d. ID: %d\n", i, chunkType, id);
+        //printf("\nAt byte %d. Reading chunk of type: %d. ID: %d\n", i, chunkType, id);
         // struct Header *header = malloc (sizeof (struct Header));
         switch (chunkType)
         {
@@ -110,19 +112,30 @@ struct InteractiveContent* readFile(const char* filename){
     return ic;
 }
 
+std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
+    int i = *index;
+
+    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
+    uint32_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+    i += 2; // now i is after bytes
+
+    *index = i;
+    return std::make_pair(chunkType, ID);
+}
+
 // attempts to read the layout from the given starting position
-std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
+std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index){
     int i = *index;
     
-    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2; // now i is at numElements
+    std::pair<uint8_t, uint32_t> layoutIDs = readChunkTypeAndID(buffer, &i);
+    struct Layout* layout = new Layout;
+    layout->chunkType = layoutIDs.first;
+    layout->chunkID = layoutIDs.second;
     uint8_t numberElements = buffer[i];
     i += 1;
 
-    struct Layout* layout = new Layout;
-    layout->chunkType = chunkType;
-    layout->chunkID = ID;
+    //layout->chunkType = chunkType;
+    //layout->chunkID = ID;
 
     printf("Reading layout. Total ID: %d Elements: %d\n", layout->chunkID, numberElements);
     // layout->positions = (struct elementPosition*) malloc(sizeof(struct elementPosition)*numberElements);
@@ -137,8 +150,9 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
         printf("Read position %d %d %d %d %d\n", i, pos->x, pos->y, pos->w, pos->h);
         i += 4;
         // now handle style ID
-        pos->styleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
+        std::pair<uint8_t, uint32_t> styleIDs = readChunkTypeAndID(buffer, &i);
+        pos->styleID = styleIDs.second;
+
         // now handle Infinite byte
         pos->inf = (unsigned char)buffer[i];
         unsigned char infinite = (buffer[i] >> 7) & 1;
@@ -171,35 +185,32 @@ std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index){
 
 
     *index = i;
-    return std::make_pair(ID, layout);
+    return std::make_pair(layout->chunkID, layout);
 }
 
-std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index){
+std::pair<uint32_t, struct Container*> readContainer(char* buffer, int *index){
     int i = *index;
     
     struct Container* container = new Container;
 
-    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2; // now i is at layout ID
-    uint16_t layoutID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+    std::pair<uint8_t, uint32_t> containerIDs = readChunkTypeAndID(buffer, &i);
+    container->chunkType = containerIDs.first;
+    container->chunkID = containerIDs.second;
 
-    container->chunkType = chunkType;
-    container->chunkID = ID;
-    container->layoutID = layoutID;
+    std::pair<uint8_t, uint32_t> layoutIDs = readChunkTypeAndID(buffer, &i);
+    container->layoutID = layoutIDs.second;
 
-    i += 2; // now i is at the first byte of the ID or end code
+    // now i is at the first byte of the ID or end code
 
-    printf("Reading container. Byte: %d. Container ID: %d. Layout ID: %d.\n", i, ID, layoutID);
+    printf("Reading container. Byte: %d. Container ID: %d. Layout ID: %d.\n", i, containerIDs.second, layoutIDs.second);
     // i must always point to a byte that is either the start of an ID, or a End code
     while(buffer[i] != 0x0){ // 0x0 is byte code for end of container chunk
         // init array to hold one
         std::vector<Chunk> subelements; // length of this is 1, unless its in an infinite container
         while((unsigned char)buffer[i] != 0xFF){
-            uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-            uint16_t eleID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-            subelements.push_back({chunkType, eleID});
-            i += 2;
+            std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
+            struct Chunk chunk = { chunkData.first, chunkData.second };
+            subelements.push_back(chunk);
         }
         // end container hit, skip that byte
         i += 1;
@@ -210,17 +221,17 @@ std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index){
     i += 1;
 
     *index = i;
-    return std::make_pair(ID, container);
+    return std::make_pair(container->chunkID, container);
 }
 
-std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index) {
+std::pair<uint32_t, struct Content*> readContent(char* buffer, int* index) {
     int i = *index;
 
     struct Content* content = new Content;
 
-    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2; // now i is at content type
+    std::pair<uint8_t, uint32_t> contentIDs = readChunkTypeAndID(buffer, &i);
+    content->chunkType = contentIDs.first;
+    content->chunkID = contentIDs.second;
 
     uint8_t contentType = (unsigned char)buffer[i];
     i += 1; // now i is at content length
@@ -241,22 +252,18 @@ std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index) {
         byteI += 1;
     }
 
-    content->chunkType = chunkType;
-    content->chunkID = ID;
     content->length = contentLength;
     content->type = contentType;
 
     *index = i;
-    return std::make_pair(ID, content);
+    return std::make_pair(content->chunkID, content);
 }
 
-std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
+std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index) {
     int i = *index;
 
     
-    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2;
+    std::pair<uint8_t, uint32_t> actionIDs = readChunkTypeAndID(buffer, &i);
 
     uint8_t actionType = (unsigned char)buffer[i];
     i += 1;
@@ -268,13 +275,12 @@ std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
         // 3 more bytes
         // 2 bytes - container ID
         // 1 byte - display byte
-        uint16_t containerID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
+        uint32_t containerID = readChunkTypeAndID(buffer, &i).second;
         uint8_t displayByte = (unsigned char)buffer[i];
         i += 1;
         struct Link* newLink = new Link;
-        newLink->chunkID = ID;
-        newLink->chunkType = chunkType;
+        newLink->chunkType = actionIDs.first;
+        newLink->chunkID = actionIDs.second;
         newLink->actionType = actionType;
         newLink->containerID = containerID;
         newLink->display = displayByte;
@@ -287,14 +293,12 @@ std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
         // 2 bytes - new container/content ID bytes
 
         //uint8_t oldChunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-        uint16_t oldID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
+        uint32_t oldID = readChunkTypeAndID(buffer, &i).second;
         //uint8_t newChunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-        uint16_t newID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
+        uint32_t newID = readChunkTypeAndID(buffer, &i).second;
         struct Swap* newSwap = new Swap;
-        newSwap->chunkID = ID;
-        newSwap->chunkType = chunkType;
+        newSwap->chunkType = actionIDs.first;
+        newSwap->chunkID = actionIDs.second;
         newSwap->actionType = actionType;
         newSwap->replaceID = oldID;
         newSwap->replaceWithID = newID;
@@ -306,16 +310,13 @@ std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
         // 2 bytes - container id
         // 1 byte - index
         // 2 bytes - content id
-        uint16_t containerID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
+        uint16_t containerID = readChunkTypeAndID(buffer, &i).second;
         uint8_t index = (unsigned char)buffer[i];
         i += 1;
-        uint16_t contentID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2;
-
+        uint16_t contentID = readChunkTypeAndID(buffer, &i).second;
         struct ReplaceWithContent* replace = new ReplaceWithContent;
-        replace->chunkID = ID;
-        replace->chunkType = chunkType;
+        replace->chunkType = actionIDs.first;
+        replace->chunkID = actionIDs.second;
         replace->actionType = actionType;
         replace->containerID = containerID;
         replace->index = index;
@@ -331,17 +332,16 @@ std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index) {
 
 
     *index = i;
-    return std::make_pair(ID, action);
+    return std::make_pair(action->chunkID, action);
 }
 
 
-std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index) {
+std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
     int i = *index;
 
 
-    uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint16_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2;
+    std::pair<uint8_t, uint32_t> styleIDs = readChunkTypeAndID(buffer, &i);
+
 
     //uint8_t styleType = (unsigned char)buffer[i];
     //i += 1;
@@ -384,10 +384,10 @@ std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index) {
     }
 
     struct Style* style = new Style;
-    style->chunkID = ID;
-    style->chunkType = chunkType;
+    style->chunkType = styleIDs.first;
+    style->chunkID = styleIDs.second;
     style->styles = styles;
     
     *index = i;
-    return std::make_pair(ID, style);
+    return std::make_pair(style->chunkID, style);
 }

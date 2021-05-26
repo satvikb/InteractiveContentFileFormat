@@ -79,7 +79,7 @@ struct Header {
 // the first 3 bits are 011 for layout, the last 13 bits is the actual id
 struct Chunk {
     uint8_t chunkType;
-    uint16_t chunkID;
+    uint32_t chunkID;
 };
 
 struct Layout : Chunk {
@@ -165,8 +165,10 @@ struct infiniteElementPosition {
 };
 
 struct InteractiveContent* readFile(const char* filename);
-std::pair<uint16_t, struct Layout*> readLayout(char* buffer, int *index);
-std::pair<uint16_t, struct Container*> readContainer(char* buffer, int *index);
-std::pair<uint16_t, struct Content*> readContent(char* buffer, int* index);
-std::pair<uint16_t, struct Action*> readAction(char* buffer, int* index);
-std::pair<uint16_t, struct Style*> readStyle(char* buffer, int* index);
+std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index);
+std::pair<uint32_t, struct Container*> readContainer(char* buffer, int *index);
+std::pair<uint32_t, struct Content*> readContent(char* buffer, int* index);
+std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index);
+std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index);
+
+std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index);
