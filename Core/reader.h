@@ -72,7 +72,7 @@ struct InteractiveContent {
 
 struct Header {
     unsigned short version;
-    uint16_t startContainer;
+    uint32_t startContainer;
     std::string author;
 };
 
@@ -90,8 +90,8 @@ struct Layout : Chunk {
 };
 
 struct Container : Chunk {
-    // the first 3 bits are 011 for layout, the last 13 bits is the actual layout id
-    uint16_t layoutID;
+    // the first 3(/8) bits are 011(or extended code) for layout, the last 13 (/24) bits is the actual layout id
+    uint32_t layoutID;
     // storage of actual IDs for elements
     /*
         This is a 2D array.
@@ -119,25 +119,25 @@ struct Action : Chunk {
 
 struct Link : Action {
     // links can only link to containers
-    uint16_t containerID;
+    uint32_t containerID;
     // last 3 bits define how many levels of the containers should be shows (if containers embed containers, etc.)
     uint8_t display;
 };
 
 struct Swap : Action {
     // The element to replace. Must currently be visible.
-    uint16_t replaceID;
+    uint32_t replaceID;
     // This element will replace the above ID
-    uint16_t replaceWithID;
+    uint32_t replaceWithID;
 };
 
 struct ReplaceWithContent : Action {
     // The container to target. Must currently be visible.
-    uint16_t containerID;
+    uint32_t containerID;
     // The index of the element inside this container to replace
     uint8_t index;
     // This content will replace the above element at the index
-    uint16_t replaceWithContentID;
+    uint32_t replaceWithContentID;
 };
 
 struct Style : Chunk {

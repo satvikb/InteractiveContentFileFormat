@@ -116,8 +116,32 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
     int i = *index;
 
     uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
-    uint32_t ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-    i += 2; // now i is after bytes
+    uint32_t ID = 0;
+
+    if (chunkType == 0x6) {
+        // 110 - use extended range
+        chunkType = buffer[i] & 0x1F;
+
+        // chunkType = 11110, meaning entire byte is 11011110
+        // this is for the extended extended range, full 32 bits for ID
+        if (chunkType == 0x1E) {
+            // use 4 bytes for ID with the entire next byte being the chunk ID
+
+            chunkType = (unsigned char)buffer[i + 1];
+            ID = (buffer[i + 2] << 24) | (unsigned char)(buffer[i + 3] << 16) | (unsigned char)(buffer[i + 4] << 8) | (unsigned char)buffer[i + 5];
+            i += 6;
+        }
+        else {
+            // bytes i+1 to i+3 have the 24 bit ID
+            ID = (buffer[i+1] << 16) | (unsigned char)(buffer[i+2] << 8) | (unsigned char)buffer[i+3];
+            i += 4;
+        }
+    }
+    else {
+        ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+        i += 2; 
+    }
+    // now i is after ID bytes
 
     *index = i;
     return std::make_pair(chunkType, ID);
