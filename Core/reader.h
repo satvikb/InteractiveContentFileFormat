@@ -17,6 +17,10 @@
 #define CHUNK_ACTION 0x4
 #define CHUNK_STYLING 0x5
 #define CHUNK_EXTENDED 0x6
+// 0x7 is 111, end container bits
+// --- Begin Extended Range Chunk Types
+#define CHUNK_HEADER 0x8 // 01000
+#define CHUNK_32_EXTENDED 0x1E // 11110
 
 #define CONTENT_TEXT 0x1
 #define CONTENT_IMAGE 0x2
@@ -53,11 +57,11 @@ struct Content;
 struct InteractiveContent {
     struct Header* header;
     // Maps ID (with both Chunk Type and the actual ID to the respective pointer type
-    std::map<uint16_t, struct Layout*> layouts;
-    std::map<uint16_t, struct Container*> containers;
-    std::map<uint16_t, struct Action*> actions;
-    std::map<uint16_t, struct Content*> content;
-    std::map<uint16_t, struct Style*> styles;
+    std::map<uint32_t, struct Layout*> layouts;
+    std::map<uint32_t, struct Container*> containers;
+    std::map<uint32_t, struct Action*> actions;
+    std::map<uint32_t, struct Content*> content;
+    std::map<uint32_t, struct Style*> styles;
 };
 
 //// TODO make substructs to hold array of each of these
@@ -73,7 +77,8 @@ struct InteractiveContent {
 struct Header {
     unsigned short version;
     uint32_t startContainer;
-    std::string author;
+    uint32_t autoUpdateVersion;
+    std::map<std::string, std::string> metadata;
 };
 
 // the first 3 bits are 011 for layout, the last 13 bits is the actual id
@@ -165,6 +170,7 @@ struct infiniteElementPosition {
 };
 
 struct InteractiveContent* readFile(const char* filename);
+struct Header* readHeader(char* buffer, int* index);
 std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index);
 std::pair<uint32_t, struct Container*> readContainer(char* buffer, int *index);
 std::pair<uint32_t, struct Content*> readContent(char* buffer, int* index);

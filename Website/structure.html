@@ -24,7 +24,12 @@
   (Magic Number)              73 61 6d 61 6c 69 74 6c 6e 76 75 61
   (File version)              XX XX (Version 1 of the file is 00 01)
   (Start Container ID)        XX XX (001 xxxxx xxxxxxxx for the first container to show when opening the file, the entry point)
-  (Author Name)               Null terminated string</pre>
+  ********************************************************
+  ** From here on, everything is an Key Value pair.     **
+  ** The key is a null byte terminated string.          **
+  ** The value is a null byte terminated string.        **
+  ********************************************************
+  (End header)                00    (A 0 byte after the final value, or after container ID if there are no values, which ends the header)</pre>
     <h3>2.2. Components</h3>
     <p>All components start with its ID data: 3 bits for the Type and the rest for its ID.</p>
     <h4>2.2.1. Layouts</h4>

@@ -31,37 +31,8 @@ struct InteractiveContent* readFile(const char* filename){
 
     i = 0;
 
-    struct Header *header = new Header;
-    // read magic num
+    // confirm magic num
     i += 4;
-    // read file version
-    unsigned short version = buffer[i] << 8 | (buffer[i+1]);
-    header->version = version;
-    printf("Version: %d\n", version);
-    i += 2;
-    short startContainerId = buffer[i] << 8 | (buffer[i+1]);
-    header->startContainer = startContainerId;
-    i += 2;
-    std::cout << "READING AUTHOR" << std::endl;
-    printf("Author: ");
-    //int authorI = 0;
-    std::string author;
-    for(; buffer[i] != '\0'; i++){
-        //header->author[authorI] = buffer[i];
-        author += (buffer[i]);
-        printf("%c\n", buffer[i]);
-    }
-    //header->author[authorI+1] = '\0';
-    header->author = author;
-    //std::string author;
-    //const char* authorStart = &buffer[i];
-    //strcpy(author, authorStart);
-    //printf("\n");
-    // i = the byte number of the null of the author
-    // from here on out, its all just chunks
-    i += 1;
-
-    ic->header = header;
 
     while(i < lSize){
         std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
@@ -73,6 +44,13 @@ struct InteractiveContent* readFile(const char* filename){
         // struct Header *header = malloc (sizeof (struct Header));
         switch (chunkType)
         {
+        case CHUNK_HEADER:
+        {
+            // header, header ID is not used/thrown away (waste of 3 bytes)
+            struct Header* header = readHeader(buffer, &i);
+            ic->header = header;
+        }
+        break;
         case CHUNK_CONTAINER:
         {
             // container
@@ -118,13 +96,13 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
     uint8_t chunkType = (buffer[i] >> 5) & 0x7; // get 3 leftmost
     uint32_t ID = 0;
 
-    if (chunkType == 0x6) {
+    if (chunkType == CHUNK_EXTENDED) {
         // 110 - use extended range
         chunkType = buffer[i] & 0x1F;
 
         // chunkType = 11110, meaning entire byte is 11011110
         // this is for the extended extended range, full 32 bits for ID
-        if (chunkType == 0x1E) {
+        if (chunkType == CHUNK_32_EXTENDED) {
             // use 4 bytes for ID with the entire next byte being the chunk ID
 
             chunkType = (unsigned char)buffer[i + 1];
@@ -145,6 +123,61 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
 
     *index = i;
     return std::make_pair(chunkType, ID);
+}
+
+struct Header* readHeader(char* buffer, int* index) {
+    int i = *index;
+    i += 2; // skip the header chunk type and ID
+
+    struct Header* header = new Header;
+    header->autoUpdateVersion = 0;
+
+    // read file version
+    unsigned short version = buffer[i] << 8 | (buffer[i + 1]);
+    header->version = version;
+    printf("Version: %d\n", version);
+    i += 2;
+    short startContainerId = buffer[i] << 8 | (buffer[i + 1]);
+    header->startContainer = startContainerId;
+    i += 2;
+
+    // begin string:string map
+    std::map<std::string, std::string> metadata;
+
+    while (buffer[i] != 0x0) {
+        //  read the next key value pair
+
+        std::string key;
+        for (; buffer[i] != '\0'; i++) {
+            //header->author[authorI] = buffer[i];
+            key += buffer[i];
+            //printf("%c\n", buffer[i]);
+        }
+        i += 1; // skip null byte for key
+
+        // TODO test if key == "version_au" and set autoUpdateVersion instead of key value pair
+        if (key.compare("version_au") == 0) {
+            uint32_t updateVersion = uint32_t((unsigned char)(buffer[i]) << 24 |
+                (unsigned char)(buffer[i + 1]) << 16 |
+                (unsigned char)(buffer[i + 2]) << 8 |
+                (unsigned char)(buffer[i + 3]));
+            i += 4;
+            header->autoUpdateVersion = updateVersion;
+        }
+        else {
+            std::string value;
+            for (; buffer[i] != '\0'; i++) {
+                value += buffer[i];
+            }
+            metadata[key] = value;
+            i += 1; // skip null byte for value
+        }
+    }
+    i += 1; // skip header end byte
+
+    header->metadata = metadata;
+    *index = i;
+    return header;
 }
 
 // attempts to read the layout from the given starting position
@@ -362,10 +395,7 @@ std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index) {
 
 std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
     int i = *index;
-
-
     std::pair<uint8_t, uint32_t> styleIDs = readChunkTypeAndID(buffer, &i);
-
 
     //uint8_t styleType = (unsigned char)buffer[i];
     //i += 1;
