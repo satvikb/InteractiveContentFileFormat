@@ -1,8 +1,10 @@
 #include "reader.h"
-#include "httplib.h"
+#include <cpr/cpr.h>
+
 #include <iostream> 
 #define CPPHTTPLIB_OPENSSL_SUPPORT
-
+// #define _SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING
+// 
 // class to read file format
 bool readFile(struct InteractiveContent* ic, const char* filename) {
     printf("reading %s ", filename);
@@ -32,20 +34,48 @@ bool readFile(struct InteractiveContent* ic, const char* filename) {
 }
 
 bool streamFile(struct InteractiveContent* ic, const char* url) {
-    httplib::Client cli(url);
-    auto res = cli.Get("/");
+    //try
+    //{
+    //    // you can pass http::InternetProtocol::V6 to Request to make an IPv6 request
+    //    http::Request request{ "https://httpbin.org/get" };
+
+    //    // send a get request
+    //    const auto response = request.send("GET");
+    //    std::cout << std::string{ response.body.begin(), response.body.end() } << '\n'; // print the result
+    //    return true;
+    //}
+    //catch (const std::exception& e)
+    //{
+    //    std::cerr << "Request failed, error: " << e.what() << '\n';
+    //    return false;
+    //}
+ /*   httplib::Client cli("http://example.com");
+    auto res = cli.Get("/hi");
     res->status;
-    res->body;
+    res->body;*/
 
     //readFileData(ic, );
-    return true;
+
+    cpr::Response r = cpr::Get(cpr::Url{ url });
+    r.status_code;                  // 200
+    r.header["content-type"];       // application/json; charset=utf-8
+    r.text;
+
+    std::string data = r.text;
+    double bytes = r.downloaded_bytes;
+    return readFileData(ic, &data[0], bytes);;
 }
 
-void readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes){
+bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes){
     int i = 0;
 
+    const unsigned char magicNum[] = { 0x73, 0x61, 0x6D, 0x61, 0x6C, 0x69, 0x74, 0x6C, 0x6E, 0x76, 0x75, 0x61 };
+
     // confirm magic num
-    i += 4;
+    if (memcmp(magicNum, buffer, MAGIC_NUMBER_LENGTH) != 0) {
+        return false;
+    }
+    i += MAGIC_NUMBER_LENGTH;
 
     while(i < numberBytes){
         std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
@@ -99,7 +129,7 @@ void readFileData(struct InteractiveContent* ic, char* buffer, size_t numberByte
         }
     }
 
-    //return ic;
+    return true;
 }
 
 std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
@@ -149,9 +179,8 @@ struct Header* readHeader(char* buffer, int* index) {
     header->version = version;
     printf("Version: %d\n", version);
     i += 2;
-    short startContainerId = buffer[i] << 8 | (buffer[i + 1]);
+    uint32_t startContainerId = readChunkTypeAndID(buffer, &i).second;
     header->startContainer = startContainerId;
-    i += 2;
 
     // begin string:string map
     std::map<std::string, std::string> metadata;

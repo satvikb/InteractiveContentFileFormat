@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Core\CustomImageReader.h" />
     <ClInclude Include="Core\httplib.h" />
+    <ClInclude Include="Core\HTTPRequest.hpp" />
     <ClInclude Include="Core\WindowManager.h" />
     <ClInclude Include="Core\FileManager.h" />
     <ClInclude Include="Core\reader.h" />
@@ -121,16 +122,16 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc;  C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\include; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib; C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,10 +139,10 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc;  C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\include; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -149,22 +150,22 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib; C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc;  C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\include; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib; C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,10 +173,10 @@
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\include; C:\Users\Satvik\Documents\Development\SDKs\wxw315\include\msvc;  C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\include; $(ProjectDir); $(ProjectDir)\UI; $(ProjectDir)\UI\Content;  $(ProjectDir)\UI\Components; $(ProjectDir)\Core;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -183,7 +184,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Satvik\Documents\Development\SDKs\wxw315\lib\vc_lib; C:\Users\Satvik\Documents\Development\vcpkg\packages\cpr_x86-windows\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

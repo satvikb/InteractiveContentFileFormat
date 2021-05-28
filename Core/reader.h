@@ -11,6 +11,7 @@
 #include <vector>
 
 // Define constants
+#define MAGIC_NUMBER_LENGTH 12
 #define CHUNK_CONTAINER 0x1
 #define CHUNK_CONTENT 0x2
 #define CHUNK_LAYOUT 0x3
@@ -182,7 +183,7 @@ struct infiniteElementPosition {
 bool readFile(struct InteractiveContent* ic, const char* filename);
 bool streamFile(struct InteractiveContent* ic, const char* url);
 
-void readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes);
+bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes);
 
 struct Header* readHeader(char* buffer, int* index);
 std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index);
