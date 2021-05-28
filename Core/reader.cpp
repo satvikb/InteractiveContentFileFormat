@@ -1,40 +1,53 @@
 #include "reader.h"
+#include "httplib.h"
 #include <iostream> 
-// https://stackoverflow.com/questions/21737906/how-to-read-write-utf8-text-files-in-c/21745211
+#define CPPHTTPLIB_OPENSSL_SUPPORT
 
 // class to read file format
-struct InteractiveContent* readFile(const char* filename){
+bool readFile(struct InteractiveContent* ic, const char* filename) {
     printf("reading %s ", filename);
 
-    FILE * pFile;
+    FILE* pFile;
     size_t lSize = 0;
-    char * buffer;
-    int i;
-    
-    fopen_s(&pFile, filename , "rb" );
-    if (pFile==NULL) {
-        fputs ("File error",stderr); 
-        return nullptr;
+    char* buffer;
+
+    fopen_s(&pFile, filename, "rb");
+    if (pFile == NULL) {
+        fputs("File error", stderr);
+        return false;
     }
 
-    fseek (pFile , 0 , SEEK_END);
-    lSize = ftell (pFile);
-    rewind (pFile);
-    
-    buffer = (char *)malloc(lSize * sizeof(char)); // Enough memory for the file
+    fseek(pFile, 0, SEEK_END);
+    lSize = ftell(pFile);
+    rewind(pFile);
+
+    buffer = (char*)malloc(lSize * sizeof(char)); // Enough memory for the file
     fread(buffer, lSize, 1, pFile); // Read in the entire file
     fclose(pFile); // Close the file
 
     printf("Size: %ld BYTES\n", lSize);
 
-    struct InteractiveContent* ic = new InteractiveContent;
+    readFileData(ic, buffer, lSize);
+    return true;
+}
 
-    i = 0;
+bool streamFile(struct InteractiveContent* ic, const char* url) {
+    httplib::Client cli(url);
+    auto res = cli.Get("/");
+    res->status;
+    res->body;
+
+    //readFileData(ic, );
+    return true;
+}
+
+void readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes){
+    int i = 0;
 
     // confirm magic num
     i += 4;
 
-    while(i < lSize){
+    while(i < numberBytes){
         std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
         i -= 2;
         unsigned char chunkType = chunkData.first;
@@ -84,10 +97,9 @@ struct InteractiveContent* readFile(const char* filename){
         default:
             break;
         }
-        printf("Finished reading chunk. Now at byte: %d/%ld\n", i, lSize);
     }
 
-    return ic;
+    //return ic;
 }
 
 std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
@@ -381,8 +393,38 @@ std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index) {
         action = replace;
     }
     break;
-    default: {
+    case ACTION_DOWNLOAD_CHUNKS: {
+        std::string url;
+        for (; buffer[i] != '\0'; i++) {
+            url += buffer[i];
+        }
+        i += 1;
+        struct DownloadChunks* downloadAction = new DownloadChunks;
+        downloadAction->chunkType = actionIDs.first;
+        downloadAction->chunkID = actionIDs.second;
+        downloadAction->url = url;
+        downloadAction->actionType = actionType;
+        action = downloadAction;
+    }
+        break;
+    case ACTION_EXECUTE_COMPOSITE: {
+        struct ExecuteComposite* executeComposite = new ExecuteComposite;
+        executeComposite->chunkType = actionIDs.first;
+        executeComposite->chunkID = actionIDs.second;
+        executeComposite->actionType = actionType;
+        while (buffer[i] != 0x0) {
+            std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID(buffer, &i);
+            if (actionID.first == CHUNK_ACTION) { // sanity check
+                executeComposite->actionsToExecute.push_back(actionID.second);
+            }
+        }
+        i += 1;
 
+        action = executeComposite;
+    }
+    break;
+    default: {
+        
     }
     break;
     }

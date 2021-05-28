@@ -73,12 +73,15 @@
     <p>Replacement Actions replace the specified Element with another Element. An Element refers to either a Container or Content.</p>
     <pre>
   (Action ID - 16 Bits)       100 xxxxx xxxxxxxx [x bits are the Action ID]
-  (Action Type - 4 bits)      xxxx
-    (Type: Link)              0001
-    (Type: Replacement)       0010
+  (Action Type - 16 bits)     xxxxxxxx
+    (Type: Link)              00000001
+    (Type: Swap Containers)   00000010
+    (Type: Content Replace)   00000011
+    (Type: Download Chunks)   00000100
+    (Type: Composite Action)  00000101
   {Type: Link}
-    (Link To Container ID)  001 xxxxx xxxxxxxx [x bits are Container ID]
-    (Display Mode Byte)     000VWXYZ
+    (Link To Container ID)    001 xxxxx xxxxxxxx [x bits are Container ID]
+    (Display Mode Byte)       000VWXYZ
       V bit: Show this container as a tooltip. The display of the tooltip is left to the reader.
       W bit: Allow showing a back button to return to the container before the Link was pressed.
       XYZ bits: Defines how many sublevels of Containers that should be shown from the linked Container.
@@ -91,8 +94,19 @@
         110: Show the 6th parent Container from the linked Container.
         111: Show the highest Container ancestor possible.
   {Type: Replacement}
-    (Replace Element ID)      (001/010) xxxxx xxxxxxxx [ID of either a Container or Content to replace. Must be currently visable]
-    (Replace with ID)         (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]</pre>
+    (Replace Container ID)    001 xxxxx xxxxxxxx [ID of Container to replace. Must be currently visable.]
+    (Replace with ID)         001 xxxxx xxxxxxxx [ID of Container to replace with.]
+  {Type: Content Replace}
+    (Target Container ID)     001 xxxxx xxxxxxxx [ID of Container to target.]
+    (Element Index)           xxxxxxxx           [Element index for the element to replace in the target container. Corresponds to the layout element number.]
+    (Replace content)         010 xxxxx xxxxxxxx [ID of the Content to replace the targetted element with.]
+  {Type: Download Chunks}
+    (URL)                     <url bytes> 00     [Null terminated URL in ASCII]
+  {Type: Composite Action}
+    (Action ID N)             100 xxxxx xxxxxxxx [x bits are the Action ID]
+    00
+
+</pre>
 
     <h4>2.2.4. Content</h4>
     <p>Content is the foundation of what is displyed to the user. Content simply defines the data to be displayed. In order to be displayed, Content must be part of a container for it to be displayed. Not all Content must be part of a Container.</p>

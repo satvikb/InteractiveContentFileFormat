@@ -72,6 +72,9 @@
     <ClInclude Include="UI\Content\cWebView.h">
       <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Core\httplib.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">

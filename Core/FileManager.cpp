@@ -8,8 +8,12 @@
 InteractiveContent* FileManager::ic;
 
 bool FileManager::loadFile(const char* filename) {
-	ic = readFile(filename);
-	return true;
+	ic = new InteractiveContent;
+	return readFile(ic, filename);
+}
+
+bool FileManager::addChunksFromURL(const char* url) {
+	return streamFile(ic, url);
 }
 
 uint16_t FileManager::getStartContainerID() {

@@ -19,6 +19,7 @@ private:
 
 public:
 	static bool loadFile(const char* filename);
+	static bool addChunksFromURL(const char* url);
 	static uint16_t getStartContainerID();
 	static struct Layout* getLayoutByID(uint16_t layoutID);
 	static struct Container* getContainerByID(uint16_t containerID);

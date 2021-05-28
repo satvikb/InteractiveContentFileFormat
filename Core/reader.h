@@ -34,6 +34,8 @@
 #define ACTION_LINK 0x1
 #define ACTION_SWAP 0x2
 #define ACTION_REPLACE_WITH_CONTENT 0x3
+#define ACTION_DOWNLOAD_CHUNKS 0x4
+#define ACTION_EXECUTE_COMPOSITE 0x5
 
 #define STYLE_COMPONENT_BORDER_WIDTH 0x01
 #define STYLE_COMPONENT_BORDER_COLOR 0x02
@@ -145,6 +147,14 @@ struct ReplaceWithContent : Action {
     uint32_t replaceWithContentID;
 };
 
+struct DownloadChunks : Action {
+    std::string url;
+};
+
+struct ExecuteComposite : Action {
+    std::vector<uint32_t> actionsToExecute;
+};
+
 struct Style : Chunk {
     // TODO uint16 for extended key range
     std::map<uint8_t, std::any> styles;
@@ -169,7 +179,11 @@ struct infiniteElementPosition {
     uint16_t padding;
 };
 
-struct InteractiveContent* readFile(const char* filename);
+bool readFile(struct InteractiveContent* ic, const char* filename);
+bool streamFile(struct InteractiveContent* ic, const char* url);
+
+void readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes);
+
 struct Header* readHeader(char* buffer, int* index);
 std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index);
 std::pair<uint32_t, struct Container*> readContainer(char* buffer, int *index);
