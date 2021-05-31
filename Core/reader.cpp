@@ -57,13 +57,13 @@ bool streamFile(struct InteractiveContent* ic, const char* url) {
     //readFileData(ic, );
 
     cpr::Response r = cpr::Get(cpr::Url{ url });
-    r.status_code;                  // 200
-    r.header["content-type"];       // application/json; charset=utf-8
-    r.text;
+    //r.status_code;                  // 200
+    //r.header["content-type"];       // application/json; charset=utf-8
+    //r.text;
 
     std::string data = r.text;
     double bytes = r.downloaded_bytes;
-    return readFileData(ic, &data[0], bytes);;
+    return readFileData(ic, &data[0], bytes);
 }
 
 bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes){

@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="Core\CustomImageReader.h" />
     <ClInclude Include="Core\httplib.h" />
-    <ClInclude Include="Core\HTTPRequest.hpp" />
     <ClInclude Include="Core\WindowManager.h" />
     <ClInclude Include="Core\FileManager.h" />
     <ClInclude Include="Core\reader.h" />
