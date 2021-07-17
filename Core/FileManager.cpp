@@ -1,5 +1,4 @@
 #include "FileManager.h"
-#include <reader.cpp>
 
 // TODO for all functions: 
 // error handling, check for null ic

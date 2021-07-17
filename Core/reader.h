@@ -9,6 +9,7 @@
 #include <map>
 #include <any>
 #include <vector>
+#include <cpr/response.h>
 
 // Define constants
 #define MAGIC_NUMBER_LENGTH 12
@@ -182,6 +183,7 @@ struct infiniteElementPosition {
 };
 
 bool readFile(struct InteractiveContent* ic, const char* filename);
+cpr::Response downloadFileData(const char* url);
 bool streamFile(struct InteractiveContent* ic, const char* url);
 
 bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberBytes);
