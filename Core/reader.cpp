@@ -33,36 +33,18 @@ bool readFile(struct InteractiveContent* ic, const char* filename) {
     return true;
 }
 
-bool streamFile(struct InteractiveContent* ic, const char* url) {
-    //try
-    //{
-    //    // you can pass http::InternetProtocol::V6 to Request to make an IPv6 request
-    //    http::Request request{ "https://httpbin.org/get" };
-
-    //    // send a get request
-    //    const auto response = request.send("GET");
-    //    std::cout << std::string{ response.body.begin(), response.body.end() } << '\n'; // print the result
-    //    return true;
-    //}
-    //catch (const std::exception& e)
-    //{
-    //    std::cerr << "Request failed, error: " << e.what() << '\n';
-    //    return false;
-    //}
- /*   httplib::Client cli("http://example.com");
-    auto res = cli.Get("/hi");
-    res->status;
-    res->body;*/
-
-    //readFileData(ic, );
-
+cpr::Response downloadFileData(const char* url) {
     cpr::Response r = cpr::Get(cpr::Url{ url });
     //r.status_code;                  // 200
     //r.header["content-type"];       // application/json; charset=utf-8
     //r.text;
+    return r;
+}
 
-    std::string data = r.text;
-    double bytes = r.downloaded_bytes;
+bool streamFile(struct InteractiveContent* ic, const char* url) {
+    cpr::Response res = downloadFileData(url);
+    std::string data = res.text;
+    double bytes = res.downloaded_bytes;
     return readFileData(ic, &data[0], bytes);
 }
 
@@ -97,30 +79,30 @@ bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberByte
         case CHUNK_CONTAINER:
         {
             // container
-            std::pair<uint16_t, struct Container*> newContainer = readContainer(buffer, &i);
+            std::pair<uint32_t, struct Container*> newContainer = readContainer(buffer, &i);
             ic->containers.insert(newContainer);
         }
             break;
         case CHUNK_CONTENT: {
             // content (2)
-            std::pair<uint16_t, struct Content*> newContent = readContent(buffer, &i);
+            std::pair<uint32_t, struct Content*> newContent = readContent(buffer, &i);
             ic->content.insert(newContent);
         }
             break;
         case CHUNK_LAYOUT: {
             // layout
-            std::pair<uint16_t, struct Layout*> newLayout = readLayout(buffer, &i);
+            std::pair<uint32_t, struct Layout*> newLayout = readLayout(buffer, &i);
             ic->layouts.insert(newLayout);
         }
             break;
         case CHUNK_ACTION: {
             // action
-            std::pair<uint16_t, struct Action*> newAction = readAction(buffer, &i);
+            std::pair<uint32_t, struct Action*> newAction = readAction(buffer, &i);
             ic->actions.insert(newAction);
         }
             break;
         case CHUNK_STYLING: {
-            std::pair<uint16_t, struct Style*> newStyle = readStyle(buffer, &i);
+            std::pair<uint32_t, struct Style*> newStyle = readStyle(buffer, &i);
             ic->styles.insert(newStyle);
         }
             break;

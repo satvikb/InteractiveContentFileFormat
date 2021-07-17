@@ -26,6 +26,7 @@
 #define CONTENT_TEXT 0x1
 #define CONTENT_IMAGE 0x2
 #define CONTENT_WEB 0x23 // 35 in decimal, external content type
+#define CONTENT_STREAMED 0x24
 
 #define IMAGE_METADATA_START 0x1
 #define IMAGE_METADATA_END 0x2

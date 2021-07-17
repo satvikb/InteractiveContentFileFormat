@@ -75,6 +75,11 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
     case CONTENT_WEB:
         newContent = new cWebView((cContainer*)this);
         static_cast<cWebView*>(newContent)->SetContent(content);
+        break;
+    case CONTENT_STREAMED:
+        CreateContent(FileManager::getStreamedContent(content), pos, index);
+        return;
+        break;
     }
 
     if (newContent != nullptr) {

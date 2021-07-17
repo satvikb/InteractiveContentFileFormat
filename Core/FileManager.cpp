@@ -1,4 +1,5 @@
 #include "FileManager.h"
+#include <reader.cpp>
 
 // TODO for all functions: 
 // error handling, check for null ic
@@ -53,6 +54,18 @@ struct Content* FileManager::getContentByID(uint16_t contentID) {
 	else {
 		return nullptr;
 	}
+}
+
+struct Content* FileManager::getStreamedContent(Content* content) {
+	std::vector<uint8_t> streamURLBytes = content->data;
+	std::string streamURL(streamURLBytes.begin(), streamURLBytes.end());
+	cpr::Response res = downloadFileData(streamURL.c_str());
+	std::string data = res.text;
+	std::pair<uint32_t, struct Content*> newContentPair = readContent(&data[0], 0);
+	Content* newContent = newContentPair.second;
+	// the streamed content ID does not matter, keep the original ID
+	newContent->chunkID = content->chunkID;
+	return newContent;
 }
 
 struct Action* FileManager::getActionByID(uint16_t actionID) {
