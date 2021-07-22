@@ -112,7 +112,7 @@ struct Container : Chunk {
             n > 1 elements: the ID array has n+1 elements, the first n is list of container/contnts, n+1 is 1111111. ERROR if layout.positions[i].inf == false
     */
     // a vector of pointers to elementIDs
-    std::vector<std::vector<Chunk>> elementIDs;
+    std::vector<Chunk> elementIDs;
 };
 
 struct Content : Chunk{

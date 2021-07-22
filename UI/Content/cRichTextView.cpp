@@ -57,12 +57,15 @@ void cRichTextView::interpretControlBytes(int* index) {
 		switch (val) {
 		// Start Style
 		case 0x80: {
-			uint8_t left = content->data[i];
-			uint8_t right = content->data[i + 1];
-			i += 2; // skip the style ID bytes
-			uint16_t styleID = getIDFromBytes(left, right);
-			styleIDs.push(styleID);
-			interpretTextStyle(FileManager::getStyleByID(styleID), false);
+			std::vector<uint8_t> data = content->data;
+			std::pair<uint8_t, uint32_t> styleID = readChunkTypeAndID((char*)&data[0], &i);
+
+			//uint8_t left = content->data[i];
+			//uint8_t right = content->data[i + 1];
+			//i += 2; // skip the style ID bytes
+			//uint16_t styleID = getIDFromBytes(left, right);
+			styleIDs.push(styleID.second);
+			interpretTextStyle(FileManager::getStyleByID(styleID.second), false);
 		}
 		break;
 		// End Style
@@ -73,13 +76,16 @@ void cRichTextView::interpretControlBytes(int* index) {
 		break;
 		// Begin Action/URL
 		case 0x82: {
-			uint8_t left = content->data[i];
-			uint8_t right = content->data[i+1];
-			i += 2; // skip the action ID bytes
-			uint16_t actionID = getIDFromBytes(left, right);
+			std::vector<uint8_t> data = content->data;
+			std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID((char*)&data[0], &i);
+
+			//uint8_t left = content->data[i];
+			//uint8_t right = content->data[i+1];
+			//i += 2; // skip the action ID bytes
+			//uint16_t actionID = getIDFromBytes(left, right);
 			wxTextPos pos = GetLastPosition();
 
-			actions[pos] = actionID;
+			actions[pos] = actionID.second;
 			BeginURL(wxT("d")); // TODO what to put here? cant be empty
 		}
 		break;

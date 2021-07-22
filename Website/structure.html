@@ -32,7 +32,7 @@
   ********************************************************
   (End header)                00    (A 0 byte after the final value, or after container ID if there are no values, which ends the header)</pre>
     <h3>2.2. Components</h3>
-    <p>All components start with its ID data: 3 bits for the Type and the rest for its ID.</p>
+    <p>All components start with its ID data: The first 3 bits are for the Type and the next 13 bits for its ID. If the Type is 110, the extended bit range is used, where the first byte is used for the Type (110xxxxx) and the next 24 bits are for the ID.</p>
     <h4>2.2.1. Layouts</h4>
     <p>Layouts define the positions of elements. Layouts alone do nothing. Layouts are referenced by Containers to determine how the elements in the Container are positioned.</p>
     <p>Positions of elements are given as a rectangle (X, Y, Width, Height), where each value is a percent from 0 and 100. This percent is relative to the parent element.</p>
@@ -40,23 +40,12 @@
   (Layout ID - 16 bits)       011 xxxxx xxxxxxxx [x bits are the Layout ID]
   (Number of elements)        xxxxxxxx
   {Element N}
-    (Position X)              XX XX [2 bytes, int from 0%-100%]
-    (Position Y)              XX XX [2 bytes, int from 0%-100%]
-    (Position Width)          XX XX [2 bytes, int from 0%-100%]
-    (Position Height)         XX XX [2 bytes, int from 0%-100%]
+    (Position X)              XX [1 byte, int from 0%-100%]
+    (Position Y)              XX [1 byte, int from 0%-100%]
+    (Position Width)          XX [1 byte, int from 0%-100%]
+    (Position Height)         XX [1 byte, int from 0%-100%]
     (Style ID)                XX XX [2 bytes, Style to apply to this element]
-    (Infinite Byte)           0000wxyz
-      w bit - show page numbers (?)
-      x bit - enable paging (1 for paging), paging means only multiples of the width/height of the element are shown at a time
-      y bit - direction of infinite expansion. 0 for horizontal, 1 for vertical.
-      z bit - set this bit to 1 to support infinite sub elements
-        if z bit = 1, the positioning bytes below must be defined
-    {if z = 1}
-      (Start X)               XX XX [2 bytes, int from 0%-100%]
-      (Start Y)               XX XX [2 bytes, int from 0%-100%]
-      (Width of each ele)     XX XX [2 bytes, int from 0%-100%]
-      (Height of each ele)    XX XX [2 bytes, int from 0%-100%]
-      (Padding btwn ele)      XX XX [2 bytes, int from 0%-100%, uses y bit direction to decide to multiply by width or height]</pre>
+    </pre>
     <h4>2.2.2. Containers</h4>
     <p>Containers each have a defined Layout to display elements. Containers then define the Elements they contain, which can either be other Containers or Content.</p>
     <p>The position in the Layout that corresponds to each Element is index based in ascending order, with the first element defined in the Layout having index 0. This index is the same index used in Actions.</p>
@@ -65,8 +54,7 @@
   (Layout ID - 16 bits)       011 xxxxx xxxxxxxx [x bits are the Layout ID]
   {For each Element N in the Layout}
     (Element ID - 16 Bits)    (001/010) xxxxx xxxxxxxx [ID of either a Container or Content.]
-    (Delimeter btwn Elements) FF (Used especially when Containers are infinite to know when to move onto the next Layout element.)
-  (Byte to end Container)     00</pre>
+    </pre>
     <h4>2.2.3. Actions</h4>
     <p>Actions are the core of Interactive Content and is what enables content to
     be interactive. There are three types of Actions: Links, Replacement, and Appending (?).</p>

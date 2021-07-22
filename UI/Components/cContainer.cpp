@@ -28,29 +28,25 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
     for (int i = 0; i < container->elementIDs.size(); i++) {
         elementPosition* pos = layout->positions[i];
 
-        std::vector<Chunk> subelements = container->elementIDs[i];
+        Chunk ID = container->elementIDs[i];
 
-        // should be one, unless infinite
-        for (int j = 0; j < subelements.size(); j++) {
-            Chunk ID = subelements[j];
-
-            struct Container* container = FileManager::getContainerByID(ID.chunkID);
-            if (container != nullptr) {
-                // create another cContainer
+        struct Container* container = FileManager::getContainerByID(ID.chunkID);
+        if (ID.chunkType == CHUNK_CONTAINER && container != nullptr) {
+            // create another cContainer
+        }
+        else {
+            // try content
+            struct Content* content = FileManager::getContentByID(ID.chunkID);
+            if (content != nullptr) {
+                // TODO decide how to handle inviidual content types
+                // testing for positioning
+                CreateContent(content, pos);
             }
             else {
-                // try content
-                struct Content* content = FileManager::getContentByID(ID.chunkID);
-                if (content != nullptr) {
-                    // TODO decide how to handle inviidual content types
-                    // testing for positioning
-                    CreateContent(content, pos);
-                }
-                else {
-                    // ?
-                }
+                // ?
             }
         }
+        
     }
 }
 
@@ -107,14 +103,13 @@ void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t conten
         wxWindow* windowObj = children[index];
         elementPosition* pos = layout->positions[index];
 
-        std::vector<Chunk> subelements = container->elementIDs[index];
-        bool isContainer = subelements.size() > 1 || (subelements.size() > 0 && subelements[0].chunkID == CHUNK_CONTAINER);
+        Chunk chunk = container->elementIDs[index];
+        bool isContainer = chunk.chunkID == CHUNK_CONTAINER;
         if (isContainer) {
             // destroy container
             cContainer* c = dynamic_cast<cContainer*>(windowObj);
             WindowManager::DestroyContainer(c);
-        }
-        else {
+        } else {
             // destroy content
             windowObj->Show(false);
             windowObj->Destroy(); // TODO
@@ -122,7 +117,7 @@ void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t conten
         }
 
         Content* newContentData = FileManager::getContentByID(contentID);
-        container->elementIDs[index] = std::vector<Chunk>{ { CHUNK_CONTENT, contentID } };
+        container->elementIDs[index] = { CHUNK_CONTENT, contentID };
 
         //if (container->elementIDs[index].size() > 0) {
         //    container->elementIDs[index][0]->chunkType = CHUNK_CONTENT;

@@ -28,7 +28,7 @@ std::pair<struct Container*, struct Layout*> FileManager::getContainerAndLayoutB
 	return std::make_pair(container, layout);
 }
 
-struct Layout* FileManager::getLayoutByID(uint16_t layoutID) {
+struct Layout* FileManager::getLayoutByID(uint32_t layoutID) {
 	if (ic->layouts.count(layoutID) > 0) {
 		return ic->layouts[layoutID];
 	}
@@ -37,7 +37,7 @@ struct Layout* FileManager::getLayoutByID(uint16_t layoutID) {
 	}
 }
 
-struct Container* FileManager::getContainerByID(uint16_t containerID) {
+struct Container* FileManager::getContainerByID(uint32_t containerID) {
 	if (ic->containers.count(containerID) > 0) {
 		return ic->containers[containerID];
 	}
@@ -46,9 +46,27 @@ struct Container* FileManager::getContainerByID(uint16_t containerID) {
 	}
 }
 
-struct Content* FileManager::getContentByID(uint16_t contentID) {
+struct Content* FileManager::getContentByID(uint32_t contentID) {
 	if (ic->content.count(contentID) > 0) {
 		return ic->content[contentID];
+	}
+	else {
+		return nullptr;
+	}
+}
+
+struct Action* FileManager::getActionByID(uint32_t actionID) {
+	if (ic->actions.count(actionID) > 0) {
+		return ic->actions[actionID];
+	}
+	else {
+		return nullptr;
+	}
+}
+
+struct Style* FileManager::getStyleByID(uint32_t styleID) {
+	if (ic->styles.count(styleID) > 0) {
+		return ic->styles[styleID];
 	}
 	else {
 		return nullptr;
@@ -66,25 +84,6 @@ struct Content* FileManager::getStreamedContent(Content* content) {
 	newContent->chunkID = content->chunkID;
 	return newContent;
 }
-
-struct Action* FileManager::getActionByID(uint16_t actionID) {
-	if (ic->actions.count(actionID) > 0) {
-		return ic->actions[actionID];
-	}
-	else {
-		return nullptr;
-	}
-}
-
-struct Style* FileManager::getStyleByID(uint16_t styleID) {
-	if (ic->styles.count(styleID) > 0) {
-		return ic->styles[styleID];
-	}
-	else {
-		return nullptr;
-	}
-}
-
 
 struct wxConstraintPosition FileManager::convertLayoutPositionToConstraint(struct elementPosition* pos) {
 	/*int x = (int)((pos->x / 40000.0)*100.0);

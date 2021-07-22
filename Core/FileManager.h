@@ -21,12 +21,12 @@ public:
 	static bool loadFile(const char* filename);
 	static bool addChunksFromURL(const char* url);
 	static uint16_t getStartContainerID();
-	static struct Layout* getLayoutByID(uint16_t layoutID);
-	static struct Container* getContainerByID(uint16_t containerID);
-	static struct Content* getContentByID(uint16_t contentID);
+	static struct Layout* getLayoutByID(uint32_t layoutID);
+	static struct Container* getContainerByID(uint32_t containerID);
+	static struct Content* getContentByID(uint32_t contentID);
+	static struct Action* getActionByID(uint32_t actionID);
+	static struct Style* getStyleByID(uint32_t styleID);
 	static struct Content* getStreamedContent(Content* content);
-	static struct Action* getActionByID(uint16_t actionID);
-	static struct Style* getStyleByID(uint16_t styleID);
 	static std::pair<struct Container*, struct Layout*> getContainerAndLayoutByID(uint16_t containerID);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(struct elementPosition* pos);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(uint8_t x, uint8_t y, uint8_t w, uint8_t h);

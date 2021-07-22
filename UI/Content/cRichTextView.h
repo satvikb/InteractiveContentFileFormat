@@ -22,8 +22,8 @@ public:
 	~cRichTextView();
 private:
 	// map to convert start position of URLs in text to a Action ID
-	std::map<wxTextPos, uint16_t> actions;
-	std::stack<uint16_t> styleIDs;
+	std::map<wxTextPos, uint32_t> actions;
+	std::stack<uint32_t> styleIDs;
 	void URLclickHandler(wxTextUrlEvent& event);
 	//void clickHandler(wxTextUrlEvent& event);
 

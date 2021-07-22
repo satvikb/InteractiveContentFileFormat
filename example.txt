@@ -18,11 +18,10 @@ Total header bytes: 64
 60 01 - Layout ID (011 00000 0000 0001)
 02 - Number of elements (2) (one on left half, second on right half)
 00 - X
-00 - Y
+32 - Y
 32 - Width
 64 - Height
 00 00 - Style ID
-00 - Infinite byte (00000000)
 
 32 - X
 00 - Y
@@ -30,7 +29,6 @@ Total header bytes: 64
 64 - Height
 
 00 00 - Style ID
-00 - Infinite byte (00000000)
 ------------- END LAYOUT 1 -------------
 ------------- BEGIN LAYOUT 2 -------------
 
@@ -42,12 +40,6 @@ Total header bytes: 64
 64 - Height
 00 00 - Style ID
 
-C0 - Infinite byte (11000000)
-05 - Start X (5)
-05 - Start Y (5)
-0A - Width (10)
-5A - Height (90)
-03 E8 - Padding (1,000)
 ------------- END LAYOUT 2 -------------
 ------------- BEGIN LAYOUT 3 -------------
 
@@ -59,7 +51,6 @@ C0 - Infinite byte (11000000)
 5A - Height (90)
 A0 01 - Style ID
 
-00 - infinite byte
 ------------- END LAYOUT 3 -------------
 
 
@@ -67,18 +58,15 @@ A0 01 - Style ID
 20 01 - Container ID (001 00000 0000 0001)
 60 01 - Layout ID (011 00000 0000 0001)
 40 01 - Content ID (010 00000 0000 0001)
-FF - End current container (of layout)
 40 02 - Content ID (010 00000 0000 0002)
-FF - End current container (of layout)
-00 - End container
+00	  - End Container
 ------------- END CONTAINER 1 -------------
 
 ------------- BEGIN CONTAINER 2 -------------
 20 02 - Container ID (001 00000 0000 0002)
 60 03 - Layout ID (011 00000 0000 0003)
 40 03 - Content ID (001 00000 0000 0003)
-FF - End current container (of layout)
-00 - End container
+00	  - End Container
 ------------- END CONTAINER 2 -------------
 
 

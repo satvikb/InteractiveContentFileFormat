@@ -129,19 +129,17 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
         if (chunkType == CHUNK_32_EXTENDED) {
             // use 4 bytes for ID with the entire next byte being the chunk ID
 
-            chunkType = (unsigned char)buffer[i + 1];
+           /* chunkType = (unsigned char)buffer[i + 1];
             ID = (buffer[i + 2] << 24) | (unsigned char)(buffer[i + 3] << 16) | (unsigned char)(buffer[i + 4] << 8) | (unsigned char)buffer[i + 5];
-            i += 6;
-        }
-        else {
+            i += 6;*/
+        } else {
             // bytes i+1 to i+3 have the 24 bit ID
-            ID = (buffer[i+1] << 16) | (unsigned char)(buffer[i+2] << 8) | (unsigned char)buffer[i+3];
+            ID = (unsigned char)(buffer[i+1] << 16) | (unsigned char)(buffer[i+2] << 8) | (unsigned char)buffer[i+3];
             i += 4;
         }
-    }
-    else {
-        ID = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-        i += 2; 
+    } else {
+        ID = (unsigned char)((buffer[i] && 0x1F) << 8) | (unsigned char)buffer[i + 1];
+        i += 2;
     }
     // now i is after ID bytes
 
@@ -210,7 +208,8 @@ std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index){
     struct Layout* layout = new Layout;
     layout->chunkType = layoutIDs.first;
     layout->chunkID = layoutIDs.second;
-    uint8_t numberElements = buffer[i];
+    uint8_t numberElements = (unsigned char)buffer[i];
+    layout->elementCount = numberElements;
     i += 1;
 
     //layout->chunkType = chunkType;
@@ -231,34 +230,6 @@ std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int *index){
         // now handle style ID
         std::pair<uint8_t, uint32_t> styleIDs = readChunkTypeAndID(buffer, &i);
         pos->styleID = styleIDs.second;
-
-        // now handle Infinite byte
-        pos->inf = (unsigned char)buffer[i];
-        unsigned char infinite = (buffer[i] >> 7) & 1;
-        // handle infinite position if infinite element
-        if(infinite == 1){
-            printf("Infinite. Byte: %d. Value: %d\n", i, infinite);
-            // TODO have bool in the elementPosition to keep track of paging, etc. ?
-            
-            // move onto infpos bytes
-            i += 1;
-
-            // handle infinite element position
-            struct infiniteElementPosition *infPos = (struct infiniteElementPosition *)malloc (sizeof (struct infiniteElementPosition));
-
-            infPos->startx      = (unsigned char)buffer[(i)];
-            infPos->starty      = (unsigned char)buffer[(i)+1];
-            infPos->w           = (unsigned char)buffer[(i)+2];
-            infPos->h           = (unsigned char)buffer[(i)+3];
-            infPos->padding     = (unsigned char)buffer[(i)+4];
-
-            i += 5;
-            printf("Read infinite position %d %d %d %d %d\n", i, infPos->startx, infPos->starty, infPos->w, infPos->h);
-            pos->infPos = infPos;
-        }else{
-            i += 1; // skip infinite byte
-            pos->infPos = nullptr; // TODO needed?
-        }
         layout->positions.push_back(pos);
     }
 
@@ -284,21 +255,12 @@ std::pair<uint32_t, struct Container*> readContainer(char* buffer, int *index){
     printf("Reading container. Byte: %d. Container ID: %d. Layout ID: %d.\n", i, containerIDs.second, layoutIDs.second);
     // i must always point to a byte that is either the start of an ID, or a End code
     while(buffer[i] != 0x0){ // 0x0 is byte code for end of container chunk
-        // init array to hold one
-        std::vector<Chunk> subelements; // length of this is 1, unless its in an infinite container
-        while((unsigned char)buffer[i] != 0xFF){
-            std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
-            struct Chunk chunk = { chunkData.first, chunkData.second };
-            subelements.push_back(chunk);
-        }
-        // end container hit, skip that byte
-        i += 1;
-
-        container->elementIDs.push_back(subelements);
+        std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
+        struct Chunk chunk = { chunkData.first, chunkData.second };
+        container->elementIDs.push_back(chunk);
     }
-    // end chunk hit, skip that byte
+    // end chunk hit
     i += 1;
-
     *index = i;
     return std::make_pair(container->chunkID, container);
 }
