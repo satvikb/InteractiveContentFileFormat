@@ -55,6 +55,7 @@ void cRichTextView::interpretControlBytes(int* index) {
 		i += 1;
 
 		switch (val) {
+		// Start Style
 		case 0x80: {
 			uint8_t left = content->data[i];
 			uint8_t right = content->data[i + 1];
@@ -64,11 +65,13 @@ void cRichTextView::interpretControlBytes(int* index) {
 			interpretTextStyle(FileManager::getStyleByID(styleID), false);
 		}
 		break;
+		// End Style
 		case 0x81: {
 			interpretTextStyle(FileManager::getStyleByID(styleIDs.top()), true);
 			styleIDs.pop();
 		}
 		break;
+		// Begin Action/URL
 		case 0x82: {
 			uint8_t left = content->data[i];
 			uint8_t right = content->data[i+1];
@@ -117,7 +120,8 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	// loop through styles
 	// removeStyle == true ? EndApplyStyle() : ApplyStyle()
 	if (style != nullptr) {
-		for (auto [key, val] : style->styles) {
+		std::map<uint8_t, std::any> styles = style->styles;
+		for (auto& [key, val] : styles) {
 			switch (key) {
 			case STYLE_TEXT_BOLD:
 				if (removeStyle) { EndBold(); }
@@ -130,7 +134,14 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 			case STYLE_TEXT_UNDERLINE:
 				if (removeStyle) { EndUnderline(); }
 				else { BeginUnderline(); }
-				break;
+			break;
+			case STYLE_TEXT_COLOR:
+				if (removeStyle) { EndTextColour();  }
+				else {
+					wxColour col = std::any_cast <wxColour>(val);
+					BeginTextColour(col);
+				}
+			break;
 			default:
 			break;
 			}

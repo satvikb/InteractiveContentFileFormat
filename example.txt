@@ -5,9 +5,13 @@ This file explains the example.ic file.
 00 01 - File version
 20 01 - Start container ID (001 00000 0000 0001)
 41 75 74 68 6f 72 20 4e 61 6d 65 00 - "Author Name" w/ null
-
+76657273696F6E5F617500 - "version_au" w/ null
+00000001 - 4 bytes for au version
+7465737400 - "test" key w/ null
+76616C00 - "val" value w/ null
+00 - End header
 ------------- END HEADER -------------
-Total header bytes: 20
+Total header bytes: 64
 
 ------------- BEGIN LAYOUT 1 -------------
 

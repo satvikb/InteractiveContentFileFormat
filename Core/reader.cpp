@@ -71,7 +71,7 @@ bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberByte
         {
         case CHUNK_HEADER:
         {
-            // header, header ID is not used/thrown away (waste of 3 bytes)
+            // header, header ID is not used/thrown away (waste of 4 bytes)
             struct Header* header = readHeader(buffer, &i);
             ic->header = header;
         }
@@ -178,7 +178,6 @@ struct Header* readHeader(char* buffer, int* index) {
         }
         i += 1; // skip null byte for key
 
-        // TODO test if key == "version_au" and set autoUpdateVersion instead of key value pair
         if (key.compare("version_au") == 0) {
             uint32_t updateVersion = uint32_t((unsigned char)(buffer[i]) << 24 |
                 (unsigned char)(buffer[i + 1]) << 16 |
@@ -465,7 +464,7 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
             i += 2;
         }
         break;
-        case STYLE_COMPONENT_BORDER_COLOR: case STYLE_COMPONENT_BACKGROUND_COLOR: {
+        case STYLE_TEXT_COLOR: case STYLE_COMPONENT_BORDER_COLOR: case STYLE_COMPONENT_BACKGROUND_COLOR: {
             unsigned char r = (unsigned char)buffer[i];
             unsigned char g = (unsigned char)buffer[i+1];
             unsigned char b = (unsigned char)buffer[i+2];
@@ -473,13 +472,10 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
             i += 3;
         }
         break;
-        case STYLE_TEXT_FONT_NAME: {
+        case STYLE_TEXT_FONT_NAME: case STYLE_TEXT_FONT_FAMILY: {
             //TODO read string, possibly without another while loop?
         }
         break;
-        case STYLE_TEXT_FONT_FAMILY: {
-            //TODO read string, possibly without another while loop?
-        }
         break;
         case STYLE_TEXT_BOLD: case STYLE_TEXT_ITALICS: case STYLE_TEXT_UNDERLINE: case STYLE_TEXT_STRIKETHROUGH: case STYLE_TEXT_SUPERSCRIPT: case STYLE_TEXT_SUBSCRIPT: {
             styles[key] = true;
