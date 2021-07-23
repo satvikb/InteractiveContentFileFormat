@@ -122,21 +122,12 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
 
     if (chunkType == CHUNK_EXTENDED) {
         // 110 - use extended range
-        chunkType = buffer[i] & 0x1F;
+        chunkType = buffer[i] & 0x1F; // 0x1F == 00011111
 
-        // chunkType = 11110, meaning entire byte is 11011110
-        // this is for the extended extended range, full 32 bits for ID
-        if (chunkType == CHUNK_32_EXTENDED) {
-            // use 4 bytes for ID with the entire next byte being the chunk ID
-
-           /* chunkType = (unsigned char)buffer[i + 1];
-            ID = (buffer[i + 2] << 24) | (unsigned char)(buffer[i + 3] << 16) | (unsigned char)(buffer[i + 4] << 8) | (unsigned char)buffer[i + 5];
-            i += 6;*/
-        } else {
-            // bytes i+1 to i+3 have the 24 bit ID
-            ID = (unsigned char)(buffer[i+1] << 16) | (unsigned char)(buffer[i+2] << 8) | (unsigned char)buffer[i+3];
-            i += 4;
-        }
+        // bytes i+1 to i+3 have the 24 bit ID
+        ID = (unsigned char)(buffer[i+1] << 16) | (unsigned char)(buffer[i+2] << 8) | (unsigned char)buffer[i+3];
+        i += 4;
+        
     } else {
         ID = (unsigned char)((buffer[i] && 0x1F) << 8) | (unsigned char)buffer[i + 1];
         i += 2;
@@ -418,14 +409,24 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
 
     uint8_t key = (unsigned char)buffer[i];
     i += 1;
+    // i is now at the value
     while (key != 0x00) {
         switch (key) {
+        // read one unsigned byte
+        case STYLE_TEXT_WINDOW_DIVIDER: case STYLE_TEXT_SCALE_MODE: case STYLE_TEXT_SIZE: {
+            uint8_t byteValue = (unsigned char)(buffer[i]);
+            styles[key] = (uint8_t)byteValue;
+            i += 1;
+        }
+        break;
+        // read two unsigned bytes
         case STYLE_COMPONENT_BORDER_WIDTH: {
-            uint16_t width = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
-            styles[key] = width;
+            uint16_t doubleByteValue = (buffer[i] << 8) | (unsigned char)buffer[(i)+1];
+            styles[key] = doubleByteValue;
             i += 2;
         }
         break;
+        // read colors
         case STYLE_TEXT_COLOR: case STYLE_COMPONENT_BORDER_COLOR: case STYLE_COMPONENT_BACKGROUND_COLOR: {
             unsigned char r = (unsigned char)buffer[i];
             unsigned char g = (unsigned char)buffer[i+1];
@@ -434,11 +435,12 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
             i += 3;
         }
         break;
+        // read strings
         case STYLE_TEXT_FONT_NAME: case STYLE_TEXT_FONT_FAMILY: {
             //TODO read string, possibly without another while loop?
         }
         break;
-        break;
+        // check if it simply exists
         case STYLE_TEXT_BOLD: case STYLE_TEXT_ITALICS: case STYLE_TEXT_UNDERLINE: case STYLE_TEXT_STRIKETHROUGH: case STYLE_TEXT_SUPERSCRIPT: case STYLE_TEXT_SUBSCRIPT: {
             styles[key] = true;
         }
@@ -456,3 +458,4 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
     *index = i;
     return std::make_pair(style->chunkID, style);
 }
+

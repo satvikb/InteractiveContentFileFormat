@@ -135,28 +135,37 @@
 
   Styles that apply to the component as a whole:
   (Border Width)              01 - 00000001
-    (Border Width Value)      03 E8 - (Value) / 40,000, as a percent of the width of Window
+    (Border Width Value)        03 E8 - (Value) / 40,000, as a percent of the width of Window
   (Border Color)              02 - 00000002
-    (Border Color Value)      00 00 00 - Color in hex
+    (Border Color Value)        00 00 00 - Color in hex
   (Window Background Color)   03 - 00000003
-    (Background Color Value)  00 00 00 - color in hex
+    (Background Color Value)    00 00 00 - color in hex
 
   Text styles:
   (Font Name)                 10
-    (Font name value)         Null terminated string
+    (Font name value)           Null terminated string
   (Font Family)               11
-    (Font family value)       Null terminated string
+    (Font family value)         Null terminated string
   (Text Color)                12
-    (Text Color Value)        00 00 00 - Color in hex
+    (Text Color Value)          00 00 00 - Color in hex
   (Set Bold)                  13
   (Set Italics)               14
   (Set Underline)             15
   (Set Strikethrough)         16
   (Set Superscript)           17
   (Set Subscript)             18
+  (Text window divider)       19
+    (Divider value)             XX - one byte from 0-255
+  (Text scale mode)           20
+    (Text scale value)        XX
+      (points)                  00 - text font size will be static points regardless of window size
+      (percent - width)         01 - scale font by window width. text font size = (Text Size Value / 100) * ((Window Width)/(Text window divider))
+      (percent - height)        02 - scale font by window height. text font size = (Text Size Value / 100) * ((Window Height)/(Text window divider))
+  (Text size)                 21
+    (Text size value)         XX - single byte from 0-255. will be either points or pecent based on Text scale mode. Defaults to points.
   (TODO: Paragraph styles)
 
-  (End Style - 8 bits)        00000000</pre>
+  (End Style - 8 bits)        00</pre>
     <h3>2.3. Limits</h3>
     <p>The limits of most properties used throughout the other Components are defined below:</p>
     <pre>

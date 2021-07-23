@@ -28,14 +28,19 @@ void WindowManager::DestroyContainer(cContainer* containerWindow) {
 }
 
 void WindowManager::ExecuteActionID(uint32_t actionID) {
-	executeAction(FileManager::getActionByID(actionID));
+	ExecuteAction(FileManager::getActionByID(actionID));
 }
 
 cContainer* WindowManager::GetWindowByContainerID(uint32_t containerID) {
 	return containerWindows[containerID];
 }
 
-void WindowManager::executeAction(struct Action* action) {
+wxSize WindowManager::GetWindowSize() {
+	return GetWindowByContainerID(topContainer->chunkID)->GetSize();
+}
+
+
+void WindowManager::ExecuteAction(struct Action* action) {
 	// TODO test nullptr
 	uint8_t actionType = action->actionType;
 	switch (actionType) {
@@ -45,7 +50,7 @@ void WindowManager::executeAction(struct Action* action) {
 		Link* link = dynamic_cast<Link*>(action);
 		if (link) {
 			// TODO error check for null container?
-			replaceContainers(GetWindowByContainerID(topContainer->chunkID), FileManager::getContainerByID(link->containerID));
+			ReplaceContainers(GetWindowByContainerID(topContainer->chunkID), FileManager::getContainerByID(link->containerID));
 		}
 		else {
 			//null
@@ -58,12 +63,12 @@ void WindowManager::executeAction(struct Action* action) {
 		Swap* swap = dynamic_cast<Swap*>(action);
 
 		// replace container with container
-		replaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
+		ReplaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
 	}
 	break;
 	case ACTION_REPLACE_WITH_CONTENT: {
 		ReplaceWithContent* replace = dynamic_cast<ReplaceWithContent*>(action);
-		replaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
+		ReplaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
 	}
 	break;
 	case ACTION_DOWNLOAD_CHUNKS: {
@@ -76,7 +81,7 @@ void WindowManager::executeAction(struct Action* action) {
 		// TODO handle circular references
 		for (int i = 0; i < downloadChunks->actionsToExecute.size(); i++) {
 			uint32_t actionID = downloadChunks->actionsToExecute[i];
-			executeAction(FileManager::getActionByID(actionID));
+			ExecuteAction(FileManager::getActionByID(actionID));
 		}
 	}
 	break;
@@ -92,13 +97,13 @@ void WindowManager::UnlinkContainerID(uint32_t containerID) {
 	containerWindows.erase(containerID);
 }
 
-void WindowManager::replaceContainers(cContainer* target, struct Container* replaceWith) {
+void WindowManager::ReplaceContainers(cContainer* target, struct Container* replaceWith) {
 	Layout* layout = FileManager::getLayoutByID(replaceWith->layoutID);
 	target->CreateContainerUI(replaceWith, layout);
 	target->Layout();
 }
 
-void WindowManager::replaceContainerElementIndexWithContent(uint32_t containerID, uint8_t index, uint32_t contentID) {
+void WindowManager::ReplaceContainerElementIndexWithContent(uint32_t containerID, uint8_t index, uint32_t contentID) {
 	if (containerWindows.count(containerID) == 1) {
 		cContainer* window = containerWindows[containerID];
 		// TODO support infinite containers

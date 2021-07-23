@@ -32,6 +32,13 @@ private:
 	void insertStringFromIndexes(int start, int end);
 
 	void interpretTextStyle(struct Style* style, bool removeStyle);
+	std::any getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue);
+
 	//void addAction() override;
+
+
+	//template <template<class, class, class...> class C, typename K, typename V, typename... Args>
+	//V GetWithDef(const C<K, V, Args...>& m, K const& key, const V& defval);
+
 };
 

@@ -124,9 +124,12 @@ void cRichTextView::applyComponentStyle(struct Style* style) {
 
 void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	// loop through styles
-	// removeStyle == true ? EndApplyStyle() : ApplyStyle()
+
 	if (style != nullptr) {
 		std::map<uint8_t, std::any> styles = style->styles;
+		uint8_t windowDivider = std::any_cast<uint8_t>(getStyleKeyWithDefaultValue(styles, (uint8_t)STYLE_TEXT_WINDOW_DIVIDER, (uint8_t)4));
+		uint8_t textScaleMode = std::any_cast<uint8_t>(getStyleKeyWithDefaultValue(styles, (uint8_t)STYLE_TEXT_SCALE_MODE, (uint8_t)0));
+
 		for (auto& [key, val] : styles) {
 			switch (key) {
 			case STYLE_TEXT_BOLD:
@@ -148,6 +151,27 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 					BeginTextColour(col);
 				}
 			break;
+			case STYLE_TEXT_SIZE:
+				if (removeStyle) { EndFontSize(); }
+				else {
+					uint8_t rawTextSize = std::any_cast <uint8_t>(val);
+
+					switch (textScaleMode)
+					{
+					case TEXT_SCALE_MODE_WINDOW_HEIGHT: case TEXT_SCALE_MODE_WINDOW_WIDTH: {
+						wxSize windowSize = WindowManager::GetWindowSize();
+						int windowDimension = textScaleMode == TEXT_SCALE_MODE_WINDOW_WIDTH ? windowSize.GetWidth() : windowSize.GetHeight();
+						float windowMultiplier = (float)windowDimension / (float)windowDivider;
+						uint8_t scaledTextSize = ((float)rawTextSize / 100.f) * windowMultiplier;
+						BeginFontSize(scaledTextSize);
+					}
+					break;
+					default:
+						BeginFontSize(rawTextSize);
+						break;
+					}
+				}
+			break;
 			default:
 			break;
 			}
@@ -155,7 +179,13 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	}
 }
 
-
+std::any cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue) {
+	auto it = styles.find(key);
+	if (it == styles.end()) {
+		return defaultValue;
+	}
+	return it->second;
+}
 // interpretControlCharacters(&i)
 /*
 	handle font table start/end
@@ -172,3 +202,13 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 cRichTextView::~cRichTextView() {
 
 }
+
+// TODO figure out where to put this
+//template <template<class, class, class...> class C, typename K, typename V, typename... Args>
+//V cRichTextView::GetWithDef(const C<K, V, Args...>& m, K const& key, const V& defval)
+//{
+//	typename C<K, V, Args...>::const_iterator it = m.find(key);
+//	if (it == m.end())
+//		return defval;
+//	return it->second;
+//}
