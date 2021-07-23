@@ -3,7 +3,7 @@
 #include <vector>
 
 struct wxConstraintPosition;
-struct wxSize;
+class wxSize;
 class cContainer;
 // Keeps a reference to the top container.
 // Handles execution of actions

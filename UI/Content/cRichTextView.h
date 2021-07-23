@@ -24,7 +24,10 @@ private:
 	// map to convert start position of URLs in text to a Action ID
 	std::map<wxTextPos, uint32_t> actions;
 	std::stack<uint32_t> styleIDs;
+	bool readyToResize = false;
+
 	void URLclickHandler(wxTextUrlEvent& event);
+	void OnSize(wxSizeEvent& event);
 	//void clickHandler(wxTextUrlEvent& event);
 
 	void interpretContent() override;
@@ -34,11 +37,7 @@ private:
 	void interpretTextStyle(struct Style* style, bool removeStyle);
 	std::any getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue);
 
+	DECLARE_EVENT_TABLE()
 	//void addAction() override;
-
-
-	//template <template<class, class, class...> class C, typename K, typename V, typename... Args>
-	//V GetWithDef(const C<K, V, Args...>& m, K const& key, const V& defval);
-
 };
 

@@ -3,7 +3,10 @@
 cRichTextView::cRichTextView(cContainer* parent) {
 	wxRichTextCtrl::Create((wxWindow *)parent, wxID_ANY, wxEmptyString, wxDefaultPosition,
 		wxSize(200, 200), wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
+	content = nullptr;
+	readyToResize = true;
 
+	// TODO can we use the Event Table for this?
 	wxRichTextCtrl::Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
 }
 
@@ -17,24 +20,32 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 }
 
 void cRichTextView::interpretContent() {
-	Freeze();
-	//SetFontScale(5.5f);
-	if (content->data.size() > 0) {
-		int strStart = 0;
-		int i = 0;
-		for (; (unsigned int)i < content->data.size(); i++) {
-			if (content->data[i] == 0xEE) {
-				// control byte start
-				insertStringFromIndexes(strStart, i);
-				interpretControlBytes(&i);
-				strStart = i;
+	if (content != nullptr) {
+		Freeze();
+		Clear();
+		//SetFontScale(5.5f);
+		if (content->data.size() > 0) {
+			int strStart = 0;
+			int i = 0;
+			for (; (unsigned int)i < content->data.size(); i++) {
+				if (content->data[i] == 0xEE) {
+					// control byte start
+					insertStringFromIndexes(strStart, i);
+					interpretControlBytes(&i);
+					strStart = i;
+				}
 			}
-		}
 
-		insertStringFromIndexes(strStart, i);
+			insertStringFromIndexes(strStart, i);
+		}
+		Thaw();
 	}
-	Thaw();
 }
+
+BEGIN_EVENT_TABLE(cRichTextView, wxRichTextCtrl)
+//Size event
+EVT_SIZE(cRichTextView::OnSize)
+END_EVENT_TABLE()
 
 void cRichTextView::insertStringFromIndexes(int start, int end) {
 	std::string stringToIns(content->data.begin() + start, content->data.begin() + end);
@@ -179,6 +190,14 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	}
 }
 
+void cRichTextView::OnSize(wxSizeEvent& event) {
+	if (readyToResize == true){
+		interpretContent();
+		//skip the event.
+		event.Skip();
+	}
+}
+
 std::any cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue) {
 	auto it = styles.find(key);
 	if (it == styles.end()) {
@@ -200,15 +219,8 @@ std::any cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> 
 //}
 
 cRichTextView::~cRichTextView() {
-
+	content = nullptr;
+	delete content;
+	//actions.erase();
+	//styleIDs.empty();
 }
-
-// TODO figure out where to put this
-//template <template<class, class, class...> class C, typename K, typename V, typename... Args>
-//V cRichTextView::GetWithDef(const C<K, V, Args...>& m, K const& key, const V& defval)
-//{
-//	typename C<K, V, Args...>::const_iterator it = m.find(key);
-//	if (it == m.end())
-//		return defval;
-//	return it->second;
-//}
