@@ -28,6 +28,10 @@ std::pair<struct Container*, struct Layout*> FileManager::getContainerAndLayoutB
 	return std::make_pair(container, layout);
 }
 
+struct Header* FileManager::getHeader() {
+	return ic->header;
+}
+
 struct Layout* FileManager::getLayoutByID(uint32_t layoutID) {
 	if (ic->layouts.count(layoutID) > 0) {
 		return ic->layouts[layoutID];

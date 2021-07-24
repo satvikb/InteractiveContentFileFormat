@@ -21,6 +21,7 @@ public:
 	static bool loadFile(const char* filename);
 	static bool addChunksFromURL(const char* url);
 	static uint16_t getStartContainerID();
+	static struct Header* getHeader();
 	static struct Layout* getLayoutByID(uint32_t layoutID);
 	static struct Container* getContainerByID(uint32_t containerID);
 	static struct Content* getContentByID(uint32_t contentID);

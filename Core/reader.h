@@ -60,6 +60,9 @@
 #define TEXT_SCALE_MODE_WINDOW_WIDTH 0x01
 #define TEXT_SCALE_MODE_WINDOW_HEIGHT 0x2
 
+#define HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION "version_au"
+#define HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO "win_aspect"
+
 struct Header;
 struct Layout;
 struct Container;
@@ -89,8 +92,10 @@ struct InteractiveContent {
 struct Header {
     unsigned short version;
     uint32_t startContainer;
-    uint32_t autoUpdateVersion;
     std::map<std::string, std::string> metadata;
+    // Custom attributes
+    uint32_t autoUpdateVersion;
+    float windowAspectRatio;
 };
 
 // the first 3 bits are 011 for layout, the last 13 bits is the actual id

@@ -15,6 +15,7 @@ bool cApp::OnInit() {
 	CustomImageReader* imgReader = new CustomImageReader;
 	imgReader->SetMimeType("application/icimage");
 	wxImage::AddHandler(imgReader);
+
 	m_frame1 = new cMain();
 	m_frame1->Show();
 

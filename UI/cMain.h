@@ -19,5 +19,12 @@ private:
 	wxMenu* m_pHelpMenu;
 
 	cContainer* mainContainer;
+
+	float aspectRatio = 0.f;
+	bool ShouldMaintainAspectRatio();
+	void OnSize(wxSizeEvent& event);
+	void OnExit(wxCommandEvent& event);
+
+	DECLARE_EVENT_TABLE()
 };
 
