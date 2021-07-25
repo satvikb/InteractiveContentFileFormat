@@ -1,0 +1,3 @@
+file(GLOB_RECURSE SOURCES "*")
+
+add_library(UI SHARED ${SOURCES})
