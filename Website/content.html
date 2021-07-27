@@ -75,8 +75,55 @@
     </pre>
     <p>Text is encoded using UTF-8.<p>
 
-    <h4>3.1.3. Shape</h4>
-
+    <h4>3.1.3. Bitmap</h4>
+    <p>Use a bitmap to draw multiple shapes. The shapes are drawn as a percentage of the frame they are in.<p>
+    <p>Supported shapes:</p>
+    <ul>
+      <li>
+        <span>Lines</span>
+      </li>
+      <li>
+        <span>Rectangles</span>
+      </li>
+      <li>
+        <span>Circles</span>
+      </li>
+    </ul>
+    <p>The byte codes for each shape type is as follows:</p>
+    <pre>
+      (Line)                            01 (00000001)
+      (Rectangle)                       02 (00000002)
+      (Circle)                          03 (00000003)
+    </pre>
+    <p>For lines:</p>
+    <pre>
+      (Line Type)                       01 (00000001)
+      (Line Start X)                    XX (00 - 64, for 0%-100%)
+      (Line Start Y)                    XX (00 - 64, for 0%-100%)
+      (Line End X)                      XX (00 - 64, for 0%-100%)
+      (Line End Y)                      XX (00 - 64, for 0%-100%)
+      (Style ID)                        XX XX (Style ID to use for Line, 0000 for default)
+    </pre>
+    <p>For Rectangle:</p>
+    <pre>
+      (Rectangle Type)                  02 (00000002)
+      (Rectangle Top Left X)            XX (00 - 64, for 0%-100%)
+      (Rectangle Top Left Y)            XX (00 - 64, for 0%-100%)
+      (Rectangle Bottom Right X)        XX (00 - 64, for 0%-100%)
+      (Rectangle Bottom Right Y)        XX (00 - 64, for 0%-100%)
+      (Style ID)                        XX XX (Style ID to use for Rectangle, 0000 for default)
+    </pre>
+    <p>For Circle:</p>
+    <pre>
+      (Circle Type)                     03 (00000003)
+      (Circle Center X)                 XX (00 - 64, for 0%-100%)
+      (Circle Center Y)                 XX (00 - 64, for 0%-100%)
+      (Circle Radius)                   XX (00 - 64, for 0%-100%)
+      (Circle Radius Mode)              XX (Which length to multiply with)
+        (Width)                           01 (Multiply percent by frame width)
+        (Height)                          02 (Multiply percent by frame height)
+      (Style ID)                        XX XX (Style ID to use for Circle, 0000 for default)
+    </pre>
     <h4>3.1.4. Image</h4>
     <p>Interactive Content implements its own way of representing Image data to support Actions within the image.<p>
     <p>Actions for images are triggered by a click inside a defined rectangle.</p>

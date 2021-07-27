@@ -182,16 +182,6 @@ struct elementPosition {
     uint8_t w;
     uint8_t h;
     uint16_t styleID;
-    uint8_t inf;
-    struct infiniteElementPosition* infPos;
-};
-
-struct infiniteElementPosition {
-    uint16_t startx;
-    uint16_t starty;
-    uint16_t w;
-    uint16_t h;
-    uint16_t padding;
 };
 
 bool readFile(struct InteractiveContent* ic, const char* filename);

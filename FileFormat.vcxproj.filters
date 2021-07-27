@@ -75,6 +75,9 @@
     <ClInclude Include="Core\httplib.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Content\cBitmap.h">
+      <Filter>Header Files\UI\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
     <ClCompile Include="UI\Content\cWebView.cpp">
+      <Filter>Source Files\UI\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Content\cBitmap.cpp">
       <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
   </ItemGroup>
