@@ -19,4 +19,8 @@ public:
 private:
 	int w, h;
 	void interpretContent() override;
+	void drawContent(wxDC& dc);
+
+	void readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
+	void readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
 };

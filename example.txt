@@ -94,6 +94,12 @@ Content Data BEGIN
 6e 65 77 20 63 6f 6e 74 21 21 (new cont!!)
 ------------- END CONTENT 3 -------------
 
+------------- BEGIN CONTENT 4 -------------
+40 04 - Content ID 4
+03 - Type Bitmap
+00 00 00 07 - Length
+Content Data BEGIN
+01 00 00 64 64 00 00
 ------------- BEGIN ACTION 1 -------------
 80 01 - Action ID (100 00000 0000 0001)
 01 - Action Type (00000001 for Link)

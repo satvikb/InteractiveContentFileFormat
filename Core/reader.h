@@ -25,6 +25,7 @@
 
 #define CONTENT_TEXT 0x1
 #define CONTENT_IMAGE 0x2
+#define CONTENT_BITMAP 0x3
 #define CONTENT_WEB 0x23 // 35 in decimal, external content type
 #define CONTENT_STREAMED 0x24
 
@@ -59,6 +60,10 @@
 #define TEXT_SCALE_MODE_POINTS 0x0
 #define TEXT_SCALE_MODE_WINDOW_WIDTH 0x01
 #define TEXT_SCALE_MODE_WINDOW_HEIGHT 0x2
+
+#define BITMAP_LINE 0x1
+#define BITMAP_RECTANGLE 0x2
+#define BITMAP_CIRCLE 0x3
 
 #define HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION "version_au"
 #define HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO "win_aspect"

@@ -1,12 +1,14 @@
 #include "cRichTextView.h"
 
-cRichTextView::cRichTextView(cContainer* parent) {
+cRichTextView::cRichTextView(cContainer* parent){
+	//SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
+
 	wxRichTextCtrl::Create((wxWindow*)parent, wxID_ANY, wxEmptyString,
 		wxDefaultPosition, wxSize(200, 200),
 		wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
 	content = nullptr;
 	readyToResize = true;
-
+	//SetTransparent(0);
 	// TODO can we use the Event Table for this?
 	wxRichTextCtrl::Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
 }

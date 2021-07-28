@@ -37,23 +37,94 @@ void cBitmap::paintNow()
     render(dc);
 }
 
-void cBitmap::render(wxDC& dc)
-{
-    if (image.IsOk()) {
-        int neww, newh;
-        dc.GetSize(&neww, &newh);
+void cBitmap::drawContent(wxDC& dc) {
+    std::vector<uint8_t> bytes = content->data;
+    int numBytes = bytes.size();
+    if (numBytes > 0) {
+        int w, h;
+        dc.GetSize(&w, &h);
 
-        if (neww != w || newh != h)
-        {
-            resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
-            w = neww;
-            h = newh;
-            dc.DrawBitmap(resized, 0, 0, false);
-        }
-        else {
-            dc.DrawBitmap(resized, 0, 0, false);
+        int i = 0;
+
+        while (i < numBytes && bytes[i] != 0x0) {
+            switch (bytes[i]) {
+                case BITMAP_LINE:
+                    readAndDrawLine(dc, w, h, bytes, &i);
+                break;
+                case BITMAP_RECTANGLE:
+                    readAndDrawRectangle(dc, w, h, bytes, &i);
+                break;
+            }
+
         }
     }
+}
+
+void cBitmap::readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int *index) {
+    int i = *index;
+    // Skip the type byte
+    i++;
+    uint8_t startX = bytes[i];
+    i++;
+    uint8_t startY = bytes[i];
+    i++;
+    uint8_t endX = bytes[i];
+    i++;
+    uint8_t endY = bytes[i];
+    i++;
+    std::pair<uint8_t, uint32_t> styleChunk = readChunkTypeAndID((char*)&bytes[0], &i);
+    struct Style* style = FileManager::getStyleByID(styleChunk.second);
+    // apply style
+    if (style != nullptr) {
+
+    }
+
+    float startXPercent = (float)startX / 100.f;
+    float startYPercent = (float)startY / 100.f;
+    float endXPercent = (float)endX / 100.f;
+    float endYPercent = (float)endY / 100.f;
+
+    dc.DrawLine(startXPercent*w, startYPercent*h, endXPercent*w, endYPercent*h);
+    *index = i;
+}
+
+void cBitmap::readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index) {
+    int i = *index;
+    // Skip the type byte
+    i++;
+    uint8_t startX = bytes[i];
+    i++;
+    uint8_t startY = bytes[i];
+    i++;
+    uint8_t endX = bytes[i];
+    i++;
+    uint8_t endY = bytes[i];
+    i++;
+    std::pair<uint8_t, uint32_t> styleChunk = readChunkTypeAndID((char*)&bytes[0], &i);
+    struct Style* style = FileManager::getStyleByID(styleChunk.second);
+    // apply style
+    if (style != nullptr) {
+
+    }
+
+    float startXPercent = (float)startX / 100.f;
+    float startYPercent = (float)startY / 100.f;
+    float endXPercent = (float)endX / 100.f;
+    float endYPercent = (float)endY / 100.f;
+
+    float topLeftX = startXPercent * w;
+    float topLeftY = startYPercent * h;
+    float bottomRightX = endXPercent * w;
+    float bottomRightY = endYPercent * h;
+
+    dc.DrawRectangle(topLeftX, topLeftY, (bottomRightX - topLeftX), (bottomRightY - topLeftY));
+    *index = i;
+}
+
+
+void cBitmap::render(wxDC& dc)
+{
+    drawContent(dc);
 }
 
 /*

@@ -76,7 +76,7 @@
     <p>Text is encoded using UTF-8.<p>
 
     <h4>3.1.3. Bitmap</h4>
-    <p>Use a bitmap to draw multiple shapes. The shapes are drawn as a percentage of the frame they are in.<p>
+    <p>Use a bitmap to draw multiple shapes. The shapes are drawn as a percentage of the frame they are in. Shapes are drawn in order from first to last in the content bytes.<p>
     <p>Supported shapes:</p>
     <ul>
       <li>
@@ -94,6 +94,8 @@
       (Line)                            01 (00000001)
       (Rectangle)                       02 (00000002)
       (Circle)                          03 (00000003)
+
+      (End Bitmap)                      00 (00000000)
     </pre>
     <p>For lines:</p>
     <pre>
