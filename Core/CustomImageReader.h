@@ -1,6 +1,8 @@
 #include <wx/image.h>
 #include "reader.h"
 
+#define IC_IMAGE_METADATA_START 0x1
+#define IC_IMAGE_METADATA_END 0x2
 class CustomImageReader : public wxImageHandler {
 public:
 	const wxString& GetMimeType() const;

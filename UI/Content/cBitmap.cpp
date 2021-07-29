@@ -104,7 +104,7 @@ void cBitmap::readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> 
     struct Style* style = FileManager::getStyleByID(styleChunk.second);
     // apply style
     if (style != nullptr) {
-
+        // TODO
     }
 
     float startXPercent = (float)startX / 100.f;

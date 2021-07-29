@@ -492,4 +492,5 @@ struct ImageActionPosition* readImageActionPosition(char* buffer, int* index) {
 	std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID(buffer, &i);
 	pos->actionID = actionID.second;
 	*index = i;
+	return pos;
 }

@@ -147,7 +147,10 @@
           (Height)                          XX (00 - 64, for 0%-100%)
           (Action ID)                       100 xxxxx xxxxxxxx (ID of the action to run when clicked)
       (Use URL)                         03 (If this control byte exists, it treats the image data as a URL)
-      (Begin Image Data)                FF
+      (Aspect Ratio Mode)               04
+        (Aspect Value)                    00 (Scale to fill)
+                                          01 (Keep aspect ratio)
+      (Begin Image Data)                FF (This code must appear after setting Data Length)
         (Image Data)                      (length value bytes)
     </pre>
 

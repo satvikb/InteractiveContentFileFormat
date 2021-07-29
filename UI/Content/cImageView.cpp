@@ -27,22 +27,36 @@ void cImageView::interpretContent() {
                     dataLength = read32BitInt((char*)&bytes[0], &i);
                 break;
                 case IMAGE_ACTION_START:
+                {
                     uint8_t numberActionRectangles = bytes[i];
                     i += 1;
                     for (uint8_t n = 0; n < numberActionRectangles; n++) {
-                        ImageActionPosition *actionPos = readImageActionPosition((char*)&bytes[0], &i);
+                        ImageActionPosition* actionPos = readImageActionPosition((char*)&bytes[0], &i);
                         actions.push_back(actionPos);
                     }
+                }
                 break;
                 case IMAGE_USE_URL:
-                
+                    useURL = true;
+                    i += 1;
+                break;
+                case IMAGE_BEGIN_DATA:
+                    if (dataLength > 0) {
+                        imageData = {bytes.begin() + i, bytes.begin() + i + dataLength };
+                        i += dataLength;
+                    } else {
+                        // ? dataLength not set yet.
+                        // TODO error
+                    }
                 break;
             }
 
-            wxMemoryInputStream stream(content->data.data(), content->length);
-            if (!image.LoadFile(stream, "application/icimage"))
-                return;
         }
+
+        // switch between image type and load the right type
+        wxMemoryInputStream stream(imageData.data(), dataLength);
+        if (!image.LoadFile(stream, "application/icimage"))
+            return;
         
 	}
 }

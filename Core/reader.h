@@ -33,6 +33,7 @@
 #define IMAGE_DATA_LENGTH 0x1
 #define IMAGE_ACTION_START 0x2
 #define IMAGE_USE_URL 0x3
+#define IMAGE_BEGIN_DATA 0xFF
 
 #define ACTION_LINK 0x1
 #define ACTION_SWAP 0x2

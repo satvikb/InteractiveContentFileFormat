@@ -14,7 +14,7 @@ const wxString& CustomImageReader::GetMimeType() const {
 
 // the input steam buffer should start from the first byte in content
 bool CustomImageReader::LoadFile(wxImage* image, wxInputStream& stream, bool verbose, int index) {
-	if (stream.GetC() != IMAGE_METADATA_START) {
+	if (stream.GetC() != IC_IMAGE_METADATA_START) {
 		return false;
 	}
 	uint16_t width = stream.GetC() << 8 | (unsigned char)stream.GetC();
@@ -23,14 +23,8 @@ bool CustomImageReader::LoadFile(wxImage* image, wxInputStream& stream, bool ver
 
 	// skip rest of metadata
 	// TODO handle eof
-	while (stream.GetC() != IMAGE_METADATA_END) {
+	while (stream.GetC() != IC_IMAGE_METADATA_END) {
 		stream.GetC();
-	}
-	if (stream.GetC() == IMAGE_ACTION_START) {
-		// skip action table here
-		while (stream.GetC() != IMAGE_ACTION_END) {
-			stream.GetC();
-		}
 	}
 	uint8_t* pixelColors = (uint8_t*)malloc(sizeof(uint8_t) * width * height * 3);
 	uint8_t* pixelAlphas = (uint8_t*)malloc(sizeof(uint8_t) * width * height);
