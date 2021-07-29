@@ -94,8 +94,7 @@ void cRichTextView::interpretControlBytes(int* index) {
 			case 0x82:
 			{
 				std::vector<uint8_t> data = content->data;
-				std::pair<uint8_t, uint32_t> actionID =
-					readChunkTypeAndID((char*)&data[0], &i);
+				std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID((char*)&data[0], &i);
 
 				// uint8_t left = content->data[i];
 				// uint8_t right = content->data[i+1];
@@ -189,7 +188,11 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 							wxSize windowSize = WindowManager::GetWindowSize();
 							int windowDimension = textScaleMode == TEXT_SCALE_MODE_WINDOW_WIDTH ? windowSize.GetWidth() : windowSize.GetHeight();
 							float windowMultiplier = (float)windowDimension / (float)windowDivider;
-							uint8_t scaledTextSize = ((float)rawTextSize / 100.f) * windowMultiplier;
+							int scaledTextSize = ((float)rawTextSize / 100.f) * windowMultiplier;
+							// https://trac.wxwidgets.org/ticket/12315
+							if (scaledTextSize == wxDEFAULT) {
+								scaledTextSize -= 1;
+							}
 							BeginFontSize(scaledTextSize);
 						} break;
 						default:

@@ -4,8 +4,8 @@ cImageView::cImageView(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_AN
 	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
 
     // load the file... ideally add a check to see if loading was successful
-    w = -1;
-    h = -1;
+    imageWidth = -1;
+    imageHeight = -1;
 }
 
 void cImageView::interpretContent() {
@@ -108,8 +108,28 @@ END_EVENT_TABLE()
 
 void cImageView::mouseReleased(wxMouseEvent& event) {
     // handle actions
+    for (uint8_t n = 0; n < actions.size(); n++) {
+        ImageActionPosition* actionPos = actions[n];
+        if (pointInActionPos(actionPos, event.GetX(), event.GetY())) {
+            WindowManager::ExecuteActionID(actionPos->actionID);
+            return;
+        }
+    }
 }
 
+bool cImageView::pointInActionPos(ImageActionPosition* pos, int mouseX, int mouseY) {
+    float normX = (float)pos->x / 100.f;
+    float normY = (float)pos->y / 100.f;
+    float normWidth = (float)pos->w / 100.f;
+    float normHeight = (float)pos->h / 100.f;
+
+    int winX = normX * imageWidth;
+    int winY = normY * imageHeight;
+    int winWeight = normWidth * imageWidth;
+    int winHeight = normHeight * imageHeight;
+
+    return (mouseX >= winX && mouseX <= (winX + winWeight)) && (mouseY >= winY && mouseY <= (winY + winHeight));
+}
 
 /*
  * Called by the system of by wxWidgets when the panel needs
@@ -150,11 +170,11 @@ void cImageView::render(wxDC& dc)
         int neww, newh;
         dc.GetSize(&neww, &newh);
 
-        if (neww != w || newh != h)
+        if (neww != imageWidth || newh != imageHeight)
         {
             resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
-            w = neww;
-            h = newh;
+            imageWidth = neww;
+            imageHeight = newh;
             dc.DrawBitmap(resized, 0, 0, false);
         }
         else {

@@ -36,7 +36,11 @@ cContainer* WindowManager::GetWindowByContainerID(uint32_t containerID) {
 }
 
 wxSize WindowManager::GetWindowSize() {
-	return GetWindowByContainerID(topContainer->chunkID)->GetSize();
+	if (topContainer != nullptr) {
+		return GetWindowByContainerID(topContainer->chunkID)->GetSize();
+
+	}
+	return wxSize(0, 0);
 }
 
 

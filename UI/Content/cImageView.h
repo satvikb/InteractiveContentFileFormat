@@ -27,8 +27,8 @@ private:
 
 	wxImage image;
 	wxBitmap resized;
-	int w, h;
+	int imageWidth, imageHeight;
 	void interpretContent() override;
 	std::string mimeTypeFromImageType(uint8_t imageType);
-
+	bool pointInActionPos(ImageActionPosition* pos, int mouseX, int mouseY);
 };

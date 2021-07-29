@@ -18,7 +18,7 @@ Total header bytes: 64
 ------------- BEGIN LAYOUT 1 -------------
 
 60 01 - Layout ID (011 00000 0000 0001)
-02 - Number of elements (2) (one on left half, second on right half)
+03 - Number of elements (2) (one on left half, second on right half)
 00 - X
 32 - Y
 32 - Width
@@ -31,6 +31,12 @@ Total header bytes: 64
 64 - Height
 
 00 00 - Style ID
+
+00
+00
+32
+32
+00 00
 ------------- END LAYOUT 1 -------------
 ------------- BEGIN LAYOUT 2 -------------
 
@@ -61,6 +67,7 @@ A0 01 - Style ID
 60 01 - Layout ID (011 00000 0000 0001)
 40 01 - Content ID (010 00000 0000 0001)
 40 02 - Content ID (010 00000 0000 0002)
+40 03
 00	  - End Container
 ------------- END CONTAINER 1 -------------
 
@@ -132,6 +139,13 @@ FF - begin URL
 01 - Index of element (Index 1 = 2nd element, the right text box)
 40 03 - Replace with this content ID (3)
 ------------- END ACTION 3 -------------
+------------- BEGIN ACTION 4 -------------
+80 05 - Action ID (100 00000 0000 0002)
+03 - Action Type (00000011 for Replace With Content)
+20 01 - Find this container ID
+02 - Index of element (Index 2 = 3nd element, the top left text box)
+40 02 - Replace with this content ID (2 - "right" text box)
+------------- END ACTION 4 -------------
 
 ------------- BEGIN STYLE 1 -------------
 A0 01 - Style ID (101 00000 0000 0001)
