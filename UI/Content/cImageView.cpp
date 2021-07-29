@@ -9,45 +9,59 @@ cImageView::cImageView(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_AN
 }
 
 void cImageView::interpretContent() {
-	if (content->data.size() > 0) {
-        wxMemoryInputStream stream(content->data.data(), content->length);
-        if (!image.LoadFile(stream, "application/icimage"))
-            return;
+    std::vector<uint8_t> bytes = content->data;
+    int numBytes = bytes.size();
+    if (numBytes > 0) {
+        int i = 0;
+
+        while (i < numBytes) {
+            uint8_t controlByte = bytes[i];
+            i += 1;
+
+            switch (controlByte) {
+                case IMAGE_TYPE:
+                    imageType = bytes[i];
+                    i += 1;
+                break;
+                case IMAGE_DATA_LENGTH:
+                    dataLength = read32BitInt((char*)&bytes[0], &i);
+                break;
+                case IMAGE_ACTION_START:
+                    uint8_t numberActionRectangles = bytes[i];
+                    i += 1;
+                    for (uint8_t n = 0; n < numberActionRectangles; n++) {
+                        ImageActionPosition *actionPos = readImageActionPosition((char*)&bytes[0], &i);
+                        actions.push_back(actionPos);
+                    }
+                break;
+                case IMAGE_USE_URL:
+                
+                break;
+            }
+
+            wxMemoryInputStream stream(content->data.data(), content->length);
+            if (!image.LoadFile(stream, "application/icimage"))
+                return;
+        }
+        
 	}
 }
 //void cNativeContent::addAction() {}
 
 BEGIN_EVENT_TABLE(cImageView, wxPanel)
-// some useful events
-/*
- EVT_MOTION(wxImagePanel::mouseMoved)
- EVT_LEFT_DOWN(wxImagePanel::mouseDown)
- EVT_LEFT_UP(wxImagePanel::mouseReleased)
- EVT_RIGHT_DOWN(wxImagePanel::rightClick)
- EVT_LEAVE_WINDOW(wxImagePanel::mouseLeftWindow)
- EVT_KEY_DOWN(wxImagePanel::keyPressed)
- EVT_KEY_UP(wxImagePanel::keyReleased)
- EVT_MOUSEWHEEL(wxImagePanel::mouseWheelMoved)
- */
 
- // catch paint events
-    EVT_PAINT(cImageView::paintEvent)
-    //Size event
-    EVT_SIZE(cImageView::OnSize)
-    END_EVENT_TABLE()
+EVT_LEFT_UP(cImageView::mouseReleased)
 
+// catch paint events
+EVT_PAINT(cImageView::paintEvent)
+//Size event
+EVT_SIZE(cImageView::OnSize)
+END_EVENT_TABLE()
 
-    // some useful events
-    /*
-     void wxImagePanel::mouseMoved(wxMouseEvent& event) {}
-     void wxImagePanel::mouseDown(wxMouseEvent& event) {}
-     void wxImagePanel::mouseWheelMoved(wxMouseEvent& event) {}
-     void wxImagePanel::mouseReleased(wxMouseEvent& event) {}
-     void wxImagePanel::rightClick(wxMouseEvent& event) {}
-     void wxImagePanel::mouseLeftWindow(wxMouseEvent& event) {}
-     void wxImagePanel::keyPressed(wxKeyEvent& event) {}
-     void wxImagePanel::keyReleased(wxKeyEvent& event) {}
-     */
+void cImageView::mouseReleased(wxMouseEvent& event) {
+    // handle actions
+}
+
 
 /*
  * Called by the system of by wxWidgets when the panel needs
@@ -113,5 +127,5 @@ void cImageView::OnSize(wxSizeEvent& event) {
 
 
 cImageView::~cImageView() {
-
+    // TODO delete actionPos
 }

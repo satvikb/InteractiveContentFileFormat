@@ -141,6 +141,16 @@ std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index) {
 	return std::make_pair(chunkType, ID);
 }
 
+uint32_t read32BitInt(char* buffer, int* index) {
+	int i = *index;
+	uint32_t number = uint32_t((unsigned char)(buffer[i]) << 24 |
+				(unsigned char)(buffer[i + 1]) << 16 |
+				(unsigned char)(buffer[i + 2]) << 8 |
+				(unsigned char)(buffer[i + 3]));
+	*index = i;
+	return number;
+}
+
 struct Header* readHeader(char* buffer, int* index) {
 	int i = *index;
 	i += 2; // skip the header chunk type and ID
@@ -172,10 +182,7 @@ struct Header* readHeader(char* buffer, int* index) {
 		i += 1; // skip null byte for key
 
 		if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION) == 0) {
-			uint32_t updateVersion = uint32_t((unsigned char)(buffer[i]) << 24 |
-				(unsigned char)(buffer[i + 1]) << 16 |
-				(unsigned char)(buffer[i + 2]) << 8 |
-				(unsigned char)(buffer[i + 3]));
+			uint32_t updateVersion = read32BitInt(buffer, &i);
 			i += 4;
 			header->autoUpdateVersion = updateVersion;
 		} else if (key.compare(HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO) == 0) {
@@ -274,10 +281,7 @@ std::pair<uint32_t, struct Content*> readContent(char* buffer, int* index) {
 	uint8_t contentType = (unsigned char)buffer[i];
 	i += 1; // now i is at content length
 
-	uint32_t contentLength = uint32_t((unsigned char)(buffer[i]) << 24 |
-							(unsigned char)(buffer[i + 1]) << 16 |
-							(unsigned char)(buffer[i + 2]) << 8 |
-							(unsigned char)(buffer[i + 3]));
+	uint32_t contentLength = read32BitInt(buffer, &i);
 	i += 4;
 
 	content->data = std::vector<uint8_t>(contentLength, 0x0);
@@ -475,3 +479,17 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
 	return std::make_pair(style->chunkID, style);
 }
 
+struct ImageActionPosition* readImageActionPosition(char* buffer, int* index) {
+	int i = *index;
+
+	struct ImageActionPosition* pos = new ImageActionPosition;
+	pos->x = (unsigned char)buffer[(i)];
+	pos->y = (unsigned char)buffer[(i)+1];
+	pos->w = (unsigned char)buffer[(i)+2];
+	pos->h = (unsigned char)buffer[(i)+3];
+
+	i += 4;
+	std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID(buffer, &i);
+	pos->actionID = actionID.second;
+	*index = i;
+}

@@ -14,9 +14,17 @@ public:
 	void paintNow();
 	void OnSize(wxSizeEvent& event);
 	void render(wxDC& dc);
+	void mouseReleased(wxMouseEvent& event);
 	DECLARE_EVENT_TABLE()
 
 private:
+
+	uint8_t imageType;
+	int dataLength;
+	std::vector<struct ImageActionPosition*> actions;
+	bool useURL;
+	std::vector<uint8_t> imageData;
+
 	wxImage image;
 	wxBitmap resized;
 	int w, h;

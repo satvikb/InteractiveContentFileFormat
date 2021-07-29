@@ -29,10 +29,10 @@
 #define CONTENT_WEB 0x23 // 35 in decimal, external content type
 #define CONTENT_STREAMED 0x24
 
-#define IMAGE_METADATA_START 0x1
-#define IMAGE_METADATA_END 0x2
-#define IMAGE_ACTION_START 0x3
-#define IMAGE_ACTION_END 0x4
+#define IMAGE_TYPE 0x0
+#define IMAGE_DATA_LENGTH 0x1
+#define IMAGE_ACTION_START 0x2
+#define IMAGE_USE_URL 0x3
 
 #define ACTION_LINK 0x1
 #define ACTION_SWAP 0x2
@@ -186,7 +186,15 @@ struct elementPosition {
     uint8_t y;
     uint8_t w;
     uint8_t h;
-    uint16_t styleID;
+    uint32_t styleID;
+};
+
+struct ImageActionPosition {
+    uint8_t x;
+    uint8_t y;
+    uint8_t w;
+    uint8_t h;
+    uint32_t actionID;
 };
 
 bool readFile(struct InteractiveContent* ic, const char* filename);
@@ -203,3 +211,5 @@ std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index);
 std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index);
 
 std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index);
+uint32_t read32BitInt(char* buffer, int* index);
+struct ImageActionPosition* readImageActionPosition(char* buffer, int* index);
