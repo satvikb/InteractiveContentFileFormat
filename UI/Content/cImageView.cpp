@@ -45,7 +45,6 @@ void cImageView::interpretContent() {
                 case IMAGE_USE_URL:
                 {
                     useURL = true;
-                    i += 1;
                 }
                     
                 break;
@@ -62,15 +61,38 @@ void cImageView::interpretContent() {
                     
                 break;
             }
+        }
 
+        if (useURL) {
+            std::string streamURL(imageData.begin(), imageData.end());
+            cpr::Response res = downloadFileData(streamURL.c_str());
+            std::string data = res.text;
+            imageData.assign(data.begin(), data.end());
+            dataLength = imageData.size();
         }
 
         // switch between image type and load the right type
         wxMemoryInputStream stream(imageData.data(), dataLength);
-        if (!image.LoadFile(stream, "application/icimage"))
-            return;
-        
+        std::string mimeType = mimeTypeFromImageType(imageType);
+        if (!mimeType.empty()) {
+            if (!image.LoadFile(stream, mimeType))
+                return;
+        }
 	}
+}
+
+std::string cImageView::mimeTypeFromImageType(uint8_t imageType) {
+    switch (imageType) {
+        case IMAGE_TYPE_IC_IMAGE:
+        return "application/icimage";
+        case IMAGE_TYPE_PNG:
+        return "image/png";
+        case IMAGE_TYPE_JPEG:
+        return "image/jpeg";
+        case IMAGE_TYPE_GIF:
+        return "image/gif";
+    }
+    return "";
 }
 //void cNativeContent::addAction() {}
 

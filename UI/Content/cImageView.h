@@ -29,4 +29,6 @@ private:
 	wxBitmap resized;
 	int w, h;
 	void interpretContent() override;
+	std::string mimeTypeFromImageType(uint8_t imageType);
+
 };

@@ -102,6 +102,22 @@ Content Data BEGIN
 00 00 00 07 - Length
 Content Data BEGIN
 01 00 00 64 64 00 00
+------------- END CONTENT 4 -------------
+
+------------- BEGIN CONTENT 5 -------------
+40 05
+02 - type image
+00 00 00 AC
+Content Data BEGIN
+00 - image type key
+03 - jpg
+03 - url true
+01 - content length key
+00 00 00 A3 - length of URL bytes
+FF - begin URL
+<url bytes>
+------------- END CONTENT 5 -------------
+
 ------------- BEGIN ACTION 1 -------------
 80 01 - Action ID (100 00000 0000 0001)
 01 - Action Type (00000001 for Link)

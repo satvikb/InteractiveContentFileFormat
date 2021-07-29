@@ -18,9 +18,9 @@ bool cApp::OnInit() {
 
 	// Instead of initalizing all handlers, lets just init the handlers IC currently supports.
 	//wxInitAllImageHandlers();
-	//wxImage::AddHandler(new wxPNGHandler);
-	//wxImage::AddHandler(new wxJPEGHandler);
-	//wxImage::AddHandler(new wxGIFHandler);
+	wxImage::AddHandler(new wxPNGHandler);
+	wxImage::AddHandler(new wxJPEGHandler);
+	wxImage::AddHandler(new wxGIFHandler);
 
 	m_frame1 = new cMain();
 	m_frame1->Show();
