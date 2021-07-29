@@ -92,12 +92,12 @@ topContainer = "20016001400100"
 
 imageContent = "4001 02"
 imageMetadata = "0001"
-#imageMetadata = "01 012C 00E0 00 02 03 04"
+imageContentMetadata = "01 012C 00E0 00 02 03 04"
 from PIL import Image
 im = Image.open('example.jpg') # Can be many different formats.
 pix = im.load()
 width, height = im.size
-imagePixelData = ""
+imagePixelData = imageContentMetadata
 for y in range(height):
     for x in range(width):
         r,g,b = im.getpixel((x,y))

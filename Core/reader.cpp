@@ -147,6 +147,7 @@ uint32_t read32BitInt(char* buffer, int* index) {
 				(unsigned char)(buffer[i + 1]) << 16 |
 				(unsigned char)(buffer[i + 2]) << 8 |
 				(unsigned char)(buffer[i + 3]));
+	i += 4;
 	*index = i;
 	return number;
 }
@@ -183,7 +184,6 @@ struct Header* readHeader(char* buffer, int* index) {
 
 		if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION) == 0) {
 			uint32_t updateVersion = read32BitInt(buffer, &i);
-			i += 4;
 			header->autoUpdateVersion = updateVersion;
 		} else if (key.compare(HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO) == 0) {
 			uint8_t widthRatio = (unsigned char)buffer[i];
@@ -282,8 +282,6 @@ std::pair<uint32_t, struct Content*> readContent(char* buffer, int* index) {
 	i += 1; // now i is at content length
 
 	uint32_t contentLength = read32BitInt(buffer, &i);
-	i += 4;
-
 	content->data = std::vector<uint8_t>(contentLength, 0x0);
 	// i is now at the first byte of the content
 	uint32_t byteI = 0;

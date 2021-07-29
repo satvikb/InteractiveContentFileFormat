@@ -20,11 +20,17 @@ void cImageView::interpretContent() {
 
             switch (controlByte) {
                 case IMAGE_TYPE:
+                {
                     imageType = bytes[i];
                     i += 1;
+                }
+                    
                 break;
                 case IMAGE_DATA_LENGTH:
+                {
                     dataLength = read32BitInt((char*)&bytes[0], &i);
+
+                }
                 break;
                 case IMAGE_ACTION_START:
                 {
@@ -37,17 +43,23 @@ void cImageView::interpretContent() {
                 }
                 break;
                 case IMAGE_USE_URL:
+                {
                     useURL = true;
                     i += 1;
+                }
+                    
                 break;
                 case IMAGE_BEGIN_DATA:
+                {
                     if (dataLength > 0) {
-                        imageData = {bytes.begin() + i, bytes.begin() + i + dataLength };
+                        imageData = {bytes.begin() + i, bytes.begin() + i + dataLength};
                         i += dataLength;
                     } else {
                         // ? dataLength not set yet.
                         // TODO error
                     }
+                }
+                    
                 break;
             }
 
