@@ -16,9 +16,7 @@ void cWebView::interpretContent() {
 		if (content->data[0] == 0x1) {
 			std::string url;
 			for (int i = 1; content->data[i] != '\0'; i++) {
-				//header->author[authorI] = buffer[i];
 				url += (content->data[i]);
-				//printf("%c\n", buffer[i]);
 			}
 			
 			this->url = url;
@@ -26,6 +24,10 @@ void cWebView::interpretContent() {
 		}
 		
 	}
+}
+
+void cWebView::ApplyComponentStyle(struct Style* style) {
+
 }
 
 cWebView::~cWebView() {

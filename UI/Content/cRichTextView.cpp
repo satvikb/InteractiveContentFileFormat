@@ -121,7 +121,7 @@ void cRichTextView::interpretControlBytes(int* index) {
 	*index = i;
 }
 
-void cRichTextView::applyComponentStyle(struct Style* style) {
+void cRichTextView::ApplyComponentStyle(struct Style* style) {
 	if (style != nullptr) {
 		// c++17 style loop
 		for (auto [key, val] : style->styles) {

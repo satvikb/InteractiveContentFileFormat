@@ -8,7 +8,7 @@ class cImageView : public cNativeContent, public wxPanel
 {
 public:
 	cImageView(cContainer* parent);
-	void applyComponentStyle(struct Style* style);
+	void ApplyComponentStyle(struct Style* style) override;
 	~cImageView();
 	void paintEvent(wxPaintEvent& evt);
 	void paintNow();

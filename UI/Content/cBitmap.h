@@ -8,7 +8,7 @@ class cBitmap : public cNativeContent, public wxPanel
 {
 public:
 	cBitmap(cContainer* parent);
-	void applyComponentStyle(struct Style* style);
+	void ApplyComponentStyle(struct Style* style) override;
 	~cBitmap();
 	void paintEvent(wxPaintEvent& evt);
 	void paintNow();

@@ -15,6 +15,11 @@ void cBitmap::interpretContent() {
 	}
 }
 
+void cBitmap::ApplyComponentStyle(struct Style* style) {
+
+}
+
+
 BEGIN_EVENT_TABLE(cBitmap, wxPanel)
 
  // catch paint events

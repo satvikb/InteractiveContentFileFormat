@@ -16,9 +16,16 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
         // TODO: loop through existing windows and delete (memory)
         for (int i = 0; i < children.size(); i++) {
             wxWindow* win = children[i];
-            children[i]->Show(false);
-            // TODO crashes because of using smart pointers, maybe try wxWindowPtr?
-            children[i]->Destroy();
+            
+            win->Show(false);
+            
+            cContainer* existingContainer = dynamic_cast<cContainer*>(win);
+            if (existingContainer != NULL) {
+                WindowManager::DestroyContainer(existingContainer);
+            } else {
+                // TODO crashes because of using smart pointers, maybe try wxWindowPtr?
+                win->Destroy();
+            }
         }
 
         // TODO MEMORY MANAGEMENT, DELETE THE WINDOWS
@@ -34,14 +41,12 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
         if (ID.chunkType == CHUNK_CONTAINER && container != nullptr) {
             // create another cContainer
             CreateSubContainer(ID.chunkID, pos);
-        }
-        else {
+        } else {
             // try content
             struct Content* content = FileManager::getContentByID(ID.chunkID);
             if (content != nullptr) {
                 CreateContent(content, pos);
-            }
-            else {
+            } else {
                 // ?
             }
         }
@@ -51,7 +56,7 @@ void cContainer::CreateContainerUI(struct Container* container, struct Layout* l
 
 void cContainer::CreateContent(struct Content* content, struct elementPosition* pos, uint8_t index) {
     uint8_t contentType = content->type;
-
+    struct Style* style = FileManager::getStyleByID(pos->styleID);
     wxWindow* newContent = nullptr;
 
     switch (contentType) {
@@ -59,20 +64,24 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
         //std::shared_ptr<cRichTextView> richTextCtrl = std::make_shared<cRichTextView>((cContainer*)this);
         newContent = new cRichTextView((cContainer*)this);
         static_cast<cRichTextView*>(newContent)->SetContent(content);
-        static_cast<cRichTextView*>(newContent)->applyComponentStyle(FileManager::getStyleByID(pos->styleID));
+        static_cast<cRichTextView*>(newContent)->ApplyComponentStyle(style);
     }
     break;
     case CONTENT_IMAGE:
         newContent = new cImageView((cContainer*)this);
         static_cast<cImageView*>(newContent)->SetContent(content);
+        static_cast<cImageView*>(newContent)->ApplyComponentStyle(style);
     break;
     case CONTENT_BITMAP:
         newContent = new cBitmap((cContainer*)this);
         static_cast<cBitmap*>(newContent)->SetContent(content);
+        static_cast<cBitmap*>(newContent)->ApplyComponentStyle(style);
+
     break;
     case CONTENT_WEB:
         newContent = new cWebView((cContainer*)this);
         static_cast<cWebView*>(newContent)->SetContent(content);
+        static_cast<cWebView*>(newContent)->ApplyComponentStyle(style);
         break;
     case CONTENT_STREAMED:
         CreateContent(FileManager::getStreamedContent(content), pos, index);
@@ -82,7 +91,6 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
 
     if (newContent != nullptr) {
         // content was actually created (valid content type)
-
         if (index >= 0 && index < children.size()) {
             //delete children[index];
             children[index] = newContent;
@@ -97,11 +105,15 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
     }
 }
 
-void cContainer::CreateSubContainer(uint32_t containerID, struct elementPosition* pos, uint8_t index = -1) {
+void cContainer::CreateSubContainer(uint32_t containerID, struct elementPosition* pos, uint8_t index) {
     cContainer* newContainer = WindowManager::CreateContainer(containerID, this, FileManager::convertLayoutPositionToConstraint(pos));
+    newContainer->SetContainerStyle(FileManager::getStyleByID(pos->styleID));
     if (index >= 0 && index < children.size()) {
-        // delete the old container
-        WindowManager::DestroyContainer(dynamic_cast<cContainer*>(children[index]));
+        // delete the old container that is what is there currently
+        cContainer* existingContainer = dynamic_cast<cContainer*>(children[index]);
+        if (existingContainer != NULL) {
+            WindowManager::DestroyContainer(existingContainer);
+        }
         children[index] = newContainer;
     } else {
         children.push_back(newContainer);
@@ -111,7 +123,7 @@ void cContainer::CreateSubContainer(uint32_t containerID, struct elementPosition
 // replaces existing element (either a container or content) at index with the given content ID.
 // For now only replacing with a single content ID is supported (not with infinite containers)
 // The 0 is because infinite containers are not supported when replacing, so only first is selected.
-void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t contentID) {
+void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t elementID) {
     if (index < children.size()) {
         wxWindow* windowObj = children[index];
         elementPosition* pos = layout->positions[index];
@@ -129,10 +141,24 @@ void cContainer::ReplaceElementAtIndexWithContent(uint8_t index, uint16_t conten
             // shared_ptr doesnt need delete
         }
 
-        Content* newContentData = FileManager::getContentByID(contentID);
-        container->elementIDs[index] = { CHUNK_CONTENT, contentID };
+        
+        Content* newContentData = FileManager::getContentByID(elementID);
 
-        CreateContent(newContentData, pos, index);
+        if (newContentData != nullptr) {
+            container->elementIDs[index] = {CHUNK_CONTENT, elementID};
+
+            CreateContent(newContentData, pos, index);
+        } else {
+            // try to make container
+            Container* newContainerData = FileManager::getContainerByID(elementID);
+            if (newContainerData != nullptr) {
+                container->elementIDs[index] = {CHUNK_CONTENT, elementID};
+                CreateSubContainer(newContainerData->chunkID, pos, index);
+            } else {
+                // element ID not found
+            }
+        }
+
     }
 }
 

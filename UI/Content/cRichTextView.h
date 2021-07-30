@@ -18,7 +18,7 @@ class cRichTextView : public cNativeContent, public wxRichTextCtrl
 {
 public:
 	cRichTextView(cContainer* parent);
-	void applyComponentStyle(struct Style* style);
+	void ApplyComponentStyle(struct Style* style) override;
 	~cRichTextView();
 private:
 	// map to convert start position of URLs in text to a Action ID

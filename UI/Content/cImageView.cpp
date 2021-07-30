@@ -81,6 +81,10 @@ void cImageView::interpretContent() {
 	}
 }
 
+void cImageView::ApplyComponentStyle(struct Style* style) {
+
+}
+
 std::string cImageView::mimeTypeFromImageType(uint8_t imageType) {
     switch (imageType) {
         case IMAGE_TYPE_IC_IMAGE:

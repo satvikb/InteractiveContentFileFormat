@@ -9,7 +9,7 @@ class cWebView : public cNativeContent, public wxWindow
 public:
 	//virtual bool Create(wxWindow* parent, wxWindowID id, const wxString& url = wxWebViewDefaultURLStr, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxWebViewNameStr);
 	cWebView(cContainer* parent);
-	//void applyComponentStyle(struct Style* style);
+	void ApplyComponentStyle(struct Style* style) override;
 	~cWebView();
 
 private:
