@@ -108,7 +108,9 @@ Content Data BEGIN
 03 - Type Bitmap
 00 00 00 07 - Length
 Content Data BEGIN
-01 00 00 64 64 00 00
+02 00 00 64 64 00 00 (Full rectangle)
+01 32 0A 60 32 00 00 (Line between two points)
+
 ------------- END CONTENT 4 -------------
 
 ------------- BEGIN CONTENT 5 -------------

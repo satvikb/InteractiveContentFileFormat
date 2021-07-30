@@ -54,10 +54,18 @@ void cBitmap::drawContent(wxDC& dc) {
                 case BITMAP_RECTANGLE:
                     readAndDrawRectangle(dc, w, h, bytes, &i);
                 break;
+                case BITMAP_CIRCLE:
+                    readAndDrawCircle(dc, w, h, bytes, &i);
+                break;
+                default:
+                goto exit_drawing;
+                break;
             }
 
         }
     }
+    // if encountered an unknown shape type
+    exit_drawing:;
 }
 
 void cBitmap::readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int *index) {
@@ -121,6 +129,44 @@ void cBitmap::readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> 
     *index = i;
 }
 
+void cBitmap::readAndDrawCircle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index) {
+    int i = *index;
+    // Skip the type byte
+    i++;
+    uint8_t centerX = bytes[i];
+    i++;
+    uint8_t centerY = bytes[i];
+    i++;
+    uint8_t radius = bytes[i];
+    i++;
+    uint8_t radiusMode = bytes[i];
+    i++;
+    std::pair<uint8_t, uint32_t> styleChunk = readChunkTypeAndID((char*)&bytes[0], &i);
+    struct Style* style = FileManager::getStyleByID(styleChunk.second);
+    // apply style
+    if (style != nullptr) {
+        // TODO
+    }
+
+    float centerXPercent = (float)centerX / 100.f;
+    float centerYPercent = (float)centerY / 100.f;
+    float radiusPercent = (float)radius / 100.f;
+
+    float centerXPixels = centerXPercent * w;
+    float centerYPixels = centerYPercent * h;
+    float radiusPixels = 0;
+    switch (radiusMode) {
+        case BITMAP_CIRCLE_RADIUS_WIDTH:
+        radiusPixels = radiusPercent * w;
+        break;
+        case BITMAP_CIRCLE_RADIUS_HEIGHT:
+        radiusPixels = radiusPercent * h;
+        break;
+    }
+
+    dc.DrawCircle(centerXPixels, centerYPixels, radiusPixels);
+    *index = i;
+}
 
 void cBitmap::render(wxDC& dc)
 {

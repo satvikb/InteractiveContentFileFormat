@@ -23,4 +23,5 @@ private:
 
 	void readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
 	void readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
+	void readAndDrawCircle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
 };
