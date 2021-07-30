@@ -42,7 +42,7 @@
 
 #define ACTION_LINK 0x1
 #define ACTION_SWAP 0x2
-#define ACTION_REPLACE_WITH_CONTENT 0x3
+#define ACTION_REPLACE_WITH_ELEMENT 0x3
 #define ACTION_DOWNLOAD_CHUNKS 0x4
 #define ACTION_EXECUTE_COMPOSITE 0x5
 
@@ -166,7 +166,7 @@ struct Swap : Action {
     uint32_t replaceWithID;
 };
 
-struct ReplaceWithContent : Action {
+struct ReplaceWithElement : Action {
     // The container to target. Must currently be visible.
     uint32_t containerID;
     // The index of the element inside this container to replace

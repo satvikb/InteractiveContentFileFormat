@@ -71,8 +71,8 @@ void WindowManager::ExecuteAction(struct Action* action) {
 		ReplaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
 	}
 	break;
-	case ACTION_REPLACE_WITH_CONTENT: {
-		ReplaceWithContent* replace = dynamic_cast<ReplaceWithContent*>(action);
+	case ACTION_REPLACE_WITH_ELEMENT: {
+		ReplaceWithElement* replace = dynamic_cast<ReplaceWithElement*>(action);
 		ReplaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
 	}
 	break;

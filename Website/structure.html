@@ -63,32 +63,21 @@
     <pre>
   (Action ID - 16 Bits)       100 xxxxx xxxxxxxx [x bits are the Action ID]
   (Action Type - 16 bits)     xxxxxxxx
-    (Type: Link)              00000001
-    (Type: Swap Containers)   00000010
-    (Type: Content Replace)   00000011
-    (Type: Download Chunks)   00000100
-    (Type: Composite Action)  00000101
+    (Type: Link)              01 (00000001)
+    (Type: Swap Containers)   02 (00000010)
+    (Type: Element Replace)   03 (00000011)
+    (Type: Download Chunks)   04 (00000100)
+    (Type: Composite Action)  05 (00000101)
   {Type: Link}
     (Link To Container ID)    001 xxxxx xxxxxxxx [x bits are Container ID]
-    (Display Mode Byte)       000VWXYZ
-      V bit: Show this container as a tooltip. The display of the tooltip is left to the reader.
-      W bit: Allow showing a back button to return to the container before the Link was pressed.
-      XYZ bits: Defines how many sublevels of Containers that should be shown from the linked Container.
-      The highest level Container that is chosen is what is displayed (since it will always
-      contain the linked Container)
-        000: Show only the linked Container, even if the Container is inside a subcontainer
-        001: Show the linked Container and the parent Container.
-        010: The linked Container, with its parent and grandparent Container.
-        ...
-        110: Show the 6th parent Container from the linked Container.
-        111: Show the highest Container ancestor possible.
-  {Type: Replacement}
+    (Display Mode Byte)       XX (XXXXXXXX) [Currently unused]
+  {Type: Swap}
     (Replace Container ID)    001 xxxxx xxxxxxxx [ID of Container to replace. Must be currently visable.]
     (Replace with ID)         001 xxxxx xxxxxxxx [ID of Container to replace with.]
-  {Type: Content Replace}
+  {Type: Element Replace}
     (Target Container ID)     001 xxxxx xxxxxxxx [ID of Container to target.]
     (Element Index)           xxxxxxxx           [Element index for the element to replace in the target container. Corresponds to the layout element number.]
-    (Replace content)         010 xxxxx xxxxxxxx [ID of the Content to replace the targetted element with.]
+    (Replace element)         010 xxxxx xxxxxxxx [ID of the Element to replace the targeted element with.]
   {Type: Download Chunks}
     (URL)                     <url bytes> 00     [Null terminated URL in ASCII]
   {Type: Composite Action}
