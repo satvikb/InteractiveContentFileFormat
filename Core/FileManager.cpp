@@ -16,14 +16,14 @@ bool FileManager::addChunksFromURL(const char* url) {
 	return streamFile(ic, url);
 }
 
-uint16_t FileManager::getStartContainerID() {
-	uint16_t startID = ic->header->startContainer;
+uint32_t FileManager::getStartContainerID() {
+	uint32_t startID = ic->header->startContainer;
 	return startID;
 }
 
-std::pair<struct Container*, struct Layout*> FileManager::getContainerAndLayoutByID(uint16_t containerID) {
+std::pair<struct Container*, struct Layout*> FileManager::getContainerAndLayoutByID(uint32_t containerID) {
 	struct Container* container = getContainerByID(containerID);
-	uint16_t layoutID = (*container).layoutID;
+	uint32_t layoutID = (*container).layoutID;
 	struct Layout* layout = getLayoutByID(layoutID);
 	return std::make_pair(container, layout);
 }

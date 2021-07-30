@@ -13,7 +13,7 @@ class WindowManager
 public:
 	static void ExecuteActionID(uint32_t actionID);
 	static cContainer* GetWindowByContainerID(uint32_t containerID);
-	static void CreateContainer(uint32_t containerID, cContainer* parent, wxConstraintPosition constraints);
+	static cContainer* CreateContainer(uint32_t containerID, cContainer* parent, wxConstraintPosition constraints);
 	static void DestroyContainer(cContainer* containerWindow);
 	static void SetTopContainer(cContainer* window);
 	static wxSize GetWindowSize();

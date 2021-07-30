@@ -352,10 +352,10 @@ std::pair<uint32_t, struct Action*> readAction(char* buffer, int* index) {
 			// 2 bytes - container id
 			// 1 byte - index
 			// 2 bytes - content id
-			uint16_t containerID = readChunkTypeAndID(buffer, &i).second;
+			uint32_t containerID = readChunkTypeAndID(buffer, &i).second;
 			uint8_t index = (unsigned char)buffer[i];
 			i += 1;
-			uint16_t contentID = readChunkTypeAndID(buffer, &i).second;
+			uint32_t contentID = readChunkTypeAndID(buffer, &i).second;
 			struct ReplaceWithContent* replace = new ReplaceWithContent;
 			replace->chunkType = actionIDs.first;
 			replace->chunkID = actionIDs.second;

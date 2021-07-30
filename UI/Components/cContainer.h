@@ -42,4 +42,5 @@ private:
 	std::vector<wxWindow*> children;
 
 	void CreateContent(struct Content* content, struct elementPosition* pos, uint8_t index = -1);
+	void CreateSubContainer(uint32_t containerID, struct elementPosition* pos, uint8_t index = -1);
 };

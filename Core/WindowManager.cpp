@@ -10,7 +10,7 @@ void WindowManager::SetTopContainer(cContainer* window) {
 	LinkContainerIDWithWindow(topContainer->chunkID, window);
 }
 
-void WindowManager::CreateContainer(uint32_t containerID, cContainer* parent, wxConstraintPosition constraints) {
+cContainer* WindowManager::CreateContainer(uint32_t containerID, cContainer* parent, wxConstraintPosition constraints) {
 	cContainer* newContainer = new cContainer(false, parent);
 
 	std::pair<struct Container*, struct Layout*> data = FileManager::getContainerAndLayoutByID(containerID);
@@ -18,6 +18,7 @@ void WindowManager::CreateContainer(uint32_t containerID, cContainer* parent, wx
 	cContainer::applyParentConstraints(newContainer, parent, constraints);
 
 	LinkContainerIDWithWindow(containerID, newContainer);
+	return newContainer;
 }
 
 void WindowManager::DestroyContainer(cContainer* containerWindow) {

@@ -20,7 +20,7 @@ private:
 public:
 	static bool loadFile(const char* filename);
 	static bool addChunksFromURL(const char* url);
-	static uint16_t getStartContainerID();
+	static uint32_t getStartContainerID();
 	static struct Header* getHeader();
 	static struct Layout* getLayoutByID(uint32_t layoutID);
 	static struct Container* getContainerByID(uint32_t containerID);
@@ -28,7 +28,7 @@ public:
 	static struct Action* getActionByID(uint32_t actionID);
 	static struct Style* getStyleByID(uint32_t styleID);
 	static struct Content* getStreamedContent(Content* content);
-	static std::pair<struct Container*, struct Layout*> getContainerAndLayoutByID(uint16_t containerID);
+	static std::pair<struct Container*, struct Layout*> getContainerAndLayoutByID(uint32_t containerID);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(struct elementPosition* pos);
 	static struct wxConstraintPosition convertLayoutPositionToConstraint(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
 };
