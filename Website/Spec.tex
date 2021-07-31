@@ -1,0 +1,132 @@
+\documentclass{report}
+
+\title{Interactive Content Specification}
+\author{John Doe}
+\date{\today}
+
+\usepackage{bytefield}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{xcolor}
+\usepackage{graphics}
+
+\pagecolor{white}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\part{Introduction}
+
+\chapter{Introduction}
+
+\section{Purpose}
+The Interactive Content (IC) File Format is a file format for modern day uses. 
+IC files allows the user to interact with the content presented in robust ways.
+The format offers a way to layout content in a flexible way and is able to present many forms of content.
+
+\section{Uses}
+IC allows for creativity in showing a variety of content. For example, entire newspapers, dictionaries, text-based games, and ... can all be displayed using IC. All of the interactive features are also available when displaying most content types. See the EXAMPLES section for in depth use cases.
+
+\part{Specification}
+
+\chapter{Overview}
+\section{Terminology}
+A chunk refers to all the bytes corresponding to its ID and its data.
+An element refers to a chunk with type Container or Content.
+
+\section{Bytes Summary}
+The IC format uses big-endian for reading and writing bytes. 
+\section{The ID System}
+Each element has a chunk identifier and an ID number associated with it. All IDs must be unique within a chunk type. Two bytes (16 bits) are used for to identify a chunk. The three left-most bits define the chunk type. The thirteen right-most bits define the chunk ID.
+
+
+
+
+\begin{bytefield}[bitwidth=2em,bitheight=\widthof{~Sign~}]{16} \\
+\bitheader{0-15} \\
+\bitbox{3}{Chunk Type} & \bitbox{13}{Chunk ID}
+\end{bytefield}
+
+\subsection{Chunk Identifiers}
+Each Chunk type has its own unique identifier that appears as the first 3 bits in the chunk. 
+
+The following bits represent each type of chunk.
+000 - reserved, special identifier to end content list within containers
+001 - container
+010 - content
+011 - layout
+100 - action
+101 - styling
+110 - extended range, see EXTENDED IDs for more info.
+111 - reserved
+
+Chunk types in extended range:
+110 01000 - header
+
+\subsection{ID Numbers}
+All chunks must have a unique ID. IDs do not have to be unique between chunk types.
+
+\subsection{Limits}
+
+For a standard ID, two bytes (16 bits) are used. The first 3 bits are the chunk type, and the next 13 bits is the element ID. This results in 2\^3 = 8 types - 2 reserved types - 1 extended range = 5 valid chunk types. After the chunk type, the next 13 bits are the ID of the element. This allows for 2\^13 = 8,192 unique IDs per chunk type.
+
+\subsection{Extended IDs}
+To allow for more than 5 chunk types, an extended bit range can be used to have 5 bits for the chunk type and 24 bits for the ID. To use the extended range, the chunk type 110 is used. By using this chunk type, the next 5 bits (until the end of the byte) is used to define the chunk type. With 5 bits, 2\^5 = 32 new chunk types are available. 32 new types - 5 existing types = 27 new chunk types. 
+
+There are three bytes used to define the chunk ID when using the extended range. This results in a max number of 2\^24 = 16,777,216 IDs.
+
+\section{Magic Number}
+The magic number for IC files are the first bytes in the file.
+The magic number for IC files is 73 61 6d 61 6c 69 74 6c 6e 76 75 61
+
+
+\chapter{Chunks}
+
+\section{Header}
+The header chunk must be at the top of a IC file after the MAGIC NUMBER. 
+Headers have a chunk type of 0x8.
+This means the extended chunk range must be used.
+
+The chunk type for headers is 11001000. 
+
+\subsection{Static Properties}
+Static header properties are in every header file and are defined to be in the same static location from the ID. 
+
+\subsubsection{File Version}
+The file version specifies the version of the IC specification the rest of the file follows. The file version is one byte.
+The current file version is 0x1.
+
+\subsubsection{Starting Container ID}
+The starting container ID defines the the container that is shown first. The starting container is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
+
+\subsection{Dynamic Properties}
+Headers can have any number of dynamic properties and works as a list of key-value pairs.
+\subsubsection{Metadata}
+Metadata is any key in dynamic properties that is not a Recognized Setting. Metadata is simply shown in the about menu when opening a file.
+\subsubsection{File Settings}
+File settings are predefined keys which change the behavior of the file. 
+\subparagraph{Recognized Settings}
+The following keys are used:\\
+\\
+"win\_aspect" defines the aspect ratio of the window that should be kept when the window is opened and resized.\\
+"win\_rect" defines the starting window size when opening the file. 4 bytes in percent of screen size. Refer to RECTANGE POSITIONING for more information.
+
+The following keys are used to manage automatically updating the file:
+file\_version defines the current version of the file. The value is a unsigned 2 byte number.
+version\_url defines the URL to retrieve the latest version of the current file from. The remote file must be a length of two bytes, defining the latest version of the file in hex. 
+update\_url defines the URL where the updated version of the entire file is located.
+
+
+\subsection{Automatically Updating the File}
+If file\_version value is higher than the value retrieved from the version\_url key, the update\_url value is used to download and replace the currently opened file.
+
+\section{Container}
+Containers are the backbone of an IC file. Containers are responsible for displaying content and define which LAYOUT to follow. All CONTENT must be a part of a Container for it to be displayed. 
+
+\section{Layout}
+\section{Style}
+\section{Content}
+
+\end{document}
