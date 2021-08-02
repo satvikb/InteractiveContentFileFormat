@@ -76,7 +76,11 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
         newContent = new cBitmap((cContainer*)this);
         static_cast<cBitmap*>(newContent)->SetContent(content);
         static_cast<cBitmap*>(newContent)->ApplyComponentStyle(style);
-
+    break;
+    case CONTENT_BUTTON:
+        newContent = new cButton((cContainer*)this);
+        static_cast<cButton*>(newContent)->SetContent(content);
+        static_cast<cButton*>(newContent)->ApplyComponentStyle(style);
     break;
     case CONTENT_WEB:
         newContent = new cWebView((cContainer*)this);

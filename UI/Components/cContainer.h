@@ -8,6 +8,7 @@
 #include "cRichTextView.h"
 #include "cImageView.h"
 #include "cBitmap.h"
+#include "cButton.h"
 #include "cWebView.h"
 
 class cContainer : public wxPanel

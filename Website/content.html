@@ -31,9 +31,6 @@
         <span>Bold, Italics, and Underline</span>
       </li>
       <li>
-        <span>Header sizes (similar to HTML header tags)</span>
-      </li>
-      <li>
         <span>Paragraph specific styles</span>
       </li>
       <li>
@@ -127,7 +124,7 @@
       (Style ID)                        XX XX (Style ID to use for Circle, 0000 for default)
     </pre>
     <h4>3.1.4. Image</h4>
-    <p>The Image content is a wrapper for multiple image formats. The start of the content bytes are control bytes defining properies of the iamge.</p>
+    <p>The Image content is a wrapper for multiple image formats. The start of the content bytes are control bytes defining properies of the image.</p>
     <p>Actions for images are triggered by a click inside a defined rectangle.</p>
     <p>Control bytes:</p>
     <pre>
@@ -145,13 +142,28 @@
           (Top Left Y)                      XX (00 - 64, for 0%-100%)
           (Width)                           XX (00 - 64, for 0%-100%)
           (Height)                          XX (00 - 64, for 0%-100%)
-          (Action ID)                       100 xxxxx xxxxxxxx (ID of the action to run when clicked)
+          (Action ID)                       XX XX (ID of the action to run when clicked)
       (Use URL)                         03 (If this control byte exists, it treats the image data as a URL)
       (Aspect Ratio Mode)               04
         (Aspect Value)                    00 (Scale to fill)
                                           01 (Keep aspect ratio)
       (Begin Image Data)                FF (This code must appear after setting Data Length)
         (Image Data)                      (length value bytes)
+    </pre>
+
+    <h4>3.1.5. Button</h4>
+    <p>The button executes an Action when clicked. Different styles can be used for hover, mouse down, and release.</p>
+    <pre>
+      (Action ID)                       XX XX (Action to execute)
+      Key-value pairs:
+      (Default style)                   01
+        (Style ID)                        XX XX (default style ID)
+      (Hover style)                     02
+        (Style ID)                        XX XX (default style ID)
+      (Click style)                     03
+        (Style ID)                        XX XX (default style ID)
+
+
     </pre>
 
     <p>Interactive Content implements its own way of representing Image data to support Actions within the image.<p>
@@ -163,7 +175,6 @@
       (Alpha channel)                   01 (00000001 for including an alpha channel)
       (End image metadata)              02 (00000002)
 
-      (End Action Table)                04 (00000004)
       [image data here, list of pixels]</pre>
     <p>Each pixel is defined as so:</p>
     <pre>

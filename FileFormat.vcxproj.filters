@@ -78,6 +78,9 @@
     <ClInclude Include="UI\Content\cBitmap.h">
       <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Content\cButton.h">
+      <Filter>Header Files\UI\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -114,6 +117,9 @@
       <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
     <ClCompile Include="UI\Content\cBitmap.cpp">
+      <Filter>Source Files\UI\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Content\cButton.cpp">
       <Filter>Source Files\UI\Content</Filter>
     </ClCompile>
   </ItemGroup>

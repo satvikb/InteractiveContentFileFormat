@@ -33,9 +33,7 @@ bool FileManager::loadFile(const char* filename) {
 							// reload the file
 							return loadFile(filename);
 						}
-						
 					}
-					
 				}
 			}
 		}

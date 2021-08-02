@@ -2,7 +2,7 @@
 \usepackage[layout=letterpaper,margin=1in]{geometry}
 
 \title{Interactive Content Specification}
-\author{John Doe}
+\author{Satvik Borra}
 \date{\today}
 
 \usepackage[endianness=big]{bytefield}
@@ -43,7 +43,10 @@ An element refers to a chunk with type Container or Content.
 \section{Bytes Summary}
 The IC format uses big-endian for reading and writing bytes. Bytes are separated by chunks.
 \section{The ID System}
-Each element has a chunk identifier and an ID number associated with it. All IDs must be unique within a chunk type. Two bytes (16 bits) are used for to identify a chunk. The three left-most bits define the chunk type. The thirteen right-most bits define the chunk ID.
+Each element has a chunk identifier and an ID number associated with it. All IDs must be unique within a chunk type. ID Components are used within Chunks to refer to other Chunks.
+\subsection{The ID Component}
+For each chunk, two bytes (four bytes if the EXTENDED RANGE is used) at the start of the chunk definition are used for its unique identification. \\
+The three left-most bits define the chunk type. The thirteen right-most bits define the chunk ID.
 \definecolor{lightgreen}{rgb}{0.64,1,0.71}
 \definecolor{lightred}{rgb}{1,0.7,0.71}
 \begin{center}
@@ -52,34 +55,32 @@ Each element has a chunk identifier and an ID number associated with it. All IDs
 \bitbox{3}[bgcolor=lightgreen]{Chunk Type} & \bitbox{13}[bgcolor=lightred]{Chunk ID}
 \end{bytefield}
 \end{center}
-\subsection{Chunk Identifiers}
-Each Chunk type has its own unique identifier that appears as the first 3 bits in the chunk. 
+\subsection{Chunk Type Identifiers}
+Each Chunk type has its own unique identifier that appears as the first 3 bits in the chunk. \\
+The following bits represent each type of chunk:
+\begin{itemize}
+\item 000 - reserved, special identifier to end element list within containers
+\item 001 - A Container chunk.
+\item 010 - A Content chunk.
+\item 011 - A Layout chunk.
+\item 100 - A Action chunk.
+\item 101 - A Styling chunk.
+\item 110 - extended range, see EXTENDED IDs
+\item 111 - reserved
+\end{itemize}
 
-The following bits represent each type of chunk.
-000 - reserved, special identifier to end content list within containers
-001 - container
-010 - content
-011 - layout
-100 - action
-101 - styling
-110 - extended range, see EXTENDED IDs for more info.
-111 - reserved
-
-Chunk types in extended range:
-110 01000 - header
-
+Chunk types in extended range, which start with 110 to signify using the extended range:
+\begin{itemize}
+	\item 110 01000 - A Header chunk.
+\end{itemize}
 \subsection{ID Numbers}
-All chunks must have a unique ID. IDs do not have to be unique between chunk types.
-
-\subsection{Limits}
-
-For a standard ID, two bytes (16 bits) are used. The first 3 bits are the chunk type, and the next 13 bits is the element ID. This results in $2^{3}$ = 8 types - 2 reserved types - 1 extended range type = 5 valid chunk types. After the chunk type, the next 13 bits are the ID of the element. This allows for $2^{13}$ = 8,192 unique IDs per chunk type.
+All chunks must have a unique ID. IDs do not have to be unique between chunk types. An ID is 13 bits if not using the extended range, and 24 bits otherwise.
 
 \subsection{Extended IDs}
-To allow for more than 5 chunk types and 8,192 IDs, an extended bit range can be used. Using the extended range, 5 bits are used for the chunk type and 24 bits for the ID. \\
-To use the extended range, the chunk type 110 is used. By using this chunk type, the next 5 bits (until the end of the byte) is used to define the chunk type. With 5 bits, $2^{5}$ = 32 new chunk types are available. 32 new types - 5 existing types = 27 new chunk types. 
-
-There are three bytes used to define the chunk ID when using the extended range. This results in a max number of $2^{24}$ = 16,777,216 IDs.\\
+\paragraph{}
+To allow for more than 5 chunk types and 8,192 ID numbers per chunk type, an extended bit range can be used. Using the extended range, 5 bits are used for the chunk type and 24 bits for the ID. Chunk types 1 to 5 can still be used in the extended range to allow for more ID numbers of those chunk types (containers, content, layouts, actions, and styling).
+\paragraph{}
+To use the extended range, the chunk type is prefixed with 110. By using this prefix, it signifies the next 5 bits (until the end of the first full byte) is used for the chunk type.
 
 \definecolor{lightcyan}{rgb}{0.84,1,1}
 \definecolor{lightgreen}{rgb}{0.64,1,0.71}
@@ -87,11 +88,20 @@ There are three bytes used to define the chunk ID when using the extended range.
 \begin{center}
 \begin{bytefield}[bitwidth=1.4em,bitheight=\widthof{~Sign~}]{32}
 \bitheader{31,28,23,0} \\
-\bitbox{3}[bgcolor=lightcyan]{\rotatebox{0}{Extended}}
+\bitbox{3}[bgcolor=lightcyan]{\rotatebox{0}{110}}
 \bitbox{5}[bgcolor=lightgreen]{Chunk Type}
 \bitbox{24}[bgcolor=lightred]{Chunk ID}
 \end{bytefield}
 \end{center}
+
+
+\subsection{ID Limitations}
+
+For a standard ID, two bytes are used. The first 3 bits are the chunk type, and the next 13 bits is the chunk ID. This results in $2^{3}$ = 8 types - 2 reserved types - 1 extended range type = 5 valid chunk types. After the chunk type, the next 13 bits are the ID of the element. This allows for $2^{13}$ = 8,192 unique IDs per chunk type.
+
+If using the extended range, 5 bits are used for the chunk type, with the next 24 bits for the chunk ID. With 5 bits for the chunk type, $2^{5}$ = 32 new chunk types are available. 32 new types - 5 existing types (not in the extended range) - 3 reserved types = 24 new chunk types. 
+
+There are three bytes (24 bits) used to define the chunk ID when using the extended range. This results in a max number of $2^{24}$ = 16,777,216 IDs.\\
 \section{The Positioning System}
 The position and size of Elements and Actions are defined by rectangles which defines its size based on a proportion of its parent element.
 \subsection{Percentage Rectangles}
@@ -111,7 +121,8 @@ The X and Y percents are multiplied by the parent element's width and height, re
 The magic number for IC files are the first bytes in the file.
 The magic number for IC files is 73 61 6d 61 6c 69 74 6c 6e 76 75 61
 
-
+\section{Structure}
+All IC files start with the magic number. Then the next chunk is a HEADER chunk.
 \chapter{Chunks}
 
 \section{Header}
@@ -125,8 +136,8 @@ The chunk type for headers is 11001000.
 Static header properties are in every header file and are defined to be in the same static location from the ID. 
 
 \subsubsection{File Version}
-The file version specifies the version of the IC specification the rest of the file follows. The file version is two bytes.
-The current file version is 0x01.
+The file version specifies the version of the IC specification the rest of the file follows. The file version is two bytes.\\
+The current file version is 1 (0x01).
 
 \subsubsection{Starting Container ID}
 The starting container ID defines the the container that is shown first. The starting container is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
@@ -164,6 +175,40 @@ The first bytes of the Container is an ID COMPONENT.
 \section{Layout}
 A layout defines the positions of elements. 
 \section{Style}
+\subsection{Style Properties}
 \section{Content}
+\chapter{Content}
+\section{Overview}
+\subsection{Actions in Content}
+\subsection{Content Styling}
+\subsubsection{Global Styling}
+Only an overview of the global style.
+\subsubsection{Individual Styling}
+Styles are handled individually by the content. These styles are only supported by the following content types:
+\begin{itemize}
+\item Text
+\item Button
+\item Bitmap
+\end{itemize}
+\section{Content Types}
+\subsection{Text}
+\subsubsection{Byte Structure}
+\subsubsection{Options}
+Styles can be applied to text by the following byte sequence: 0xEEBC80, and ended with 0xEEBC81.\\
+Actions can be started with 0xEEBC82 and ended with 0xEEBC83.
+\subsubsection{Styling}
+\subsection{Button}
+\subsubsection{Byte Structure}
+\subsubsection{Styling}
+\subsection{Image}
+\subsubsection{Byte Structure}
+\subsubsection{Options}
+Key value pairs
+\subsection{Bitmap}
+\subsubsection{Byte Structure}
+\subsubsection{Styling}
+For each shape type: line, rectangle, and circle.
+\subsection{Web Page}
+\subsubsection{Byte Structure}
 
 \end{document}
