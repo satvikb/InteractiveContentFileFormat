@@ -19,7 +19,9 @@ private:
 
 public:
 	static bool loadFile(const char* filename);
+	static bool downloadUpdatedFile(const char* filename, const char* updateFileURL);
 	static bool addChunksFromURL(const char* url);
+
 	static uint32_t getStartContainerID();
 	static struct Header* getHeader();
 	static struct Layout* getLayoutByID(uint32_t layoutID);

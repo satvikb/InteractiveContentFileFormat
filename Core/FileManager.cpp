@@ -1,4 +1,5 @@
 #include "FileManager.h"
+#include <fstream>
 
 // TODO for all functions: 
 // error handling, check for null ic
@@ -9,7 +10,48 @@ InteractiveContent* FileManager::ic;
 
 bool FileManager::loadFile(const char* filename) {
 	ic = new InteractiveContent;
-	return readFile(ic, filename);
+	bool success = readFile(ic, filename);
+
+	if (success) {
+		std::string updateVersionURL = ic->header->updateVersionURL;
+		if (updateVersionURL.size() > 0) {
+			// version URL exists, download the version
+			// TODO do this async
+			cpr::Response versionDataRes = downloadFileData(updateVersionURL.c_str());
+			std::string versionData = versionDataRes.text;
+			// the downloaded file should only be two bytes containing the updated version
+			if (versionDataRes.downloaded_bytes == 2) {
+				uint16_t newFileVersion = (unsigned char)(versionData[0] << 8) | (unsigned char)versionData[1];
+				if (newFileVersion > ic->header->fileVersion) {
+					// update the file
+					std::string updateFileURL = ic->header->updateFileURL;
+
+					downloadUpdatedFile(filename, updateFileURL.c_str());
+					// TODO proper deleting of file
+					delete ic;
+					// reload the file
+					return loadFile(filename);
+				}
+			}
+		}
+	}
+
+	return success;
+}
+
+// download the file and replace filename
+bool FileManager::downloadUpdatedFile(const char* filename, const char* updateFileURL) {
+	// TODO try catch & async completion
+	cpr::Response newFileData = downloadFileData(updateFileURL);
+	std::string data = newFileData.text;
+	size_t length = newFileData.downloaded_bytes;
+	//outfile.write(&length, sizeof(length));
+	std::ofstream outfile(filename, std::ofstream::binary);
+
+	outfile.write(&data[0], length);
+	outfile.close();
+
+	return true;
 }
 
 bool FileManager::addChunksFromURL(const char* url) {

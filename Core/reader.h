@@ -73,7 +73,10 @@
 #define BITMAP_CIRCLE_RADIUS_WIDTH 0x1
 #define BITMAP_CIRCLE_RADIUS_HEIGHT 0x2
 
-#define HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION "version_au"
+#define HEADER_ATTRIBUTE_AUTO_UPDATE_CURRENT_VERSION "file_version"
+#define HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION_URL "version_url"
+#define HEADER_ATTRIBUTE_AUTO_UPDATE_FILE_URL "update_url"
+
 #define HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO "win_aspect"
 
 struct Header;
@@ -106,9 +109,12 @@ struct Header {
     unsigned short version;
     uint32_t startContainer;
     std::map<std::string, std::string> metadata;
-    // Custom attributes
-    uint32_t autoUpdateVersion;
+    // Recognized attributes
     float windowAspectRatio;
+    // Auto update settings
+    uint32_t fileVersion;
+    std::string updateVersionURL;
+    std::string updateFileURL;
 };
 
 // the first 3 bits are 011 for layout, the last 13 bits is the actual id
@@ -220,4 +226,5 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index);
 
 std::pair<uint8_t, uint32_t> readChunkTypeAndID(char* buffer, int* index);
 uint32_t read32BitInt(char* buffer, int* index);
+std::string readString(char* buffer, int* index);
 struct ImageActionPosition* readImageActionPosition(char* buffer, int* index);

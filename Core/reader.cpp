@@ -29,8 +29,7 @@ bool readFile(struct InteractiveContent* ic, const char* filename) {
 
 	printf("Size: %ld BYTES\n", lSize);
 
-	readFileData(ic, buffer, lSize);
-	return true;
+	return readFileData(ic, buffer, lSize);;
 }
 
 cpr::Response downloadFileData(const char* url) {
@@ -157,7 +156,7 @@ struct Header* readHeader(char* buffer, int* index) {
 	i += 2; // skip the header chunk type and ID
 
 	struct Header* header = new Header;
-	header->autoUpdateVersion = 0;
+	header->fileVersion = 0;
 	header->windowAspectRatio = 0.f;
 
 	// read file version
@@ -174,17 +173,14 @@ struct Header* readHeader(char* buffer, int* index) {
 	while (buffer[i] != 0x0) {
 		//  read the next key value pair
 
-		std::string key;
-		for (; buffer[i] != '\0'; i++) {
-			//header->author[authorI] = buffer[i];
-			key += buffer[i];
-			//printf("%c\n", buffer[i]);
-		}
-		i += 1; // skip null byte for key
-
-		if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION) == 0) {
+		std::string key = readString(buffer, &i);
+		if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_CURRENT_VERSION) == 0) {
 			uint32_t updateVersion = read32BitInt(buffer, &i);
-			header->autoUpdateVersion = updateVersion;
+			header->fileVersion = updateVersion;
+		} else if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_VERSION_URL) == 0){
+			header->updateVersionURL = readString(buffer, &i);
+		} else if (key.compare(HEADER_ATTRIBUTE_AUTO_UPDATE_FILE_URL) == 0) {
+			header->updateFileURL = readString(buffer, &i);
 		} else if (key.compare(HEADER_ATTRIBUTE_WINDOW_ASPECT_RATIO) == 0) {
 			uint8_t widthRatio = (unsigned char)buffer[i];
 			uint8_t heightRatio = (unsigned char)buffer[i+1];
@@ -193,12 +189,7 @@ struct Header* readHeader(char* buffer, int* index) {
 			float aspectRatio = (float)widthRatio / (float)heightRatio;
 			header->windowAspectRatio = aspectRatio;
 		} else {
-			std::string value;
-			for (; buffer[i] != '\0'; i++) {
-				value += buffer[i];
-			}
-			metadata[key] = value;
-			i += 1; // skip null byte for value
+			metadata[key] = readString(buffer, &i);
 		}
 	}
 	i += 1; // skip header end byte
@@ -502,4 +493,18 @@ struct ImageActionPosition* readImageActionPosition(char* buffer, int* index) {
 	pos->actionID = actionID.second;
 	*index = i;
 	return pos;
+}
+
+std::string readString(char* buffer, int* index) {
+	int i = *index;
+
+	std::string returnString;
+
+	for (; buffer[i] != '\0'; i++) {
+		returnString += buffer[i];
+	}
+	i += 1; // skip null byte for value
+
+	*index = i;
+	return returnString;
 }
