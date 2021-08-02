@@ -22,7 +22,7 @@ bool FileManager::loadFile(const char* filename) {
 			// the downloaded file should only be two bytes containing the updated version
 			if (versionDataRes.downloaded_bytes == 2) {
 				uint16_t newFileVersion = (unsigned char)(versionData[0] << 8) | (unsigned char)versionData[1];
-				if (newFileVersion > ic->header->fileVersion) {
+				if (newFileVersion > ic->header->fileVersion || newFileVersion == HEADER_FORCE_AUTO_UPDATE_VALUE) {
 					// update the file
 					std::string updateFileURL = ic->header->updateFileURL;
 
