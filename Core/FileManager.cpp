@@ -26,11 +26,16 @@ bool FileManager::loadFile(const char* filename) {
 					// update the file
 					std::string updateFileURL = ic->header->updateFileURL;
 
-					downloadUpdatedFile(filename, updateFileURL.c_str());
-					// TODO proper deleting of file
-					delete ic;
-					// reload the file
-					return loadFile(filename);
+					if (updateFileURL.size() > 0) {
+						if (downloadUpdatedFile(filename, updateFileURL.c_str())) {
+							// TODO proper deleting of file
+							delete ic;
+							// reload the file
+							return loadFile(filename);
+						}
+						
+					}
+					
 				}
 			}
 		}
@@ -45,13 +50,18 @@ bool FileManager::downloadUpdatedFile(const char* filename, const char* updateFi
 	cpr::Response newFileData = downloadFileData(updateFileURL);
 	std::string data = newFileData.text;
 	size_t length = newFileData.downloaded_bytes;
-	//outfile.write(&length, sizeof(length));
-	std::ofstream outfile(filename, std::ofstream::binary);
+	if (length > 0) {
+		//outfile.write(&length, sizeof(length));
+		std::ofstream outfile(filename, std::ofstream::binary);
 
-	outfile.write(&data[0], length);
-	outfile.close();
+		outfile.write(&data[0], length);
+		outfile.close();
 
-	return true;
+		return true;
+	} else {
+		return false;
+	}
+
 }
 
 bool FileManager::addChunksFromURL(const char* url) {

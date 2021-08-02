@@ -1,5 +1,6 @@
 #include "reader.h"
 #include <cpr/cpr.h>
+#include <curl/curl.h>
 
 #include <iostream> 
 #define CPPHTTPLIB_OPENSSL_SUPPORT
@@ -33,6 +34,10 @@ bool readFile(struct InteractiveContent* ic, const char* filename) {
 }
 
 cpr::Response downloadFileData(const char* url) {
+	cpr::SslOptions sslOpts;
+	//sslOpts.verify_host = false;
+	//sslOpts.verify_peer = false;
+	//sslOpts.verify_status = false;
 	cpr::Response r = cpr::Get(cpr::Url{url});
 	//r.status_code;                  // 200
 	//r.header["content-type"];       // application/json; charset=utf-8
