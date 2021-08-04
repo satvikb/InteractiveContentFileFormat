@@ -1,9 +1,8 @@
 #include "cBitmap.h"
 
-cBitmap::cBitmap(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_ANY) {
+cBitmap::cBitmap(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*) parent, style, wxID_ANY) {
+    SetContent(content);
 	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
-
-    // load the file... ideally add a check to see if loading was successful
     w = -1;
     h = -1;
 }
@@ -15,34 +14,12 @@ void cBitmap::interpretContent() {
 	}
 }
 
-void cBitmap::ApplyComponentStyle(struct Style* style) {
+void cBitmap::ApplyContentStyle(struct Style* style) {
 
 }
 
 
-BEGIN_EVENT_TABLE(cBitmap, wxPanel)
-
- // catch paint events
-EVT_PAINT(cBitmap::paintEvent)
-//Size event
-EVT_SIZE(cBitmap::OnSize)
-END_EVENT_TABLE()
-
-void cBitmap::paintEvent(wxPaintEvent& evt)
-{
-    // depending on your system you may need to look at double-buffered dcs
-    wxPaintDC dc(this);
-    render(dc);
-}
-
-void cBitmap::paintNow()
-{
-    // depending on your system you may need to look at double-buffered dcs
-    wxClientDC dc(this);
-    render(dc);
-}
-
-void cBitmap::drawContent(wxDC& dc) {
+void cBitmap::RenderContent(wxDC& dc) {
     std::vector<uint8_t> bytes = content->data;
     int numBytes = bytes.size();
     if (numBytes > 0) {
@@ -171,11 +148,6 @@ void cBitmap::readAndDrawCircle(wxDC& dc, int w, int h, std::vector<uint8_t> byt
 
     dc.DrawCircle(centerXPixels, centerYPixels, radiusPixels);
     *index = i;
-}
-
-void cBitmap::render(wxDC& dc)
-{
-    drawContent(dc);
 }
 
 /*

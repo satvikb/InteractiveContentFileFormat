@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wx/wx.h>
 #include <any>
 #include <memory>
 #include "FileManager.h"

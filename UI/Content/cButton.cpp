@@ -1,6 +1,6 @@
 #include "cButton.h"
 
-cButton::cButton(cContainer* parent) : wxPanel((wxWindow*) parent, wxID_ANY) {
+cButton::cButton(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
 	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
 
     // load the file... ideally add a check to see if loading was successful
@@ -48,35 +48,22 @@ void cButton::interpretContent() {
 	}
 }
 
-// how should this work in addition to the state styles of the button?
-void cButton::ApplyComponentStyle(struct Style* style) {
+void cButton::ApplyContentStyle(struct Style* style) {
 
 }
-
 
 BEGIN_EVENT_TABLE(cButton, wxPanel)
 
- // catch paint events
-EVT_PAINT(cButton::paintEvent)
-//Size event
-EVT_SIZE(cButton::OnSize)
+// mouse events
+EVT_LEFT_DOWN(cButton::mouseDown)
+EVT_LEFT_UP(cButton::mouseReleased)
+EVT_ENTER_WINDOW(cButton::windowEnter)
+EVT_LEAVE_WINDOW(cButton::windowLeave)
+
 END_EVENT_TABLE()
 
-void cButton::paintEvent(wxPaintEvent& evt)
-{
-    // depending on your system you may need to look at double-buffered dcs
-    wxPaintDC dc(this);
-    render(dc);
-}
 
-void cButton::paintNow()
-{
-    // depending on your system you may need to look at double-buffered dcs
-    wxClientDC dc(this);
-    render(dc);
-}
-
-void cButton::drawContent(wxDC& dc) {
+void cButton::RenderContent(wxDC& dc) {
     std::vector<uint8_t> bytes = content->data;
     int numBytes = bytes.size();
     if (numBytes > 0) {
@@ -85,11 +72,6 @@ void cButton::drawContent(wxDC& dc) {
 
         int i = 0;
     }
-}
-
-void cButton::render(wxDC& dc)
-{
-    drawContent(dc);
 }
 
 /*
@@ -102,6 +84,21 @@ void cButton::OnSize(wxSizeEvent& event) {
     event.Skip();
 }
 
+void cButton::mouseDown(wxMouseEvent& event) {
+    ApplyContentStyle(this->clickStyle);
+}
+
+void cButton::mouseReleased(wxMouseEvent& event) {
+    ApplyContentStyle(this->defaultStyle);
+}
+
+void cButton::windowEnter(wxMouseEvent& event) {
+    ApplyContentStyle(this->hoverStyle);
+}
+
+void cButton::windowLeave(wxMouseEvent& event) {
+    ApplyContentStyle(this->defaultStyle);
+}
 
 cButton::~cButton() {
 

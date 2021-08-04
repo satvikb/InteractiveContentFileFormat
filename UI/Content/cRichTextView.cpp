@@ -1,12 +1,10 @@
 #include "cRichTextView.h"
 
-cRichTextView::cRichTextView(cContainer* parent){
-	//SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
-
+cRichTextView::cRichTextView(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
 	wxRichTextCtrl::Create((wxWindow*)parent, wxID_ANY, wxEmptyString,
 		wxDefaultPosition, wxSize(200, 200),
 		wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
-	content = nullptr;
+	SetContent(content);
 	readyToResize = true;
 	//SetTransparent(0);
 	// TODO can we use the Event Table for this?
@@ -24,8 +22,8 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 
 void cRichTextView::interpretContent() {
 	if (content != nullptr) {
-		Freeze();
-		Clear();
+		cStyledPanel::Freeze();
+		//Clear();
 		// SetFontScale(5.5f);
 		if (content->data.size() > 0) {
 			int strStart = 0;
@@ -41,14 +39,14 @@ void cRichTextView::interpretContent() {
 
 			insertStringFromIndexes(strStart, i);
 		}
-		Thaw();
+		cStyledPanel::Thaw();
 	}
 }
 
-BEGIN_EVENT_TABLE(cRichTextView, wxRichTextCtrl)
-// Size event
-EVT_SIZE(cRichTextView::OnSize)
-END_EVENT_TABLE()
+//BEGIN_EVENT_TABLE(cRichTextView, wxRichTextCtrl)
+//// Size event
+//EVT_SIZE(cRichTextView::OnSize)
+//END_EVENT_TABLE()
 
 void cRichTextView::insertStringFromIndexes(int start, int end) {
 	std::string stringToIns(content->data.begin() + start,
@@ -121,19 +119,8 @@ void cRichTextView::interpretControlBytes(int* index) {
 	*index = i;
 }
 
-void cRichTextView::ApplyComponentStyle(struct Style* style) {
-	if (style != nullptr) {
-		// c++17 style loop
-		for (auto [key, val] : style->styles) {
-			switch (key) {
-				case STYLE_COMPONENT_BACKGROUND_COLOR:
-				{
-					SetBackgroundStyle(wxBG_STYLE_COLOUR);
-					SetBackgroundColour(std::any_cast<wxColour>(val));
-				} break;
-			}
-		}
-	}
+void cRichTextView::ApplyContentStyle(struct Style* style) {
+
 }
 
 void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
@@ -216,9 +203,7 @@ void cRichTextView::OnSize(wxSizeEvent& event) {
 	}
 }
 
-std::any
-cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles,
-	uint8_t key, std::any defaultValue) {
+std::any cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue) {
 	auto it = styles.find(key);
 	if (it == styles.end()) {
 		return defaultValue;

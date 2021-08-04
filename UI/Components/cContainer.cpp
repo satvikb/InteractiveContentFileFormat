@@ -60,32 +60,21 @@ void cContainer::CreateContent(struct Content* content, struct elementPosition* 
     wxWindow* newContent = nullptr;
 
     switch (contentType) {
-    case CONTENT_TEXT: {
-        //std::shared_ptr<cRichTextView> richTextCtrl = std::make_shared<cRichTextView>((cContainer*)this);
-        newContent = new cRichTextView((cContainer*)this);
-        static_cast<cRichTextView*>(newContent)->SetContent(content);
-        static_cast<cRichTextView*>(newContent)->ApplyComponentStyle(style);
-    }
+    case CONTENT_TEXT:
+        // TODO does it matter which direct base class it converts to...? cStyledPanel or wxRichTextCtrl
+        newContent = (wxRichTextCtrl*)(new cRichTextView((cContainer*)this, content, style));
     break;
     case CONTENT_IMAGE:
-        newContent = new cImageView((cContainer*)this);
-        static_cast<cImageView*>(newContent)->SetContent(content);
-        static_cast<cImageView*>(newContent)->ApplyComponentStyle(style);
+        newContent = new cImageView((cContainer*)this, content, style);
     break;
     case CONTENT_BITMAP:
-        newContent = new cBitmap((cContainer*)this);
-        static_cast<cBitmap*>(newContent)->SetContent(content);
-        static_cast<cBitmap*>(newContent)->ApplyComponentStyle(style);
+        newContent = new cBitmap((cContainer*)this, content, style);
     break;
     case CONTENT_BUTTON:
-        newContent = new cButton((cContainer*)this);
-        static_cast<cButton*>(newContent)->SetContent(content);
-        static_cast<cButton*>(newContent)->ApplyComponentStyle(style);
+        newContent = new cButton((cContainer*)this, content, style);
     break;
     case CONTENT_WEB:
-        newContent = new cWebView((cContainer*)this);
-        static_cast<cWebView*>(newContent)->SetContent(content);
-        static_cast<cWebView*>(newContent)->ApplyComponentStyle(style);
+        newContent = new cWebView((cContainer*)this, content, style);
         break;
     case CONTENT_STREAMED:
         CreateContent(FileManager::getStreamedContent(content), pos, index);

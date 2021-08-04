@@ -81,6 +81,9 @@
     <ClInclude Include="UI\Content\cButton.h">
       <Filter>Header Files\UI\Content</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Components\cStyledPanel.h">
+      <Filter>Header Files\UI\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="UI\Content\cButton.cpp">
       <Filter>Source Files\UI\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Components\cStyledPanel.cpp">
+      <Filter>Source Files\UI\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

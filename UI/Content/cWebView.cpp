@@ -1,6 +1,7 @@
 #include "cWebView.h"
 
-cWebView::cWebView(cContainer* parent){
+cWebView::cWebView(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
+	SetContent(content);
 	// , wxWebViewDefaultURLStr, wxDefaultPosition, wxDefaultSize, 0, wxWebViewNameStr
 	wxWindow::Create((wxWindow *)parent, wxID_ANY);
 	browser = wxWebView::New(this, wxID_ANY);
@@ -26,7 +27,7 @@ void cWebView::interpretContent() {
 	}
 }
 
-void cWebView::ApplyComponentStyle(struct Style* style) {
+void cWebView::ApplyContentStyle(struct Style* style) {
 
 }
 

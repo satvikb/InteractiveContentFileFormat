@@ -4,16 +4,14 @@
 #include "cNativeContent.h"
 #include <wx/mstream.h>
 
-class cButton : public cNativeContent, public wxPanel
+class cButton : public cStyledPanel, public cNativeContent
 {
 public:
-	cButton(cContainer* parent);
-	void ApplyComponentStyle(struct Style* style) override;
+	cButton(cContainer* parent, struct Content* content, struct Style* style);
+	void ApplyContentStyle(struct Style* style) override;
+	void RenderContent(wxDC& dc) override;
 	~cButton();
-	void paintEvent(wxPaintEvent& evt);
-	void paintNow();
-	void OnSize(wxSizeEvent& event);
-	void render(wxDC& dc);
+
 	DECLARE_EVENT_TABLE()
 
 private:
@@ -24,6 +22,10 @@ private:
 	struct Style* clickStyle;
 
 	void interpretContent() override;
-	void drawContent(wxDC& dc);
+	void OnSize(wxSizeEvent& event) override;
+	void mouseDown(wxMouseEvent& evt);
+	void mouseReleased(wxMouseEvent& evt);
+	void windowEnter(wxMouseEvent& evt);
+	void windowLeave(wxMouseEvent& evt);
 
 };

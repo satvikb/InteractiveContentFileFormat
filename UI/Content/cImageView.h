@@ -4,16 +4,13 @@
 #include "cNativeContent.h"
 #include <wx/mstream.h>
 // content is async, this entire class can exist without loading in content data
-class cImageView : public cNativeContent, public wxPanel
+class cImageView : public cStyledPanel, public cNativeContent
 {
 public:
-	cImageView(cContainer* parent);
-	void ApplyComponentStyle(struct Style* style) override;
+	cImageView(cContainer* parent, struct Content* content, struct Style* style);
+	void ApplyContentStyle(struct Style* style) override;
 	~cImageView();
-	void paintEvent(wxPaintEvent& evt);
-	void paintNow();
-	void OnSize(wxSizeEvent& event);
-	void render(wxDC& dc);
+
 	void mouseReleased(wxMouseEvent& event);
 	DECLARE_EVENT_TABLE()
 
@@ -31,4 +28,7 @@ private:
 	void interpretContent() override;
 	std::string mimeTypeFromImageType(uint8_t imageType);
 	bool pointInActionPos(ImageActionPosition* pos, int mouseX, int mouseY);
+
+	void OnSize(wxSizeEvent& event) override;
+	void RenderContent(wxDC& dc) override;
 };

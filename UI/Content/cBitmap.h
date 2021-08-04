@@ -1,25 +1,22 @@
 #pragma once
 #include <wx/wx.h>
 #include "cContainer.h"
+#include "cStyledPanel.h"
 #include "cNativeContent.h"
-#include <wx/mstream.h>
 // content is async, this entire class can exist without loading in content data
-class cBitmap : public cNativeContent, public wxPanel
+class cBitmap : public cStyledPanel, public cNativeContent
 {
 public:
-	cBitmap(cContainer* parent);
-	void ApplyComponentStyle(struct Style* style) override;
+	cBitmap(cContainer* parent, struct Content* content, struct Style* style);
+	void ApplyContentStyle(struct Style* style) override;
+	void OnSize(wxSizeEvent& event) override;
 	~cBitmap();
-	void paintEvent(wxPaintEvent& evt);
-	void paintNow();
-	void OnSize(wxSizeEvent& event);
-	void render(wxDC& dc);
-	DECLARE_EVENT_TABLE()
 
 private:
 	int w, h;
+
+	void RenderContent(wxDC& dc) override;
 	void interpretContent() override;
-	void drawContent(wxDC& dc);
 
 	void readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
 	void readAndDrawRectangle(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);
