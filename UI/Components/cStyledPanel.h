@@ -38,6 +38,10 @@ class cStyledPanel : public wxPanel {
 	void paintNow();
 	// virtual event listeners
 	virtual void OnSize(wxSizeEvent& event) {};
+	virtual void mouseReleased(wxMouseEvent& event) {};
+	virtual void mouseDown(wxMouseEvent& event) {};
+	virtual void windowEnter(wxMouseEvent& event) {};
+	virtual void windowLeave(wxMouseEvent& event) {};
 
 	// Content specific render
 	virtual void RenderContent(wxDC& dc) {};

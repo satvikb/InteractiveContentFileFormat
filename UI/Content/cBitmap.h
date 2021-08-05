@@ -9,13 +9,13 @@ class cBitmap : public cStyledPanel, public cNativeContent
 public:
 	cBitmap(cContainer* parent, struct Content* content, struct Style* style);
 	void ApplyContentStyle(struct Style* style) override;
-	void OnSize(wxSizeEvent& event) override;
 	~cBitmap();
 
 private:
 	int w, h;
 
 	void RenderContent(wxDC& dc) override;
+	void OnSize(wxSizeEvent& event) override;
 	void interpretContent() override;
 
 	void readAndDrawLine(wxDC& dc, int w, int h, std::vector<uint8_t> bytes, int* index);

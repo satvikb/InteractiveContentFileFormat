@@ -98,11 +98,6 @@ std::string cImageView::mimeTypeFromImageType(uint8_t imageType) {
     }
     return "";
 }
-//void cNativeContent::addAction() {}
-
-BEGIN_EVENT_TABLE(cImageView, wxPanel)
-EVT_LEFT_UP(cImageView::mouseReleased)
-END_EVENT_TABLE()
 
 void cImageView::mouseReleased(wxMouseEvent& event) {
     // handle actions
@@ -127,6 +122,13 @@ bool cImageView::pointInActionPos(ImageActionPosition* pos, int mouseX, int mous
     int winHeight = normHeight * imageHeight;
 
     return (mouseX >= winX && mouseX <= (winX + winWeight)) && (mouseY >= winY && mouseY <= (winY + winHeight));
+}
+
+
+void cImageView::paintEvent(wxPaintEvent& evt) {
+    // depending on your system you may need to look at double-buffered dcs
+    wxPaintDC dc(this);
+    RenderComponent(dc);
 }
 
 void cImageView::RenderContent(wxDC& dc)

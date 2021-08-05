@@ -1,7 +1,8 @@
 #include "cButton.h"
 
 cButton::cButton(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
-	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
+    SetContent(content);
+    //wxPanel::Create((wxWindow*)parent, wxID_ANY);
 
     // load the file... ideally add a check to see if loading was successful
     w = -1;
@@ -14,10 +15,8 @@ void cButton::interpretContent() {
 
         int i = 0;
         std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID((char*)&bytes[0], &i);
-        struct Action *_action = FileManager::getActionByID(actionID.second);
-        if (_action != nullptr) {
-            this->action = _action;
-        }
+        // TODO confirm if chunk type is action?
+        this->actionID = actionID.second;
 
         // start with the key value pairs
         while (bytes[i] != 0x0) {
@@ -49,19 +48,10 @@ void cButton::interpretContent() {
 }
 
 void cButton::ApplyContentStyle(struct Style* style) {
+    if (style != nullptr) {
 
+    }
 }
-
-BEGIN_EVENT_TABLE(cButton, wxPanel)
-
-// mouse events
-EVT_LEFT_DOWN(cButton::mouseDown)
-EVT_LEFT_UP(cButton::mouseReleased)
-EVT_ENTER_WINDOW(cButton::windowEnter)
-EVT_LEAVE_WINDOW(cButton::windowLeave)
-
-END_EVENT_TABLE()
-
 
 void cButton::RenderContent(wxDC& dc) {
     std::vector<uint8_t> bytes = content->data;
@@ -90,6 +80,7 @@ void cButton::mouseDown(wxMouseEvent& event) {
 
 void cButton::mouseReleased(wxMouseEvent& event) {
     ApplyContentStyle(this->defaultStyle);
+    WindowManager::ExecuteActionID(this->actionID);
 }
 
 void cButton::windowEnter(wxMouseEvent& event) {

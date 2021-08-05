@@ -92,6 +92,7 @@ struct Action;
 struct Content;
 
 struct InteractiveContent {
+    // There can only be one latest header
     struct Header* header;
     // Maps ID (with both Chunk Type and the actual ID to the respective pointer type
     std::map<uint32_t, struct Layout*> layouts;
@@ -112,7 +113,7 @@ struct InteractiveContent {
 //};
 
 struct Header {
-    unsigned short version;
+    unsigned short specificationVersion;
     uint32_t startContainer;
     std::map<std::string, std::string> metadata;
     // Recognized attributes

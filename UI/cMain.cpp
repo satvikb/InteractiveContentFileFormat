@@ -42,6 +42,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 }
 
 bool cMain::ShouldMaintainAspectRatio() {
+	// TODO if this ever becomes more complictated, this check is done every size change frame for now
 	return aspectRatio > 0.f;
 }
 

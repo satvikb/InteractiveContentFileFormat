@@ -164,9 +164,9 @@ struct Header* readHeader(char* buffer, int* index) {
 	header->fileVersion = 0;
 	header->windowAspectRatio = 0.f;
 
-	// read file version
-	unsigned short version = buffer[i] << 8 | (buffer[i + 1]);
-	header->version = version;
+	// read specification version
+	unsigned short specificationVersion = buffer[i] << 8 | (buffer[i + 1]);
+	header->specificationVersion = specificationVersion;
 	i += 2;
 
 	uint32_t startContainerId = readChunkTypeAndID(buffer, &i).second;

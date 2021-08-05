@@ -46,50 +46,55 @@ wxSize WindowManager::GetWindowSize() {
 
 
 void WindowManager::ExecuteAction(struct Action* action) {
-	// TODO test nullptr
-	uint8_t actionType = action->actionType;
-	switch (actionType) {
-	case ACTION_LINK: {
-		// link -- replace top container with what is linked
-		//Link& link = static_cast<Link&>(action); // downcast
-		Link* link = dynamic_cast<Link*>(action);
-		if (link) {
-			// TODO error check for null container?
-			ReplaceContainers(GetWindowByContainerID(topContainer->chunkID), FileManager::getContainerByID(link->containerID));
-		}
-		else {
-			//null
-		}
-	}
-	break;
-	case ACTION_SWAP: {
-		// replacement
-		// TODO handle replacing Content
-		Swap* swap = dynamic_cast<Swap*>(action);
+	if (action != nullptr) {
+		uint8_t actionType = action->actionType;
+		switch (actionType) {
+			case ACTION_LINK:
+			{
+				// link -- replace top container with what is linked
+				//Link& link = static_cast<Link&>(action); // downcast
+				Link* link = dynamic_cast<Link*>(action);
+				if (link) {
+					// TODO error check for null container?
+					ReplaceContainers(GetWindowByContainerID(topContainer->chunkID), FileManager::getContainerByID(link->containerID));
+				} 		else {
+					//null
+				}
+			}
+			break;
+			case ACTION_SWAP:
+			{
+				// replacement
+				// TODO handle replacing Content
+				Swap* swap = dynamic_cast<Swap*>(action);
 
-		// replace container with container
-		ReplaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
-	}
-	break;
-	case ACTION_REPLACE_WITH_ELEMENT: {
-		ReplaceWithElement* replace = dynamic_cast<ReplaceWithElement*>(action);
-		ReplaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
-	}
-	break;
-	case ACTION_DOWNLOAD_CHUNKS: {
-		DownloadChunks* downloadChunks = dynamic_cast<DownloadChunks*>(action);
-		FileManager::addChunksFromURL(downloadChunks->url.c_str());
-	}
-	break;
-	case ACTION_EXECUTE_COMPOSITE: {
-		ExecuteComposite* downloadChunks = dynamic_cast<ExecuteComposite*>(action);
-		// TODO handle circular references
-		for (int i = 0; i < downloadChunks->actionsToExecute.size(); i++) {
-			uint32_t actionID = downloadChunks->actionsToExecute[i];
-			ExecuteAction(FileManager::getActionByID(actionID));
+				// replace container with container
+				ReplaceContainers(GetWindowByContainerID(swap->replaceID), FileManager::getContainerByID(swap->replaceWithID));
+			}
+			break;
+			case ACTION_REPLACE_WITH_ELEMENT:
+			{
+				ReplaceWithElement* replace = dynamic_cast<ReplaceWithElement*>(action);
+				ReplaceContainerElementIndexWithContent(replace->containerID, replace->index, replace->replaceWithContentID);
+			}
+			break;
+			case ACTION_DOWNLOAD_CHUNKS:
+			{
+				DownloadChunks* downloadChunks = dynamic_cast<DownloadChunks*>(action);
+				FileManager::addChunksFromURL(downloadChunks->url.c_str());
+			}
+			break;
+			case ACTION_EXECUTE_COMPOSITE:
+			{
+				ExecuteComposite* downloadChunks = dynamic_cast<ExecuteComposite*>(action);
+				// TODO handle circular references
+				for (int i = 0; i < downloadChunks->actionsToExecute.size(); i++) {
+					uint32_t actionID = downloadChunks->actionsToExecute[i];
+					ExecuteAction(FileManager::getActionByID(actionID));
+				}
+			}
+			break;
 		}
-	}
-	break;
 	}
 }
 

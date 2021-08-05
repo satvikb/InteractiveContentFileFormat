@@ -11,9 +11,6 @@ public:
 	void ApplyContentStyle(struct Style* style) override;
 	~cImageView();
 
-	void mouseReleased(wxMouseEvent& event);
-	DECLARE_EVENT_TABLE()
-
 private:
 
 	uint8_t imageType;
@@ -25,10 +22,13 @@ private:
 	wxImage image;
 	wxBitmap resized;
 	int imageWidth, imageHeight;
-	void interpretContent() override;
 	std::string mimeTypeFromImageType(uint8_t imageType);
 	bool pointInActionPos(ImageActionPosition* pos, int mouseX, int mouseY);
+	void paintEvent(wxPaintEvent& evt);
 
-	void OnSize(wxSizeEvent& event) override;
 	void RenderContent(wxDC& dc) override;
+	void OnSize(wxSizeEvent& event) override;
+	void mouseReleased(wxMouseEvent& event) override;
+	void interpretContent() override;
+
 };

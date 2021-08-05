@@ -10,6 +10,12 @@ BEGIN_EVENT_TABLE(cStyledPanel, wxPanel)
 EVT_PAINT(cStyledPanel::paintEvent)
 //Size event
 EVT_SIZE(cStyledPanel::OnSize)
+// mouse events
+EVT_LEFT_UP(cStyledPanel::mouseReleased)
+// window events
+EVT_ENTER_WINDOW(cStyledPanel::windowEnter)
+EVT_LEAVE_WINDOW(cStyledPanel::windowLeave)
+
 END_EVENT_TABLE()
 
 cStyledPanel::cStyledPanel(wxWindow* aParent, struct Style* componentStyle, wxWindowID winID, const wxPoint& pos, const wxSize& size, long style, const wxString& name){

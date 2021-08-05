@@ -19,7 +19,6 @@ struct Font {
 class cRichTextView : public wxRichTextCtrl, public cStyledPanel, public cNativeContent
 {
 public:
-	using wxRichTextCtrl::Clear;
 	cRichTextView(cContainer* parent, struct Content* content, struct Style* style);
 	void ApplyContentStyle(struct Style* style) override;
 	~cRichTextView();

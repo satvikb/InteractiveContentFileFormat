@@ -12,20 +12,18 @@ public:
 	void RenderContent(wxDC& dc) override;
 	~cButton();
 
-	DECLARE_EVENT_TABLE()
-
 private:
 	int w, h;
-	struct Action* action;
+	uint32_t actionID;
 	struct Style* defaultStyle;
 	struct Style* hoverStyle;
 	struct Style* clickStyle;
 
 	void interpretContent() override;
 	void OnSize(wxSizeEvent& event) override;
-	void mouseDown(wxMouseEvent& evt);
-	void mouseReleased(wxMouseEvent& evt);
-	void windowEnter(wxMouseEvent& evt);
-	void windowLeave(wxMouseEvent& evt);
+	void mouseDown(wxMouseEvent& event) override;
+	void mouseReleased(wxMouseEvent& event) override;
+	void windowEnter(wxMouseEvent& event) override;
+	void windowLeave(wxMouseEvent& event) override;
 
 };
