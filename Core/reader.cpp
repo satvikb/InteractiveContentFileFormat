@@ -64,14 +64,15 @@ bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberByte
 	i += MAGIC_NUMBER_LENGTH;
 
 	while (i < numberBytes) {
-		std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &i);
-		i -= 2;
+		int throwawayI = i;
+		std::pair<uint8_t, uint32_t> chunkData = readChunkTypeAndID(buffer, &throwawayI);
+		//i -= 2;
 		unsigned char chunkType = chunkData.first;
 		//unsigned uint32_t id = (((buffer[i]) & 0x1F) << 8) | (unsigned char)buffer[i+1]; // get 5 rightmost from first byte and add to second byte
 		char d = buffer[i];
 		//printf("\nAt byte %d. Reading chunk of type: %d. ID: %d\n", i, chunkType, id);
 		// struct Header *header = malloc (sizeof (struct Header));
-		switch (chunkType)         {
+		switch (chunkType){
 			case CHUNK_HEADER:
 			{
 				// header, header ID is not used/thrown away (waste of 4 bytes)
@@ -114,6 +115,11 @@ bool readFileData(struct InteractiveContent* ic, char* buffer, size_t numberByte
 			}
 			break;
 			default:
+			// unknown chunk type, skip the chunk bytes
+			// every chunk type in the extended range must have length bytes
+			readChunkTypeAndID(buffer, &i); // skip the chunk type and id
+			uint32_t len = read32BitInt(buffer, &i);
+			i += len;
 			break;
 		}
 	}
@@ -165,8 +171,13 @@ struct Header* readHeader(char* buffer, int* index) {
 	header->windowAspectRatio = 0.f;
 
 	// read specification version
-	unsigned short specificationVersion = buffer[i] << 8 | (buffer[i + 1]);
-	header->specificationVersion = specificationVersion;
+	unsigned short specificationVersionMajor = buffer[i] << 8 | (buffer[i + 1]);
+	header->specificationVersionMajor = specificationVersionMajor;
+	i += 2;
+	unsigned char specificationVersionMinor = (unsigned char)buffer[i];
+	header->specificationVersionMinor = specificationVersionMinor;
+	unsigned char specificationVersionPatch = (unsigned char)buffer[i+1];
+	header->specificationVersionPatch = specificationVersionPatch;
 	i += 2;
 
 	uint32_t startContainerId = readChunkTypeAndID(buffer, &i).second;

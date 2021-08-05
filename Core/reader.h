@@ -18,10 +18,10 @@
 #define CHUNK_LAYOUT 0x3
 #define CHUNK_ACTION 0x4
 #define CHUNK_STYLING 0x5
-#define CHUNK_EXTENDED 0x6
-// 0x7 is 111, end container bits
+#define CHUNK_HEADER 0x6 // 110
+#define CHUNK_EXTENDED 0x7 // 111
 // --- Begin Extended Range Chunk Types
-#define CHUNK_HEADER 0x8 // 01000
+//#define CHUNK_FUTURE_TYPE 0x8 // 01000
 
 #define CONTENT_TEXT 0x1
 #define CONTENT_IMAGE 0x2
@@ -113,7 +113,10 @@ struct InteractiveContent {
 //};
 
 struct Header {
-    unsigned short specificationVersion;
+    unsigned short specificationVersionMajor;
+    unsigned char specificationVersionMinor;
+    unsigned char specificationVersionPatch;
+
     uint32_t startContainer;
     std::map<std::string, std::string> metadata;
     // Recognized attributes

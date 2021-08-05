@@ -65,13 +65,13 @@ The following bits represent each type of chunk:
 \item 011 - A Layout chunk.
 \item 100 - A Action chunk.
 \item 101 - A Styling chunk.
-\item 110 - extended range, see EXTENDED IDs
-\item 111 - reserved
+\item 110 - A Header chunk.
+\item 111 - extended range, see EXTENDED IDs
 \end{itemize}
 
-Chunk types in extended range, which start with 110 to signify using the extended range:
+Chunk types in extended range, which start with 111 to signify using the extended range:
 \begin{itemize}
-	\item 110 01000 - A Header chunk.
+	\item 111 01000 - A future chunk with type 8.
 \end{itemize}
 \subsection{ID Numbers}
 All chunks must have a unique ID. IDs do not have to be unique between chunk types. An ID is 13 bits if not using the extended range, and 24 bits otherwise.
@@ -80,7 +80,7 @@ All chunks must have a unique ID. IDs do not have to be unique between chunk typ
 \paragraph{}
 To allow for more than 5 chunk types and 8,192 ID numbers per chunk type, an extended bit range can be used. Using the extended range, 5 bits are used for the chunk type and 24 bits for the ID. Chunk types 1 to 5 can still be used in the extended range to allow for more ID numbers of those chunk types (containers, content, layouts, actions, and styling).
 \paragraph{}
-To use the extended range, the chunk type is prefixed with 110. By using this prefix, it signifies the next 5 bits (until the end of the first full byte) is used for the chunk type.
+To use the extended range, the chunk type is prefixed with 111. By using this prefix, it signifies the next 5 bits (until the end of the first full byte) is used for the chunk type.
 
 \definecolor{lightcyan}{rgb}{0.84,1,1}
 \definecolor{lightgreen}{rgb}{0.64,1,0.71}
@@ -88,7 +88,7 @@ To use the extended range, the chunk type is prefixed with 110. By using this pr
 \begin{center}
 \begin{bytefield}[bitwidth=1.4em,bitheight=\widthof{~Sign~}]{32}
 \bitheader{31,28,23,0} \\
-\bitbox{3}[bgcolor=lightcyan]{\rotatebox{0}{110}}
+\bitbox{3}[bgcolor=lightcyan]{\rotatebox{0}{111}}
 \bitbox{5}[bgcolor=lightgreen]{Chunk Type}
 \bitbox{24}[bgcolor=lightred]{Chunk ID}
 \end{bytefield}
@@ -121,13 +121,15 @@ The X and Y percents are multiplied by the parent element's width and height, re
 The magic number for IC files are the first bytes in the file.
 The magic number for IC files is 73 61 6d 61 6c 69 74 6c 6e 76 75 61
 
+\section{Specification Versioning}
+The version of the Interactive Content specification is included in every file in the HEADER chunk. Specification Versions follow SimVer versioning (MAJOR.MINOR.PATCH). The specification version in an IC file is 4 bytes. The first two bytes define the MAJOR version. The next byte defines the MINOR version. The last byte defines the PATCH version. This means version 1.0.0 of the Interactive Content Specification is defined in an IC file as would be 0x0001 00 00.
 \section{Structure}
 All IC files start with the magic number. Then the next chunk is a HEADER chunk.
 \chapter{Chunks}
 
 \section{Header}
 The header chunk must be at the top of a IC file after the MAGIC NUMBER. 
-Headers have a chunk type of 0x8.
+Headers have chunk type 8.
 This means the extended chunk range must be used.
 
 The chunk type for headers is 11001000. 
@@ -136,8 +138,8 @@ The chunk type for headers is 11001000.
 Static header properties are in every header file and are defined to be in the same static location from the ID. 
 
 \subsubsection{File Version}
-The file version specifies the version of the IC specification the rest of the file follows. The file version is two bytes.\\
-The current file version is 1 (0x01).
+The file version specifies the version of the IC specification the rest of the file follows. The file version is four bytes.\\
+The current file version is 1.0.0 (0x0001 00 00).
 
 \subsubsection{Starting Container ID}
 The starting container ID defines the the container that is shown first. The starting container is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
@@ -164,7 +166,7 @@ update\_url defines the URL where the updated version of the entire file is loca
 If the file\_version value is higher than the value retrieved from the version\_url key, the update\_url value is used to download and replace the currently opened file. If the value from the version\_url key is 0xFFFF, the update\_url is always used.
 
 \subsection{Bytes}
-The first bytes of a Header is an ID COMPONENT. 
+The first bytes of a Header is an ID COMPONENT. Because the Header is an extended chunk type (chunk type > 7), the 4 bytes after the ID COMPONENT is the length of the chunk.
 
 \section{Container}
 Containers are the backbone of an IC file. Containers are responsible for displaying content and define which LAYOUT to follow. All CONTENT must be a part of a Container for it to be displayed. A container can contain other containers and/or content.\\
@@ -176,9 +178,9 @@ The first bytes of the Container is an ID COMPONENT.
 A layout defines the positions of elements. 
 \section{Style}
 \subsection{Style Properties}
+\subsubsection{Window Styling}
+\subsubsection{Text Styling}
 \section{Content}
-\chapter{Content}
-\section{Overview}
 \subsection{Actions in Content}
 \subsection{Content Styling}
 \subsubsection{Global Styling}
@@ -190,25 +192,35 @@ Styles are handled individually by the content. These styles are only supported 
 \item Button
 \item Bitmap
 \end{itemize}
-\section{Content Types}
-\subsection{Text}
-\subsubsection{Byte Structure}
-\subsubsection{Options}
+\subsubsection{Styling Order}
+
+\section{Extended Chunk Types}
+\subsection{Maintaining Compatibility}
+To maintain compatibility with previous IC specification versions, all chunk types in the extended range must include the length of the chunk in bytes after defining its ID COMPONENT. This way, if an unknown chunk type is encountered, it can be skipped.
+\subsection{Suggesting a new Chunk Type}
+To suggest a new chunk type, follow this process:
+
+\chapter{Content}
+\section{Text}
+\subsection{Byte Structure}
+\subsection{Options}
 Styles can be applied to text by the following byte sequence: 0xEEBC80, and ended with 0xEEBC81.\\
 Actions can be started with 0xEEBC82 and ended with 0xEEBC83.
-\subsubsection{Styling}
-\subsection{Button}
-\subsubsection{Byte Structure}
-\subsubsection{Styling}
-\subsection{Image}
-\subsubsection{Byte Structure}
-\subsubsection{Options}
+\subsection{Styling}
+\section{Button}
+\subsection{Byte Structure}
+\subsection{Styling}
+\section{Image}
+\subsection{Byte Structure}
+\subsection{Options}
 Key value pairs
-\subsection{Bitmap}
-\subsubsection{Byte Structure}
-\subsubsection{Styling}
+\section{Bitmap}
+\subsection{Byte Structure}
+\subsection{Styling}
 For each shape type: line, rectangle, and circle.
-\subsection{Web Page}
-\subsubsection{Byte Structure}
+\section{Web Page}
+\subsection{Byte Structure}
+\section{Suggesting a new Content Type}
+To suggest a new content type, follow this process:
 
 \end{document}
