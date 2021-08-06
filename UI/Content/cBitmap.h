@@ -12,8 +12,6 @@ public:
 	~cBitmap();
 
 private:
-	int w, h;
-
 	void RenderContent(wxDC& dc) override;
 	void OnSize(wxSizeEvent& event) override;
 	void interpretContent() override;

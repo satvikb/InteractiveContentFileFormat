@@ -57,9 +57,6 @@ void cButton::RenderContent(wxDC& dc) {
     std::vector<uint8_t> bytes = content->data;
     int numBytes = bytes.size();
     if (numBytes > 0) {
-        int w, h;
-        dc.GetSize(&w, &h);
-
         int i = 0;
     }
 }

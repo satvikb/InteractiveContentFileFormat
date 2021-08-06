@@ -11,6 +11,9 @@
 #include <vector>
 #include <cpr/response.h>
 
+// TODO dirty way to include logger everywhere
+
+#include "Logger.h"
 // Define constants
 #define MAGIC_NUMBER_LENGTH 12
 #define CHUNK_CONTAINER 0x1

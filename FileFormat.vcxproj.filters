@@ -84,6 +84,9 @@
     <ClInclude Include="UI\Components\cStyledPanel.h">
       <Filter>Header Files\UI\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Logger.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI\cApp.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="UI\Components\cStyledPanel.cpp">
       <Filter>Source Files\UI\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Logger.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

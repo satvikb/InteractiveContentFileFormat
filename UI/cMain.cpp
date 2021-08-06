@@ -22,7 +22,7 @@ cMain::cMain() : wxFrame(nullptr, wxID_ANY, "Interactive Content Viewer") {
 
 	SetMenuBar(m_pMenuBar);
 
-	FileManager::loadFile("example.ic");
+	FileManager::loadFile("styles.ic");
 	//FileManager::loadFile("example.ic");
 
 	aspectRatio = FileManager::getHeader()->windowAspectRatio;

@@ -131,20 +131,16 @@ void cImageView::paintEvent(wxPaintEvent& evt) {
     RenderComponent(dc);
 }
 
-void cImageView::RenderContent(wxDC& dc)
-{
+void cImageView::RenderContent(wxDC& dc) {
     if (image.IsOk()) {
-        int neww, newh;
-        dc.GetSize(&neww, &newh);
-
-        if (neww != imageWidth || newh != imageHeight)
-        {
-            resized = wxBitmap(image.Scale(neww, newh /*, wxIMAGE_QUALITY_HIGH*/));
-            imageWidth = neww;
-            imageHeight = newh;
+        // check if image size has changed
+        if (contextWidth != imageWidth || contextHeight != imageHeight) {
+            resized = wxBitmap(image.Scale(contextWidth, contextHeight /*, wxIMAGE_QUALITY_HIGH*/));
+            imageWidth = contextWidth;
+            imageHeight = contextHeight;
+            //Logger::logToFile(std::to_string(contextWidth) + " " + std::to_string(contextHeight));
             dc.DrawBitmap(resized, 0, 0, false);
-        }
-        else {
+        } else {
             dc.DrawBitmap(resized, 0, 0, false);
         }
     }

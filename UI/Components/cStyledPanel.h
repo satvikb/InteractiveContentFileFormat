@@ -1,5 +1,7 @@
 #pragma once
 #include <wx/wx.h>
+#include <wx/graphics.h>
+#include <wx/dcbuffer.h>
 #include "reader.h"
 
 /*
@@ -43,6 +45,7 @@ class cStyledPanel : public wxPanel {
 	virtual void windowEnter(wxMouseEvent& event) {};
 	virtual void windowLeave(wxMouseEvent& event) {};
 
+	void RenderBackgroundStyle(wxDC& dc);
 	// Content specific render
 	virtual void RenderContent(wxDC& dc) {};
 	// Content specific style
@@ -51,6 +54,9 @@ class cStyledPanel : public wxPanel {
 	DECLARE_EVENT_TABLE()
 
 	protected:
+	int contextWidth, contextHeight;
 	struct Style* componentStyle;
-
+	wxGraphicsContext* gc;
+	wxBrush brush;
+	wxPen pen;
 };

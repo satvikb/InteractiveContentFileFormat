@@ -2,9 +2,6 @@
 
 cBitmap::cBitmap(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*) parent, style, wxID_ANY) {
     SetContent(content);
-	//wxPanel::Create((wxWindow*)parent, wxID_ANY);
-    w = -1;
-    h = -1;
 }
 
 void cBitmap::interpretContent() {
@@ -23,21 +20,18 @@ void cBitmap::RenderContent(wxDC& dc) {
     std::vector<uint8_t> bytes = content->data;
     int numBytes = bytes.size();
     if (numBytes > 0) {
-        int w, h;
-        dc.GetSize(&w, &h);
-
         int i = 0;
 
         while (i < numBytes && bytes[i] != 0x0) {
             switch (bytes[i]) {
                 case BITMAP_LINE:
-                    readAndDrawLine(dc, w, h, bytes, &i);
+                    readAndDrawLine(dc, contextWidth, contextHeight, bytes, &i);
                 break;
                 case BITMAP_RECTANGLE:
-                    readAndDrawRectangle(dc, w, h, bytes, &i);
+                    readAndDrawRectangle(dc, contextWidth, contextHeight, bytes, &i);
                 break;
                 case BITMAP_CIRCLE:
-                    readAndDrawCircle(dc, w, h, bytes, &i);
+                    readAndDrawCircle(dc, contextWidth, contextHeight, bytes, &i);
                 break;
                 default:
                 goto exit_drawing;

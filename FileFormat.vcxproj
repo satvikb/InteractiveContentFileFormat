@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Core\CustomImageReader.h" />
     <ClInclude Include="Core\httplib.h" />
+    <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\WindowManager.h" />
     <ClInclude Include="Core\FileManager.h" />
     <ClInclude Include="Core\reader.h" />
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\CustomImageReader.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
     <ClCompile Include="Core\WindowManager.cpp" />
     <ClCompile Include="Core\FileManager.cpp" />
     <ClCompile Include="Core\reader.cpp" />
