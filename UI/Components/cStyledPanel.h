@@ -45,12 +45,6 @@ class cStyledPanel : public wxPanel {
 	virtual void windowEnter(wxMouseEvent& event) {};
 	virtual void windowLeave(wxMouseEvent& event) {};
 
-	void RenderBackgroundStyle(wxDC& dc);
-	// Content specific render
-	virtual void RenderContent(wxDC& dc) {};
-	// Content specific style
-	virtual void ApplyContentStyle(struct Style* style) { this->componentStyle = style; };
-
 	DECLARE_EVENT_TABLE()
 
 	protected:
@@ -59,4 +53,10 @@ class cStyledPanel : public wxPanel {
 	wxGraphicsContext* gc;
 	wxBrush brush;
 	wxPen pen;
+
+	void RenderBackgroundStyle(wxDC& dc);
+	// Content specific render
+	virtual void RenderContent(wxDC& dc) {};
+	// Content specific style
+	virtual void ApplyContentStyle(struct Style* style) { this->componentStyle = style; };
 };

@@ -2,9 +2,6 @@
 
 cButton::cButton(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
     SetContent(content);
-    //wxPanel::Create((wxWindow*)parent, wxID_ANY);
-
-    // load the file... ideally add a check to see if loading was successful
     w = -1;
     h = -1;
 }

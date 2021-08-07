@@ -1,14 +1,14 @@
 #include "cRichTextView.h"
 
 cRichTextView::cRichTextView(cContainer* parent, struct Content* content, struct Style* style) : cStyledPanel((wxWindow*)parent, style, wxID_ANY) {
-	wxRichTextCtrl::Create((wxWindow*)parent, wxID_ANY, wxEmptyString,
-		wxDefaultPosition, wxSize(200, 200),
-		wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
+	wxRichTextCtrl::Create((wxWindow*)parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL | wxBORDER_NONE | wxWANTS_CHARS);
 	SetContent(content);
 	readyToResize = true;
 	//SetTransparent(0);
 	// TODO can we use the Event Table for this?
 	wxRichTextCtrl::Bind(wxEVT_TEXT_URL, &cRichTextView::URLclickHandler, this);
+	// TODO will this conflict with the parent event table size event?
+	wxRichTextCtrl::Bind(wxEVT_SIZE, &cRichTextView::OnSize, this);
 }
 
 void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
@@ -22,8 +22,9 @@ void cRichTextView::URLclickHandler(wxTextUrlEvent& event) {
 
 void cRichTextView::interpretContent() {
 	if (content != nullptr) {
+
 		cStyledPanel::Freeze();
-		//Clear();
+		Clear();
 		// SetFontScale(5.5f);
 		if (content->data.size() > 0) {
 			int strStart = 0;
@@ -42,11 +43,6 @@ void cRichTextView::interpretContent() {
 		cStyledPanel::Thaw();
 	}
 }
-
-//BEGIN_EVENT_TABLE(cRichTextView, wxRichTextCtrl)
-//// Size event
-//EVT_SIZE(cRichTextView::OnSize)
-//END_EVENT_TABLE()
 
 void cRichTextView::insertStringFromIndexes(int start, int end) {
 	std::string stringToIns(content->data.begin() + start,
@@ -94,10 +90,6 @@ void cRichTextView::interpretControlBytes(int* index) {
 				std::vector<uint8_t> data = content->data;
 				std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID((char*)&data[0], &i);
 
-				// uint8_t left = content->data[i];
-				// uint8_t right = content->data[i+1];
-				// i += 2; // skip the action ID bytes
-				// uint16_t actionID = getIDFromBytes(left, right);
 				wxTextPos pos = GetLastPosition();
 
 				actions[pos] = actionID.second;
@@ -120,9 +112,12 @@ void cRichTextView::interpretControlBytes(int* index) {
 }
 
 void cRichTextView::ApplyContentStyle(struct Style* style) {
-
 }
 
+void cRichTextView::RenderContent(wxDC& dc) {
+	// cRichTextView handles the background rendering itself, so clear whatever cStyledPanel did
+	dc.Clear();
+}
 void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	// loop through styles
 
@@ -195,7 +190,17 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	}
 }
 
+void cRichTextView::PaintBackground(wxDC& dc) {
+	// TODO not sure how to properly cast dc to make the gc, but this works
+	gc = wxGraphicsContext::Create((wxWindowDC&)dc);
+	dc.GetSize(&contextWidth, &contextHeight);
+	RenderBackgroundStyle(dc);
+}
+
 void cRichTextView::OnSize(wxSizeEvent& event) {
+
+	Logger::logToFile(std::to_string(contextWidth) + " " + std::to_string(contextHeight));
+
 	if (readyToResize == true) {
 		interpretContent();
 		// skip the event.

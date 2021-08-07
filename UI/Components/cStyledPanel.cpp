@@ -1,7 +1,6 @@
 #include "cStyledPanel.h"
 
 cStyledPanel::cStyledPanel() {
-
 }
 
 BEGIN_EVENT_TABLE(cStyledPanel, wxPanel)
@@ -24,6 +23,9 @@ cStyledPanel::cStyledPanel(wxWindow* aParent, struct Style* componentStyle, wxWi
 
 bool cStyledPanel::Create(wxWindow* parent, struct Style* componentStyle, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name) {
     bool success = wxPanel::Create(parent, id, pos, size, style, name);
+
+	//Bind(wxEVT_SIZE, &cStyledPanel::OnSize, this);
+
 	contextWidth = -1;
 	contextWidth = -1;
 	ApplyComponentStyle(componentStyle);
@@ -90,6 +92,7 @@ void cStyledPanel::RenderBackgroundStyle(wxDC& dc) {
 				case STYLE_COMPONENT_BORDER_WIDTH:
 				{
 					// TODO percent or pixel
+					//pen.SetWidth(0);
 				}
 				break;
 			}
@@ -100,7 +103,7 @@ void cStyledPanel::RenderBackgroundStyle(wxDC& dc) {
 	gc->SetPen(pen);
 
 	// TODO conditionally draw only if needed
-	dc.DrawRectangle(0, 0, contextWidth, contextHeight);
+	gc->DrawRectangle(0, 0, contextWidth, contextHeight);
 
 	// revert brush and pen state
 	brush.SetColour(currentBrushColor);
@@ -110,11 +113,10 @@ void cStyledPanel::RenderBackgroundStyle(wxDC& dc) {
 // this is where the "layers" are applied.
 // first backgrounds, then the content, then overlays like borders.
 void cStyledPanel::RenderComponent(wxDC& dc) {
-	dc.wxDC::GetSize(&contextWidth, &contextHeight);
+	//dc.wxDC::GetSize(&contextWidth, &contextHeight);
 	wxSize cs = GetClientSize();
 	contextWidth = cs.GetWidth();
 	contextHeight = cs.GetHeight();
-	Logger::logToFile("2: "+std::to_string(cs.GetWidth()) + " " + std::to_string(cs.GetHeight()));
 
 	brush = wxBrush(wxTransparentColour);
 	pen = wxPen(wxTransparentColour);

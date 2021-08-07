@@ -29,12 +29,15 @@ private:
 	bool readyToResize = false;
 
 	void URLclickHandler(wxTextUrlEvent& event);
-	void OnSize(wxSizeEvent& event);
+	void OnSize(wxSizeEvent& event) override;
 	//void clickHandler(wxTextUrlEvent& event);
+	void RenderContent(wxDC& dc) override;
 
 	void interpretContent() override;
 	void interpretControlBytes(int* index);
 	void insertStringFromIndexes(int start, int end);
+
+	void PaintBackground(wxDC& dc) override;
 
 	void interpretTextStyle(struct Style* style, bool removeStyle);
 	std::any getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue);
