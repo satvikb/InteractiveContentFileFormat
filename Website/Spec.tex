@@ -13,6 +13,8 @@
 \usepackage{xcolor}
 \usepackage{graphics}
 \usepackage{amsmath}
+\usepackage{tabularx}
+\usepackage{makecell}
 
 \pagecolor{white}
 \begin{document}
@@ -129,10 +131,8 @@ All IC files start with the magic number. Then the next chunk is a HEADER chunk.
 
 \section{Header}
 The header chunk must be at the top of a IC file after the MAGIC NUMBER. 
-Headers have chunk type 8.
-This means the extended chunk range must be used.
-
-The chunk type for headers is 11001000. 
+Headers have chunk type 7.
+The chunk type for headers is 110. 
 
 \subsection{Static Properties}
 Static header properties are in every header file and are defined to be in the same static location from the ID. 
@@ -166,7 +166,25 @@ update\_url defines the URL where the updated version of the entire file is loca
 If the file\_version value is higher than the value retrieved from the version\_url key, the update\_url value is used to download and replace the currently opened file. If the value from the version\_url key is 0xFFFF, the update\_url is always used.
 
 \subsection{Bytes}
-The first bytes of a Header is an ID COMPONENT. Because the Header is an extended chunk type (chunk type > 7), the 4 bytes after the ID COMPONENT is the length of the chunk.
+All Headers must be at least 9 bytes. The first bytes of a Header is an ID COMPONENT. Next is the static properties: 4 bytes for the SPECIFICATION VERSION and an ID COMPONENT to define the starting Container. 
+
+\begin{center}
+\begin{bytefield}{32} \\
+\bitheader{0,7,15,23,31} \\
+\begin{rightwordgroup}{Static Properties}
+\bitbox{16}{Header ID} & \bitbox{16}{Extended ID} \\
+\bitbox{32}{Specification Version} \\
+\bitbox{16}{Initial Container ID} & \bitbox{16}{Extended ID} 
+\end{rightwordgroup}\\
+\begin{rightwordgroup}{Key Value Pairs}\\
+\bitbox{16}{Key 1 (null terminated ASCII string)} & \bitbox{16}{Value 1} \\
+\wordbox[]{1}{$\vdots$} \\[1ex]
+\bitbox{16}{Key N (null terminated ASCII string)} & \bitbox{16}{Value N} 
+\end{rightwordgroup} \\
+
+\bitbox{8}{End Header Byte}
+\end{bytefield}
+\end{center}
 
 \section{Container}
 Containers are the backbone of an IC file. Containers are responsible for displaying content and define which LAYOUT to follow. All CONTENT must be a part of a Container for it to be displayed. A container can contain other containers and/or content.\\
@@ -175,12 +193,70 @@ Containers are the backbone of an IC file. Containers are responsible for displa
 The first bytes of the Container is an ID COMPONENT.
 
 \section{Layout}
-A layout defines the positions of elements. 
+A layout defines the number of elements and the positions of those elements. 
+\subsection{Bytes}
+The first bytes of the Layout is an ID COMPONENT. 
 \section{Style}
+
+\subsection{Style Keys}
+The key to define a style property (the Byte Key) is one byte. If the first four bits of the style property if 1111 (0xFX) then an extra byte is read for the style key. \\
+To improve compatibility across specification versions, it is recommended to write style keys introduced in recent versions later in the style. Once an unknown Byte Key is read, the rest of the style is skipped.
 \subsection{Style Properties}
+The following tables define the currently used Byte Keys and the values associated with each key. The byte key defines the two hex values used to make up the byte. The byte format shows the bytes following the byte key to determine the value. An X refers to any hex value, and an N refers to any number of bytes.
+\subsubsection{Control Keys}
+\begin{tabularx}{\textwidth}{l|l|l|X}
+  \textbf{\makecell[cl]{Byte\\Key}} & \textbf{Key Name} & \textbf{Value Format} & \textbf{Description}\\
+\hline
+00 & End Style & -- & Once this key is read, it signifies the end of the style.\\
+FX & \makecell[tl]{Using a style key\\with an extra byte} & XX (extra byte) & Use an extra byte to define the style key to allow for more keys in the future.\\
+\end{tabularx}
 \subsubsection{Window Styling}
+\begin{tabularx}{\textwidth}{l|l|l|X}
+  \textbf{\makecell[cl]{Byte\\Key}} & \textbf{Key Name} & \textbf{Value Format} & \textbf{Description}\\
+\hline
+01 & Border Width & XX XXXX & TODO The border width. The first byte determines how the width is determined (pixels, percent of width/height, etc). The next two bytes define the value.\\
+02 & Border Color & XX XX XX & RGB value for border color\\
+03 & Background Color & XX XX XX & RGB value for background color\\
+\end{tabularx}
 \subsubsection{Text Styling}
+Text styling keys are currently defined from 0x30 - 0x60 for organizational purposes.\\
+\begin{tabularx}{\textwidth}{l|l|l|X}
+  \textbf{\makecell[cl]{Byte\\Key}} & \textbf{Key Name} & \textbf{Value Format} & \textbf{Description}\\
+\hline
+30 & Text Color & XX XX XX & RGB value for text color.\\
+31 & Highlight Color & XX XX XX & RGB value for text highlight color.\\
+3A & Font Name & XX*N 00 & N byte string to set the font name to use. Null terminated.\\
+3B & Font Family & XX*N 00 & N byte string to set the font family used. Null terminated.\\
+\\
+40 & Bold & -- & Set the text to be bold.\\
+41 & Italics & -- & Set the text to be italics.\\
+42 & Underline & -- & Set the text to be underlined.\\
+43 & Strikethrough & -- & Set the text to be strikethrough.\\
+44 & Superscript & -- & Set the text to be superscript.\\
+45 & Subscript & -- & Set the text to be subscript.\\
+\\
+50 & \makecell[tl]{Text Scale \\ Window Divider} & XX & This value is only used when the Text Scale Mode (below) is a type of percent. The window size id s divided by this value to give more control of text size. Default value is 4.\\
+51 & Text Scale Mode & XX & Determine how the size of the text is calculated. The following are the currently supported values:
+\begin{itemize}
+\item 01 - Use points to determine the text size.
+\item 02 - Scale text size as a percent of the window width.
+\item 03 - Scale text size as a percent of the window height.
+\end{itemize}
+The default value is 01 for points.\\
+52 & Text Size & XX & Decide the value of the text size. Divided by 100 if Text Scale Mode is a percent.\\
+& & & \makecell[tl]{The formula for how text size is calculated: \\
+If Text Scale Mode is points:\\
+Text font size = Text Size value\\
+If Text Scale Mode is a percent of the window size:\\
+Window Axis Size = Window Width or Window Height based on Text Scale Mode value.\\
+Text font size = (Text Size value $/$ 100) $*$ ((Window Axis Size)$/$(Text Scale Window Divider))
+}
+
+
+\end{tabularx}
 \section{Content}
+\subsection{Content Types}
+\subsubsection{External Content Types} % still doing this?
 \subsection{Actions in Content}
 \subsection{Content Styling}
 \subsubsection{Global Styling}

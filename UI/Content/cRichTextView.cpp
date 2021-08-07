@@ -124,6 +124,9 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 	if (style != nullptr) {
 		std::map<uint8_t, std::any> styles = style->styles;
 		uint8_t windowDivider = std::any_cast<uint8_t>(getStyleKeyWithDefaultValue(styles, (uint8_t)STYLE_TEXT_WINDOW_DIVIDER, (uint8_t)4));
+		if (windowDivider == 0) {
+			windowDivider = 4;
+		}
 		uint8_t textScaleMode = std::any_cast<uint8_t>(getStyleKeyWithDefaultValue(styles, (uint8_t)STYLE_TEXT_SCALE_MODE, (uint8_t)0));
 
 		for (auto& [key, val] : styles) {
