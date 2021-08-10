@@ -428,10 +428,10 @@ std::pair<uint32_t, struct Style*> readStyle(char* buffer, int* index) {
 	std::map<uint8_t, std::any> styles;
 
 	uint16_t key = (unsigned char)buffer[i];
-	if ((key & 0x80) > 0x0) {
-		// the first bit in the key is 1, meaning two bytes are used for the style key
+	if ((key & 0xF0) == 0xF0) {
+		// the first 4 bits in the key is 1111, meaning two bytes are used for the style key
 		// & with 0x7F to only get the 7 bits from the first byte (since the 1 to signify two bytes is not included in key)
-		key = (unsigned char)((buffer[i] & 0x7F) << 8) | (unsigned char)buffer[(i)+1];
+		key = (unsigned char)((buffer[i] & 0x0F) << 8) | (unsigned char)buffer[(i)+1];
 		i += 1;
 	}
 	i += 1;

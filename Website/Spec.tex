@@ -123,8 +123,8 @@ The X and Y percents are multiplied by the parent element's width and height, re
 The magic number for IC files are the first bytes in the file.
 The magic number for IC files is 73 61 6d 61 6c 69 74 6c 6e 76 75 61
 
-\section{Specification Versioning}
-The version of the Interactive Content specification is included in every file in the HEADER chunk. Specification Versions follow SimVer versioning (MAJOR.MINOR.PATCH). The specification version in an IC file is 4 bytes. The first two bytes define the MAJOR version. The next byte defines the MINOR version. The last byte defines the PATCH version. This means version 1.0.0 of the Interactive Content Specification is defined in an IC file as would be 0x0001 00 00.
+\section{Specification and File Versioning}
+The version of the Interactive Content specification is included in every file in the HEADER chunk. Specification Versions follow SimVer versioning (MAJOR.MINOR.PATCH). The specification version, and optional file version, in an IC file is 4 bytes. The first two bytes define the MAJOR version. The next byte defines the MINOR version. The last byte defines the PATCH version. This means version 1.0.0 of the Interactive Content Specification is defined in an IC file as would be 0x0001 00 00.
 \section{Structure}
 All IC files start with the magic number. Then the next chunk is a HEADER chunk.
 \chapter{Chunks}
@@ -144,6 +144,9 @@ The current file version is 1.0.0 (0x0001 00 00).
 \subsubsection{Starting Container ID}
 The starting container ID defines the the container that is shown first. The starting container is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
 
+\subsubsection{Starting Container Layout ID}
+The starting container LAYOUT ID is a ID COMPONENT that defines the container wide style used for the starting parent container.
+
 \subsection{Dynamic Properties}
 Headers can have any number of dynamic properties and works as a list of key-value pairs. Strings must be null terminated before the next string.
 \subsubsection{Metadata}
@@ -152,15 +155,22 @@ Metadata is any key in dynamic properties that is not a Recognized Setting. Meta
 File settings are predefined keys which change the behavior of the file. 
 \subparagraph{Recognized Settings}
 The following keys are used:\\
+\begin{tabularx}{\textwidth}{l|l|X}
+  \textbf{\makecell[cl]{Setting Key}} & \textbf{Value Format} & \textbf{Description}\\
+\hline
+"win\_aspect" & XX XX & Defines the aspect ratio of the window when the file is opened and the window is resized. The first byte defines the width, the second byte defines the height. For example, to keep the window at a 16:9 aspect ratio, use the bytes 10 09.\\
+"win\_rect" & XX XX XX XX & Defines the starting window size when opening the file. Refer to RECTANGLE POSITIONING for more information.\\
 \\
-"win\_aspect" defines the aspect ratio of the window that should be kept when the window is opened and resized.\\
-"win\_rect" defines the starting window size when opening the file. 4 bytes in percent of screen size. Refer to RECTANGLE POSITIONING for more information.
+%\end{tabularx}
+%The following keys are used to manage automatically updating the file:\\
+%\begin{tabularx}{\textwidth}{l|l|X}
 
-The following keys are used to manage automatically updating the file:\\
-file\_version defines the current version of the file. The value is a unsigned 2 byte number.\\
-version\_url defines the URL to retrieve the latest version of the current file from. The remote file must be a length of two bytes, defining the latest version of the file in hex.\\
-update\_url defines the URL where the updated version of the entire file is located.
+"file\_version" & XX XX XX XX & Defines the current version of the file (different from the specification version). See SPECIFICATION AND FILE VERSIONING for more information.\\
 
+"version\_url" & X*N & Defines the URL to retrieve the latest version of the current file from. The remote file must be a length of two bytes, defining the latest version of the file in hex.\\
+"update\_url" & X*N & Defines the URL where the updated version of the entire file is located.
+
+\end{tabularx}
 
 \subsection{Automatically Updating the File}
 If the file\_version value is higher than the value retrieved from the version\_url key, the update\_url value is used to download and replace the currently opened file. If the value from the version\_url key is 0xFFFF, the update\_url is always used.
@@ -202,7 +212,7 @@ The first bytes of the Layout is an ID COMPONENT.
 The key to define a style property (the Byte Key) is one byte. If the first four bits of the style property if 1111 (0xFX) then an extra byte is read for the style key. \\
 To improve compatibility across specification versions, it is recommended to write style keys introduced in recent versions later in the style. Once an unknown Byte Key is read, the rest of the style is skipped.
 \subsection{Style Properties}
-The following tables define the currently used Byte Keys and the values associated with each key. The byte key defines the two hex values used to make up the byte. The byte format shows the bytes following the byte key to determine the value. An X refers to any hex value, and an N refers to any number of bytes.
+The following tables define the currently used Byte Keys and the values associated with each key. The Byte Key defines the two hex values used to make up the byte. The byte format shows the bytes following the Byte Key to determine the value. An X refers to any hex value, and an N refers to any number of bytes.
 \subsubsection{Control Keys}
 \begin{tabularx}{\textwidth}{l|l|l|X}
   \textbf{\makecell[cl]{Byte\\Key}} & \textbf{Key Name} & \textbf{Value Format} & \textbf{Description}\\
