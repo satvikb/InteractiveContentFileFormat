@@ -123,7 +123,7 @@ struct Header {
     unsigned char specificationVersionPatch;
 
     uint32_t startContainer;
-    uint32_t startContainerLayout;
+    uint32_t startContainerStyle;
     std::map<std::string, std::string> metadata;
     // Recognized attributes
     float windowAspectRatio;
@@ -212,10 +212,11 @@ struct Style : Chunk {
 
 // TODO: pos struct and inherit from it?
 struct elementPosition {
-    uint8_t x;
-    uint8_t y;
-    uint8_t w;
-    uint8_t h;
+    // 16 bits to support two byte positions
+    uint16_t x;
+    uint16_t y;
+    uint16_t w;
+    uint16_t h;
     uint32_t styleID;
 };
 

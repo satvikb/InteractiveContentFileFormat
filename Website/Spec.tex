@@ -144,8 +144,8 @@ The current file version is 1.0.0 (0x0001 00 00).
 \subsubsection{Initial Container ID}
 The initial container ID defines the the container that is shown when the file is first opened, and is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
 
-\subsubsection{Initial Container Layout ID}
-The initial container LAYOUT ID is a ID COMPONENT that defines the container wide style used for the starting parent container.
+\subsubsection{Initial Container Style ID}
+The initial container STYLE ID is a ID COMPONENT that defines the container wide style used for the starting parent container.
 
 \subsection{Dynamic Properties}
 Headers can have any number of dynamic properties and works as a list of key-value pairs. Strings must be null terminated before the next string.
@@ -289,6 +289,9 @@ Styles are handled individually by the content. These styles are only supported 
 To maintain compatibility with previous IC specification versions, all chunk types in the extended range must include the length of the chunk in bytes after defining its ID COMPONENT. This way, if an unknown chunk type is encountered, it can be skipped.
 \subsection{Suggesting a new Chunk Type}
 To suggest a new chunk type, follow this process:
+
+\chapter{Extended Chunk Types}
+\section{Scrollable Container}
 
 \chapter{Content}
 \section{Text}
