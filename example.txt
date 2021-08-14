@@ -4,8 +4,9 @@ This file explains the example.ic file.
 
 ------------- BEGIN HEADER -------------
 C8 00 - Header ID
-00 01 - File version
+00 01 00 00 - File version
 20 01 - Start container ID (001 00000 0000 0001)
+00 00 - Start container style ID
 41 75 74 68 6f 72 20 4e 61 6d 65 00 - "Author Name" w/ null
 76657273696F6E5F617500 - "version_au" w/ null
 00000001 - 4 bytes for au version

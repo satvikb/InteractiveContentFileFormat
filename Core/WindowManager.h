@@ -17,6 +17,9 @@ public:
 	static void DestroyContainer(cContainer* containerWindow);
 	static void SetTopContainer(cContainer* window);
 	static wxSize GetWindowSize();
+
+	static int GetScaledTextSize(wxSize windowSize, bool scaleWithWidth, uint8_t windowDivider, uint8_t rawTextSize);
+
 private:
 	static struct Container* topContainer;
 	static std::map<uint16_t, cContainer*> containerWindows;
@@ -26,5 +29,7 @@ private:
 	static void ExecuteAction(struct Action* action);
 	static void ReplaceContainers(cContainer* target, struct Container* replaceWith);
 	static void ReplaceContainerElementIndexWithContent(uint32_t containerID, uint8_t index, uint32_t contentID);
+
+
 };
 

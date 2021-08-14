@@ -67,9 +67,11 @@
 #define STYLE_TEXT_SCALE_MODE 0x51
 #define STYLE_TEXT_SIZE 0x52
 
-#define TEXT_SCALE_MODE_POINTS 0x0
-#define TEXT_SCALE_MODE_WINDOW_WIDTH 0x01
-#define TEXT_SCALE_MODE_WINDOW_HEIGHT 0x2
+#define TEXT_SCALE_MODE_POINTS 0x1
+#define TEXT_SCALE_MODE_PARENT_WIDTH 0x02
+#define TEXT_SCALE_MODE_PARENT_HEIGHT 0x03
+#define TEXT_SCALE_MODE_WINDOW_WIDTH 0x04
+#define TEXT_SCALE_MODE_WINDOW_HEIGHT 0x05
 
 #define BITMAP_LINE 0x1
 #define BITMAP_RECTANGLE 0x2
@@ -121,6 +123,7 @@ struct Header {
     unsigned char specificationVersionPatch;
 
     uint32_t startContainer;
+    uint32_t startContainerLayout;
     std::map<std::string, std::string> metadata;
     // Recognized attributes
     float windowAspectRatio;

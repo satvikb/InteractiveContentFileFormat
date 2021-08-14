@@ -44,6 +44,17 @@ wxSize WindowManager::GetWindowSize() {
 	return wxSize(0, 0);
 }
 
+int WindowManager::GetScaledTextSize(wxSize windowSize, bool scaleWithWidth, uint8_t windowDivider, uint8_t rawTextSize) {
+	
+	int parentDimension = scaleWithWidth ? windowSize.GetWidth() : windowSize.GetHeight();
+	float windowMultiplier = (float)parentDimension / (float)windowDivider;
+	int scaledTextSize = ((float)rawTextSize / 100.f) * windowMultiplier;
+	// https://trac.wxwidgets.org/ticket/12315
+	if (scaledTextSize == wxDEFAULT) {
+		scaledTextSize -= 1;
+	}
+	return scaledTextSize;
+}
 
 void WindowManager::ExecuteAction(struct Action* action) {
 	if (action != nullptr) {

@@ -141,11 +141,11 @@ Static header properties are in every header file and are defined to be in the s
 The file version specifies the version of the IC specification the rest of the file follows. The file version is four bytes.\\
 The current file version is 1.0.0 (0x0001 00 00).
 
-\subsubsection{Starting Container ID}
-The starting container ID defines the the container that is shown first. The starting container is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
+\subsubsection{Initial Container ID}
+The initial container ID defines the the container that is shown when the file is first opened, and is the starting point of the IC file. It is a ID COMPONENT, so either 2 bytes or 4 bytes are used to identify the starting container. The chunk type must be a container.
 
-\subsubsection{Starting Container Layout ID}
-The starting container LAYOUT ID is a ID COMPONENT that defines the container wide style used for the starting parent container.
+\subsubsection{Initial Container Layout ID}
+The initial container LAYOUT ID is a ID COMPONENT that defines the container wide style used for the starting parent container.
 
 \subsection{Dynamic Properties}
 Headers can have any number of dynamic properties and works as a list of key-value pairs. Strings must be null terminated before the next string.
@@ -184,7 +184,8 @@ All Headers must be at least 9 bytes. The first bytes of a Header is an ID COMPO
 \begin{rightwordgroup}{Static Properties}
 \bitbox{16}{Header ID} & \bitbox{16}{Extended ID} \\
 \bitbox{32}{Specification Version} \\
-\bitbox{16}{Initial Container ID} & \bitbox{16}{Extended ID} 
+\bitbox{16}{Initial Container ID} & \bitbox{16}{Extended ID} \\
+\bitbox{16}{Initial Container Layout ID} & \bitbox{16}{Extended ID} 
 \end{rightwordgroup}\\
 \begin{rightwordgroup}{Key Value Pairs}\\
 \bitbox{16}{Key 1 (null terminated ASCII string)} & \bitbox{16}{Value 1} \\
@@ -235,6 +236,7 @@ Text styling keys are currently defined from 0x30 - 0x60 for organizational purp
 \hline
 30 & Text Color & XX XX XX & RGB value for text color.\\
 31 & Highlight Color & XX XX XX & RGB value for text highlight color.\\
+35 & Text Alignment & XX & The alignment for the text.\\
 3A & Font Name & XX*N 00 & N byte string to set the font name to use. Null terminated.\\
 3B & Font Family & XX*N 00 & N byte string to set the font family used. Null terminated.\\
 \\
@@ -249,8 +251,10 @@ Text styling keys are currently defined from 0x30 - 0x60 for organizational purp
 51 & Text Scale Mode & XX & Determine how the size of the text is calculated. The following are the currently supported values:
 \begin{itemize}
 \item 01 - Use points to determine the text size.
-\item 02 - Scale text size as a percent of the window width.
-\item 03 - Scale text size as a percent of the window height.
+\item 02 - Scale text size as a percent of the parent element width.
+\item 03 - Scale text size as a percent of the parent element height.
+\item 04 - Scale text size as a percent of the window width.
+\item 05 - Scale text size as a percent of the window height.
 \end{itemize}
 The default value is 01 for points.\\
 52 & Text Size & XX & Decide the value of the text size. Divided by 100 if Text Scale Mode is a percent.\\
@@ -293,6 +297,7 @@ To suggest a new chunk type, follow this process:
 Styles can be applied to text by the following byte sequence: 0xEEBC80, and ended with 0xEEBC81.\\
 Actions can be started with 0xEEBC82 and ended with 0xEEBC83.
 \subsection{Styling}
+Bullet lists (numbered and not numbered). Paragraph Indent. Paragraph Spacing. Left indent, right indent. Begin/end paragraph. Begin/end alignment. Line break and new line.
 \section{Button}
 \subsection{Byte Structure}
 \subsection{Styling}

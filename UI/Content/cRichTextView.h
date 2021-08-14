@@ -42,6 +42,7 @@ private:
 	void interpretTextStyle(struct Style* style, bool removeStyle);
 	std::any getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue);
 
+	virtual bool IsEditable() const;
 	//DECLARE_EVENT_TABLE()
 	//void addAction() override;
 };

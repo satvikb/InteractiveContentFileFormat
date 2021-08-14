@@ -171,13 +171,16 @@ void cRichTextView::interpretTextStyle(struct Style* style, bool removeStyle) {
 						case TEXT_SCALE_MODE_WINDOW_WIDTH:
 						{
 							wxSize windowSize = WindowManager::GetWindowSize();
-							int windowDimension = textScaleMode == TEXT_SCALE_MODE_WINDOW_WIDTH ? windowSize.GetWidth() : windowSize.GetHeight();
-							float windowMultiplier = (float)windowDimension / (float)windowDivider;
-							int scaledTextSize = ((float)rawTextSize / 100.f) * windowMultiplier;
-							// https://trac.wxwidgets.org/ticket/12315
-							if (scaledTextSize == wxDEFAULT) {
-								scaledTextSize -= 1;
-							}
+							bool scaleWithWidth = textScaleMode == TEXT_SCALE_MODE_WINDOW_WIDTH;
+							int scaledTextSize = WindowManager::GetScaledTextSize(windowSize, scaleWithWidth, windowDivider, rawTextSize);
+							BeginFontSize(scaledTextSize);
+						} break;
+						case TEXT_SCALE_MODE_PARENT_HEIGHT:
+						case TEXT_SCALE_MODE_PARENT_WIDTH:
+						{
+							wxSize parentSize = wxRichTextCtrl::GetSize();
+							bool scaleWithWidth = textScaleMode == TEXT_SCALE_MODE_PARENT_WIDTH;
+							int scaledTextSize = WindowManager::GetScaledTextSize(parentSize, scaleWithWidth, windowDivider, rawTextSize);
 							BeginFontSize(scaledTextSize);
 						} break;
 						default:
@@ -230,6 +233,10 @@ std::any cRichTextView::getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> 
 // cRichTextView::addAction() {
 //
 //}
+
+bool cRichTextView::IsEditable() const {
+	return false;
+}
 
 cRichTextView::~cRichTextView() {
 	content = nullptr;

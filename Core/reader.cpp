@@ -183,6 +183,9 @@ struct Header* readHeader(char* buffer, int* index) {
 	uint32_t startContainerId = readChunkTypeAndID(buffer, &i).second;
 	header->startContainer = startContainerId;
 
+	uint32_t startContainerLayoutId = readChunkTypeAndID(buffer, &i).second;
+	header->startContainerLayout = startContainerLayoutId;
+
 	// begin string:string map
 	std::map<std::string, std::string> metadata;
 
