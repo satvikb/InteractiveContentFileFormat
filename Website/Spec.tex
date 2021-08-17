@@ -206,7 +206,26 @@ The first bytes of the Container is an ID COMPONENT.
 \section{Layout}
 A layout defines the number of elements and the positions of those elements. 
 \subsection{Bytes}
-The first bytes of the Layout is an ID COMPONENT. 
+\begin{center}
+\begin{bytefield}{32} \\
+\bitheader{0,7,15,23,31} \\
+\bitbox{16}{Layout ID} & \bitbox{16}{Extended ID} \\
+\bitbox{8}{Options Byte} & \bitbox{8}{\# Elements} \\
+\begin{rightwordgroup}{Element N Position}\\
+\bitbox{8}{Position X} & \bitbox{8}{Position Y} & \bitbox{8}{Width} & \bitbox{8}{Height} \\
+\bitbox{16}{Style ID} & \bitbox{16}{Extended ID} \\
+\end{rightwordgroup} 
+\end{bytefield}
+\end{center}
+
+
+Options byte:
+\begin{center}
+\begin{bytefield}[bitwidth=0.07\linewidth]{8} \\
+\bitheader{0-7} \\
+\bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{NA} & \bitbox{1}{Larger size}
+\end{bytefield}
+\end{center}
 \section{Style}
 
 \subsection{Style Keys}
@@ -296,11 +315,37 @@ To suggest a new chunk type, follow this process:
 \chapter{Content}
 \section{Text}
 \subsection{Byte Structure}
-\subsection{Options}
+UTF-8
+
+\subsection{Control Bytes}
+
 Styles can be applied to text by the following byte sequence: 0xEEBC80, and ended with 0xEEBC81.\\
 Actions can be started with 0xEEBC82 and ended with 0xEEBC83.
+
+\begin{tabularx}{\textwidth}{l|l|l|X}
+  \textbf{\makecell[cl]{Byte\\Key}} & \textbf{Key Name} & \textbf{Value Format} & \textbf{Description}\\
+\hline
+80 & Start Style & XX XX & Begin applying the Style with the given ID to the text.\\
+81 & End Style & -- & Stop applying the style.\\
+82 & Start Action & XX XX & Begin applying a link to the text.\\
+83 & End Action & -- & Stop considering the text as a link.\\
+\\
+90 & \makecell[tl]{Start numbered \\ list} & XX & Begin a numbered list starting at the given number.\\
+91 & \makecell[tl]{End numbered \\ list} & -- & End the numbered list.\\
+92 & \makecell[tl]{Start unordered \\ bullet list} & -- & Begin a unordered bullet list.\\
+93 & \makecell[tl]{End unordered \\ bullet list} & -- & End the unordered bullet list.\\
+93 & New bullet & -- & Begin a new item in the current list. If it is a numbered list, the number will be incremented by one.\\
+\\
+A0 & \makecell[tl]{Begin Left Indent} & XX XX YY YY & Begin paragraph left indent with XX in tenths of a millimeter and left subindent with YY in tenths of a millimeter. Bytes are signed.\\
+A1 & \makecell[tl]{End Left Indent} & -- & End the current left indent.\\
+A2 & \makecell[tl]{Begin Right Indent} & XX XX & Begin paragraph right indent in tenths of millimeter.\\
+A3 & \makecell[tl]{End Right Indent} & -- & End the current right indent.\\
+A4 & \makecell[tl]{Begin Paragraph Spacing} & XX XX YY YY & Begin before paragraph spacing with XX in tenths of a millimeter and after paragraph spacing with YY in tenths of a millimeter. Bytes are signed.\\
+A5 & \makecell[tl]{End Paragraph Spacing} & -- & End the current paragraph spacing.\\
+\end{tabularx}
+
 \subsection{Styling}
-Bullet lists (numbered and not numbered). Paragraph Indent. Paragraph Spacing. Left indent, right indent. Begin/end paragraph. Begin/end alignment. Line break and new line.
+Bullet lists (numbered and not numbered). Paragraph Indent. Paragraph Spacing. Left indent, right indent. Begin/end paragraph. Begin/end alignment. Line break and new line. Line spacing. Tabs. Sub lists.
 \section{Button}
 \subsection{Byte Structure}
 \subsection{Styling}

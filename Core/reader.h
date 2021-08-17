@@ -33,6 +33,11 @@
 #define CONTENT_WEB 0x23 // 35 in decimal, external content type
 #define CONTENT_STREAMED 0x24
 
+#define TEXT_START_STYLE 0x80
+#define TEXT_END_STYLE 0x81
+#define TEXT_START_ACTION 0x82
+#define TEXT_END_ACTION 0x83
+
 #define IMAGE_TYPE 0x0
 #define IMAGE_DATA_LENGTH 0x1
 #define IMAGE_ACTION_START 0x2

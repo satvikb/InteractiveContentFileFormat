@@ -65,7 +65,7 @@ void cRichTextView::interpretControlBytes(int* index) {
 
 		switch (val) {
 			// Start Style
-			case 0x80:
+			case TEXT_START_STYLE:
 			{
 				std::vector<uint8_t> data = content->data;
 				std::pair<uint8_t, uint32_t> styleID =
@@ -79,13 +79,13 @@ void cRichTextView::interpretControlBytes(int* index) {
 				interpretTextStyle(FileManager::getStyleByID(styleID.second), false);
 			} break;
 			// End Style
-			case 0x81:
+			case TEXT_END_STYLE:
 			{
 				interpretTextStyle(FileManager::getStyleByID(styleIDs.top()), true);
 				styleIDs.pop();
 			} break;
-			// Begin Action/URL
-			case 0x82:
+			// Begin Action
+			case TEXT_START_ACTION:
 			{
 				std::vector<uint8_t> data = content->data;
 				std::pair<uint8_t, uint32_t> actionID = readChunkTypeAndID((char*)&data[0], &i);
@@ -95,7 +95,7 @@ void cRichTextView::interpretControlBytes(int* index) {
 				actions[pos] = actionID.second;
 				BeginURL(wxT("d")); // TODO what to put here? cant be empty
 			} break;
-			case 0x83:
+			case TEXT_END_STYLE:
 			{
 				EndURL();
 			} break;
