@@ -68,23 +68,16 @@ void cRichTextView::interpretControlBytes(int* index) {
 			case TEXT_START_STYLE:
 			{
 				std::vector<uint8_t> data = content->data;
-				std::pair<uint8_t, uint32_t> styleID =
-					readChunkTypeAndID((char*)&data[0], &i);
+				std::pair<uint8_t, uint32_t> styleID = readChunkTypeAndID((char*)&data[0], &i);
 
-				// uint8_t left = content->data[i];
-				// uint8_t right = content->data[i + 1];
-				// i += 2; // skip the style ID bytes
-				// uint16_t styleID = getIDFromBytes(left, right);
 				styleIDs.push(styleID.second);
 				interpretTextStyle(FileManager::getStyleByID(styleID.second), false);
 			} break;
-			// End Style
 			case TEXT_END_STYLE:
 			{
 				interpretTextStyle(FileManager::getStyleByID(styleIDs.top()), true);
 				styleIDs.pop();
 			} break;
-			// Begin Action
 			case TEXT_START_ACTION:
 			{
 				std::vector<uint8_t> data = content->data;
@@ -93,11 +86,95 @@ void cRichTextView::interpretControlBytes(int* index) {
 				wxTextPos pos = GetLastPosition();
 
 				actions[pos] = actionID.second;
-				BeginURL(wxT("d")); // TODO what to put here? cant be empty
+				BeginURL(wxT("-")); // TODO what to put here? cant be empty
 			} break;
-			case TEXT_END_STYLE:
+			case TEXT_END_ACTION:
 			{
 				EndURL();
+			} break;
+			case TEXT_START_NUMBERED_LIST:
+			{
+				uint8_t startLevel = (unsigned char)content->data[i];
+				currentListLevel = startLevel;
+				i++;
+				// TODO check if there is an override to the left subindent for this level
+				Newline();
+				BeginNumberedBullet(currentBulletNumber, currentLeftIndent, CalculateLeftSubIndent());
+				auto listSettings = std::make_tuple(true, currentListLevel, currentBulletNumber);
+				lists.push(listSettings);
+			} break;
+			case TEXT_START_UNORDERED_LIST:
+			{
+				uint8_t startLevel = (unsigned char)content->data[i];
+				currentListLevel = startLevel;
+				i++;
+				Newline();
+				BeginSymbolBullet('*', currentLeftIndent, CalculateLeftSubIndent());
+				auto listSettings = std::make_tuple(false, currentListLevel, currentBulletNumber);
+				lists.push(listSettings);
+			} break;
+			case TEXT_END_LIST:
+			{
+				if (lists.size() > 0) {
+					auto settingsToRestore = lists.top();
+					bool isNumbered = std::get<0>(settingsToRestore);
+					int oldLevel = std::get<1>(settingsToRestore);
+					int oldBulletNumber = std::get<2>(settingsToRestore);
+
+					currentBulletNumber = oldBulletNumber;
+					currentListLevel = oldLevel;
+
+					if (isNumbered) {
+						EndNumberedBullet();
+					} else {
+						EndSymbolBullet();
+					}
+
+					lists.pop();
+				} else {
+					currentBulletNumber = 1;
+				}
+			} break;
+			case TEXT_NEW_BULLET:
+			{
+				auto currentSettings = lists.top();
+				bool isNumbered = std::get<0>(currentSettings);
+				if (isNumbered) {
+					EndNumberedBullet();
+					Newline();
+					currentBulletNumber += 1;
+					BeginNumberedBullet(currentBulletNumber, currentLeftIndent, CalculateLeftSubIndent());
+				} else {
+					EndSymbolBullet();
+					Newline();
+					BeginSymbolBullet('*', currentLeftIndent, CalculateLeftSubIndent());
+				}
+			} break;
+			case TEXT_SET_BULLET_NUMBER:
+			{
+				uint8_t newBulletNumber = (unsigned char)content->data[i];
+				currentBulletNumber = newBulletNumber;
+				i++;
+			} break;
+			case TEXT_SET_LIST_LEVEL:
+			{
+				uint8_t newLevel = (unsigned char)content->data[i];
+				currentListLevel = newLevel;
+				i++;
+			} break;
+			case TEXT_LIST_LEFT_SUBINDENT:
+			{
+				uint8_t level = (unsigned char)content->data[i];
+				i++;
+				uint16_t subIndent = (unsigned char)(content->data[i] << 8) | (unsigned char)content->data[(i)+1];
+				i += 2;
+				subIndentOverrides[level] = subIndent;
+			} break;
+			case TEXT_LEFT_SUBINDENT_LEVEL_MULTIPLIER:
+			{
+				uint16_t multiplier = (unsigned char)(content->data[i] << 8) | (unsigned char)content->data[(i)+1];
+				leftSubIndentMultiplier = multiplier;
+				i += 2;
 			} break;
 			default:
 			// custom control point not used/doesnt mean anything
@@ -109,6 +186,13 @@ void cRichTextView::interpretControlBytes(int* index) {
 	}
 
 	*index = i;
+}
+
+int cRichTextView::CalculateLeftSubIndent() {
+	if (subIndentOverrides.count(currentListLevel) > 0) {
+		return subIndentOverrides[currentListLevel];
+	}
+	return currentListLevel * leftSubIndentMultiplier;
 }
 
 void cRichTextView::ApplyContentStyle(struct Style* style) {

@@ -43,7 +43,18 @@ private:
 	std::any getStyleKeyWithDefaultValue(std::map<uint8_t, std::any> styles, uint8_t key, std::any defaultValue);
 
 	virtual bool IsEditable() const;
-	//DECLARE_EVENT_TABLE()
-	//void addAction() override;
+
+
+	int CalculateLeftSubIndent();
+
+	// <isNumbered, list level, and bullet number>
+	std::stack<std::tuple<bool, int, int>> lists;
+	std::map<uint8_t, uint16_t> subIndentOverrides;
+	int currentLeftIndent = 0;
+	int leftSubIndentMultiplier = 60;
+	int currentListLevel = 1;
+	int currentBulletNumber = 1;
+
+
 };
 

@@ -19,6 +19,7 @@ Total header bytes: 64
 ------------- BEGIN LAYOUT 1 -------------
 
 60 01 - Layout ID (011 00000 0000 0001)
+00 - Settings byte
 03 - Number of elements (2) (one on left half, second on right half)
 00 - X
 32 - Y

@@ -226,6 +226,7 @@ std::pair<uint32_t, struct Layout*> readLayout(char* buffer, int* index) {
 	struct Layout* layout = new Layout;
 	layout->chunkType = layoutIDs.first;
 	layout->chunkID = layoutIDs.second;
+	// TODO read settings byte
 	uint8_t numberElements = (unsigned char)buffer[i];
 	layout->elementCount = numberElements;
 	i += 1;
