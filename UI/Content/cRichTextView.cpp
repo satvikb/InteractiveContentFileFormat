@@ -176,6 +176,43 @@ void cRichTextView::interpretControlBytes(int* index) {
 				leftSubIndentMultiplier = multiplier;
 				i += 2;
 			} break;
+			case TEXT_BEGIN_LEFT_INDENT:
+			{
+				// TODO test negative
+				short leftIndent = (content->data[i] << 8) | content->data[(i)+1];
+				i += 2;
+				short leftSubIndent = (content->data[i] << 8) | content->data[(i)+1];
+				BeginLeftIndent(leftIndent, leftSubIndent);
+			} break;
+			case TEXT_END_LEFT_INDENT:
+			{
+				EndLeftIndent();
+			} break;
+			case TEXT_BEGIN_RIGHT_INDENT:
+			{
+				short rightIndent = (content->data[i] << 8) | content->data[(i)+1];
+				BeginRightIndent(rightIndent);
+			} break;
+			case TEXT_END_RIGHT_INDENT:
+			{
+				EndRightIndent();
+			} break;
+			case TEXT_BEGIN_PARAGRAPH_SPACING:
+			{
+				// TODO test negative
+				short before = (content->data[i] << 8) | content->data[(i)+1];
+				i += 2;
+				short after = (content->data[i] << 8) | content->data[(i)+1];
+				BeginParagraphSpacing(before, after);
+			} break;
+			case TEXT_END_PARAGRAPH_SPACING:
+			{
+				EndParagraphSpacing();
+			} break;
+			case TEXT_NEW_LINE:
+			{
+				Newline();
+			} break;
 			default:
 			// custom control point not used/doesnt mean anything
 			break;

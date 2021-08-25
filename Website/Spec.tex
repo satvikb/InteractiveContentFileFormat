@@ -330,18 +330,24 @@ Actions can be started with 0xEEBC82 and ended with 0xEEBC83.
 82 & Start Action & XX XX & Begin applying a link to the text.\\
 83 & End Action & -- & Stop considering the text as a link.\\
 \\
-90 & \makecell[tl]{Start numbered \\ list} & XX & Begin a numbered list starting at the given number.\\
-91 & \makecell[tl]{End numbered \\ list} & -- & End the numbered list.\\
-92 & \makecell[tl]{Start unordered \\ bullet list} & -- & Begin a unordered bullet list.\\
-93 & \makecell[tl]{End unordered \\ bullet list} & -- & End the unordered bullet list.\\
+90 & \makecell[tl]{Start numbered \\ list} & XX & Begin a numbered list at the given level. Level 1 is the top most level.\\
+91 & \makecell[tl]{Start unordered \\ bullet list} & XX & Begin a unordered bullet list at the given level.\\
+92 & \makecell[tl]{End bullet \\ list} & -- & End the unordered bullet list.\\
 93 & New bullet & -- & Begin a new item in the current list. If it is a numbered list, the number will be incremented by one.\\
+94 & Set bullet number & XX & Set the current bullet number for the bulleted list.\\
+95 & \makecell[tl]{Set current list \\ level} & XX & Set the current list level.\\
+96 & \makecell[tl]{Set list left sub \\ indent} & XX YY YY & For the given XX level, set the left sub indent using the signed YYYY value.\\
+97 & \makecell[tl]{Set left sub indent \\ level multiplier} & XX XX & For each list sublevel, the left sub intent is this value multiplied by the level number. Default is 60.\\
 \\
-A0 & \makecell[tl]{Begin Left Indent} & XX XX YY YY & Begin paragraph left indent with XX in tenths of a millimeter and left subindent with YY in tenths of a millimeter. Bytes are signed.\\
+A0 & \makecell[tl]{Begin Left Indent \\ and Left Sub Indent} & XX XX YY YY & Begin paragraph left indent with XX in tenths of a millimeter and left subindent with YY in tenths of a millimeter. Bytes are signed.\\
 A1 & \makecell[tl]{End Left Indent} & -- & End the current left indent.\\
-A2 & \makecell[tl]{Begin Right Indent} & XX XX & Begin paragraph right indent in tenths of millimeter.\\
+A2 & \makecell[tl]{Begin Right Indent} & XX XX & Begin paragraph right indent in tenths of millimeter. Bytes are signed.\\
 A3 & \makecell[tl]{End Right Indent} & -- & End the current right indent.\\
-A4 & \makecell[tl]{Begin Paragraph Spacing} & XX XX YY YY & Begin before paragraph spacing with XX in tenths of a millimeter and after paragraph spacing with YY in tenths of a millimeter. Bytes are signed.\\
-A5 & \makecell[tl]{End Paragraph Spacing} & -- & End the current paragraph spacing.\\
+A4 & \makecell[tl]{Begin Before and \\ After Paragraph \\ Spacing} & XX XX YY YY & Begin before paragraph spacing with XX in tenths of a millimeter and after paragraph spacing with YY in tenths of a millimeter. Bytes are signed.\\
+A5 & \makecell[tl]{End Paragraph \\ Spacing} & -- & End the current paragraph spacing.\\
+\\
+B0 & New Line & -- & Create a new line.\\
+B1 & Tabs & ? & Set tab levels.\\
 \end{tabularx}
 
 \subsection{Styling}
